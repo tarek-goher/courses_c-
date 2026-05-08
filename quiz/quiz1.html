@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz 1 - أساسيات C++</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #0f0f1a; color: #e0e0f0; min-height: 100vh; }
+
+  nav {
+    background: #1a1a2e; border-bottom: 2px solid #4a4aff;
+    padding: 0 2rem; display: flex; align-items: center;
+    justify-content: space-between; height: 64px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-brand { font-size: 1.1rem; font-weight: 700; color: #7c7cff; }
+  .nav-brand span { color: #fff; }
+  .nav-links { display: flex; gap: 1rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: #b0b0d0;
+    padding: 0.4rem 0.9rem; border-radius: 8px;
+    font-size: 0.85rem; transition: all 0.2s; border: 1px solid transparent;
+  }
+  .nav-links a:hover { background: rgba(124,124,255,0.15); color: #fff; border-color: #4a4aff; }
+
+  .quiz-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
+    padding: 2.5rem 2rem; text-align: center; border-bottom: 1px solid #2a2a4a;
+  }
+
+  .quiz-header h1 { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+  .quiz-header p { color: #8888aa; }
+
+  #progress-bar-wrap {
+    background: #1a1a2e; padding: 1rem 2rem;
+    border-bottom: 1px solid #2a2a4a;
+    display: flex; align-items: center; gap: 1rem;
+  }
+
+  #progress-bar {
+    flex: 1; height: 6px; background: #2a2a4a; border-radius: 3px; overflow: hidden;
+  }
+
+  #progress-fill { height: 100%; background: linear-gradient(90deg, #4a4aff, #7c7cff); width: 0%; transition: width 0.4s; border-radius: 3px; }
+  #progress-text { font-size: 0.85rem; color: #8888aa; white-space: nowrap; }
+  #score-display { font-size: 0.85rem; color: #9a9aff; white-space: nowrap; }
+
+  .quiz-wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .question-card {
+    background: #1a1a2e; border: 1px solid #2a2a4a;
+    border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem;
+    display: none; animation: fadeIn 0.3s ease;
+  }
+
+  .question-card.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .q-num { font-size: 0.8rem; color: #4a4aff; font-weight: 700; letter-spacing: 2px; margin-bottom: 0.5rem; }
+  .q-text { font-size: 1.05rem; color: #fff; font-weight: 500; margin-bottom: 1.5rem; line-height: 1.6; }
+
+  .code-snippet {
+    background: #0d0d1a; border: 1px solid #2a2a4a;
+    border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1rem;
+    font-family: 'Courier New', monospace; font-size: 0.85rem;
+    color: #e0e0ff; direction: ltr; text-align: left; overflow-x: auto;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 0.7rem; }
+
+  .option-btn {
+    background: rgba(255,255,255,0.03); border: 1px solid #2a2a4a;
+    border-radius: 10px; padding: 0.9rem 1.2rem;
+    color: #c0c0d8; font-size: 0.95rem; cursor: pointer;
+    transition: all 0.2s; text-align: right;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  }
+
+  .option-btn:hover { background: rgba(74,74,255,0.1); border-color: #4a4aff; color: #fff; }
+  .option-btn.correct { background: rgba(100,200,100,0.15) !important; border-color: #79d17a !important; color: #79d17a !important; }
+  .option-btn.wrong { background: rgba(255,100,100,0.1) !important; border-color: #ff8888 !important; color: #ff8888 !important; }
+  .option-btn:disabled { cursor: not-allowed; }
+
+  .explanation {
+    display: none; margin-top: 1rem;
+    background: rgba(74,74,255,0.1); border: 1px solid rgba(74,74,255,0.3);
+    border-radius: 10px; padding: 1rem 1.2rem;
+    color: #c0c0f0; font-size: 0.9rem; line-height: 1.7;
+  }
+
+  .explanation.show { display: block; }
+  .explanation strong { color: #9a9aff; }
+
+  .nav-btns {
+    display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;
+  }
+
+  .nav-btn {
+    padding: 0.7rem 2rem; border-radius: 10px;
+    border: 1px solid #4a4aff; background: transparent;
+    color: #9a9aff; font-size: 0.95rem; cursor: pointer;
+    transition: all 0.2s; font-family: 'Segoe UI', sans-serif;
+  }
+
+  .nav-btn:hover { background: rgba(74,74,255,0.2); }
+  .nav-btn.primary { background: linear-gradient(135deg, #4a4aff, #7c7cff); color: #fff; border-color: transparent; }
+  .nav-btn.primary:hover { opacity: 0.9; }
+
+  #result-screen {
+    display: none; text-align: center;
+    background: #1a1a2e; border: 1px solid #2a2a4a;
+    border-radius: 16px; padding: 3rem 2rem; margin-bottom: 2rem;
+  }
+
+  .result-emoji { font-size: 4rem; margin-bottom: 1rem; }
+  .result-score { font-size: 3rem; font-weight: 800; color: #7c7cff; margin-bottom: 0.5rem; }
+  .result-label { color: #8888aa; margin-bottom: 2rem; }
+
+  .result-msg { font-size: 1.1rem; color: #c0c0d8; margin-bottom: 2rem; }
+
+  .result-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  .result-btn {
+    padding: 0.8rem 1.5rem; border-radius: 10px;
+    text-decoration: none; font-size: 0.95rem; font-weight: 700; transition: all 0.2s;
+  }
+
+  .result-btn.primary {
+    background: linear-gradient(135deg, #4a4aff, #7c7cff); color: #fff;
+  }
+
+  .result-btn.secondary {
+    background: transparent; border: 1px solid #4a4aff; color: #9a9aff;
+  }
+
+  .result-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>CS</span>503 — Quiz 1</div>
+  <ul class="nav-links">
+    <li><a href="../index.html">🏠 الرئيسية</a></li>
+    <li><a href="../lecture1.html">← مراجعة المحاضرة</a></li>
+  </ul>
+</nav>
+
+<div class="quiz-header">
+  <h1>🎯 اختبار المحاضرة الأولى</h1>
+  <p>أساسيات C++ — المتغيرات وأنواع البيانات والـ I/O</p>
+</div>
+
+<div id="progress-bar-wrap">
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+  <span id="progress-text">السؤال 1 من 10</span>
+  <span id="score-display">الدرجة: 0</span>
+</div>
+
+<div class="quiz-wrap">
+
+  <!-- Q1 -->
+  <div class="question-card active" id="q1">
+    <div class="q-num">السؤال ١ من ١٠</div>
+    <div class="q-text">ما هو أول شيء يجب أن يحتويه أي برنامج C++ ليعمل؟</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) المتغيرات</button>
+      <button class="option-btn" onclick="answer(this, true)">ب) دالة main()</button>
+      <button class="option-btn" onclick="answer(this, false)">ج) تعليقات</button>
+      <button class="option-btn" onclick="answer(this, false)">د) #define</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة الصحيحة: دالة main()</strong><br>
+      أي برنامج C++ لازم يحتوي على <code>main()</code> لأن التشغيل بيبدأ منها. من غيرها البرنامج مش هيشتغل.
+    </div>
+    <div class="nav-btns"><button class="nav-btn primary" onclick="nextQ(1)">التالي →</button></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-card" id="q2">
+    <div class="q-num">السؤال ٢ من ١٠</div>
+    <div class="q-text">ما ناتج الكود التالي؟</div>
+    <div class="code-snippet">int x = 1, y = 2;
+double result = x / y;
+cout &lt;&lt; result;</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) 0.5</button>
+      <button class="option-btn" onclick="answer(this, true)">ب) 0</button>
+      <button class="option-btn" onclick="answer(this, false)">ج) 0.0000</button>
+      <button class="option-btn" onclick="answer(this, false)">د) خطأ في الكمبايل</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: 0</strong><br>
+      x و y كلاهما int، فـ x/y = 1/2 = 0 (integer division تقلبط الكسر). ثم 0 يتحول لـ double فيصبح 0.0
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(2)">← السابق</button><button class="nav-btn primary" onclick="nextQ(2)">التالي →</button></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-card" id="q3">
+    <div class="q-num">السؤال ٣ من ١٠</div>
+    <div class="q-text">أي من التالي اسم متغير صحيح في C++؟</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) 4myVar</button>
+      <button class="option-btn" onclick="answer(this, false)">ب) my-var</button>
+      <button class="option-btn" onclick="answer(this, true)">ج) _myVar</button>
+      <button class="option-btn" onclick="answer(this, false)">د) int</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: _myVar</strong><br>
+      — 4myVar يبدأ برقم ❌<br>
+      — my-var فيه شرطة ناقص (رمز خاص) ❌<br>
+      — int كلمة محجوزة ❌<br>
+      — _myVar يبدأ بـ underscore ✅
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(3)">← السابق</button><button class="nav-btn primary" onclick="nextQ(3)">التالي →</button></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-card" id="q4">
+    <div class="q-num">السؤال ٤ من ١٠</div>
+    <div class="q-text">ما الفرق بين \n و endl في C++؟</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) endl للأرقام و \n للنصوص</button>
+      <button class="option-btn" onclick="answer(this, false)">ب) \n للأعداد الكبيرة</button>
+      <button class="option-btn" onclick="answer(this, true)">ج) كلاهما ينقل للسطر التالي، endl أكثر وضوحاً</button>
+      <button class="option-btn" onclick="answer(this, false)">د) \n يطبع حرف n</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: كلاهما ينقل للسطر التالي</strong><br>
+      <code>\n</code> و <code>endl</code> بيعملوا نفس الوظيفة (سطر جديد). الفرق البسيط إن endl بيفضي الـ buffer أيضاً، لكن في الاستخدام العادي هما متكافئين.
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(4)">← السابق</button><button class="nav-btn primary" onclick="nextQ(4)">التالي →</button></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-card" id="q5">
+    <div class="q-num">السؤال ٥ من ١٠</div>
+    <div class="q-text">ما نوع البيانات المناسب لتخزين قيمة الراتب 5500.75؟</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) int</button>
+      <button class="option-btn" onclick="answer(this, false)">ب) char</button>
+      <button class="option-btn" onclick="answer(this, true)">ج) double أو float</button>
+      <button class="option-btn" onclick="answer(this, false)">د) bool</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: double أو float</strong><br>
+      5500.75 رقم عشري، فنحتاج float أو double. int فقط للأعداد الصحيحة. double أفضل لأنه أدق.
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(5)">← السابق</button><button class="nav-btn primary" onclick="nextQ(5)">التالي →</button></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question-card" id="q6">
+    <div class="q-num">السؤال ٦ من ١٠</div>
+    <div class="q-text">ما ناتج التعبير التالي؟</div>
+    <div class="code-snippet">cout &lt;&lt; double(1) / 2;</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) 0</button>
+      <button class="option-btn" onclick="answer(this, true)">ب) 0.5</button>
+      <button class="option-btn" onclick="answer(this, false)">ج) 1</button>
+      <button class="option-btn" onclick="answer(this, false)">د) خطأ</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: 0.5</strong><br>
+      <code>double(1)</code> بتحول الـ 1 لـ double، فبقت 1.0 / 2 = 0.5 (مش integer division)
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(6)">← السابق</button><button class="nav-btn primary" onclick="nextQ(6)">التالي →</button></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question-card" id="q7">
+    <div class="q-num">السؤال ٧ من ١٠</div>
+    <div class="q-text">ما وظيفة السطر: <code>using namespace std;</code></div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) إضافة مكتبة الأرقام</button>
+      <button class="option-btn" onclick="answer(this, true)">ب) تخلينا نكتب cout و cin بدون std::</button>
+      <button class="option-btn" onclick="answer(this, false)">ج) تعريف متغير اسمه std</button>
+      <button class="option-btn" onclick="answer(this, false)">د) إنهاء البرنامج</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: تخلينا نكتب cout و cin بدون std::</strong><br>
+      بدون هذا السطر كنا لازم نكتب <code>std::cout</code> و <code>std::cin</code> في كل مرة.
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(7)">← السابق</button><button class="nav-btn primary" onclick="nextQ(7)">التالي →</button></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question-card" id="q8">
+    <div class="q-num">السؤال ٨ من ١٠</div>
+    <div class="q-text">كيف تعلن عن متغير const يساوي 100 من نوع int؟</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) int const = 100;</button>
+      <button class="option-btn" onclick="answer(this, false)">ب) fixed int N = 100;</button>
+      <button class="option-btn" onclick="answer(this, true)">ج) const int N = 100;</button>
+      <button class="option-btn" onclick="answer(this, false)">د) int N = const(100);</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: const int N = 100;</strong><br>
+      الصيغة الصحيحة هي: <code>const [نوع البيانات] [الاسم] = [القيمة];</code> والثوابت لازم تأخد قيمة وقت التعريف.
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(8)">← السابق</button><button class="nav-btn primary" onclick="nextQ(8)">التالي →</button></div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="question-card" id="q9">
+    <div class="q-num">السؤال ٩ من ١٠</div>
+    <div class="q-text">ما نوع الخطأ في الكود التالي؟</div>
+    <div class="code-snippet">int x = 5
+cout &lt;&lt; x;</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, true)">أ) Syntax Error — خطأ في الكتابة</button>
+      <button class="option-btn" onclick="answer(this, false)">ب) Logic Error — خطأ منطقي</button>
+      <button class="option-btn" onclick="answer(this, false)">ج) Run-time Error — خطأ وقت التشغيل</button>
+      <button class="option-btn" onclick="answer(this, false)">د) لا يوجد خطأ</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: Syntax Error</strong><br>
+      السطر الأول <code>int x = 5</code> ناقصه فاصلة منقوطة <code>;</code> — ده خطأ في الكتابة والـ Compiler هيكتشفه.
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(9)">← السابق</button><button class="nav-btn primary" onclick="nextQ(9)">التالي →</button></div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="question-card" id="q10">
+    <div class="q-num">السؤال ١٠ من ١٠</div>
+    <div class="q-text">ما الـ #include اللازم لاستخدام cout و cin؟</div>
+    <div class="options">
+      <button class="option-btn" onclick="answer(this, false)">أ) #include &lt;stdio.h&gt;</button>
+      <button class="option-btn" onclick="answer(this, true)">ب) #include &lt;iostream&gt;</button>
+      <button class="option-btn" onclick="answer(this, false)">ج) #include &lt;string&gt;</button>
+      <button class="option-btn" onclick="answer(this, false)">د) #include &lt;math.h&gt;</button>
+    </div>
+    <div class="explanation">
+      <strong>✅ الإجابة: #include &lt;iostream&gt;</strong><br>
+      iostream اختصار Input-Output Stream — بتضيف تعريفات cout و cin و endl.
+    </div>
+    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(10)">← السابق</button><button class="nav-btn primary" onclick="showResult()">إنهاء الاختبار 🎯</button></div>
+  </div>
+
+  <!-- Result -->
+  <div id="result-screen">
+    <div class="result-emoji" id="result-emoji">🎉</div>
+    <div class="result-score" id="result-score">0/10</div>
+    <div class="result-label">درجتك في اختبار المحاضرة الأولى</div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="result-actions">
+      <a href="lecture1.html" class="result-btn secondary">📖 مراجعة المحاضرة</a>
+      <a href="quiz2.html" class="result-btn primary">التالي: Quiz 2 →</a>
+      <button onclick="resetQuiz()" class="result-btn secondary" style="cursor:pointer; border: 1px solid #4a4aff; color:#9a9aff; border-radius:10px; font-size:0.95rem; font-weight:700;">🔄 إعادة الاختبار</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let score = 0;
+let answered = new Array(10).fill(false);
+let current = 1;
+const total = 10;
+
+function answer(btn, correct) {
+  const card = btn.closest('.question-card');
+  const qIndex = parseInt(card.id.replace('q','')) - 1;
+  if (answered[qIndex]) return;
+
+  answered[qIndex] = true;
+  const buttons = card.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if (correct) {
+    btn.classList.add('correct');
+    score++;
+    document.getElementById('score-display').textContent = 'الدرجة: ' + score;
+  } else {
+    btn.classList.add('wrong');
+    buttons.forEach(b => { if (b.onclick.toString().includes('true')) b.classList.add('correct'); });
+  }
+
+  card.querySelector('.explanation').classList.add('show');
+}
+
+function nextQ(n) {
+  document.getElementById('q' + n).classList.remove('active');
+  if (n < total) {
+    document.getElementById('q' + (n+1)).classList.add('active');
+    current = n + 1;
+    updateProgress();
+  }
+}
+
+function prevQ(n) {
+  document.getElementById('q' + n).classList.remove('active');
+  document.getElementById('q' + (n-1)).classList.add('active');
+  current = n - 1;
+  updateProgress();
+}
+
+function updateProgress() {
+  document.getElementById('progress-fill').style.width = ((current-1)/total * 100) + '%';
+  document.getElementById('progress-text').textContent = 'السؤال ' + current + ' من ' + total;
+}
+
+function showResult() {
+  document.getElementById('q10').classList.remove('active');
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const pct = score / total;
+  let emoji, msg;
+  if (pct === 1) { emoji = '🏆'; msg = 'ممتاز! أجبت على كل الأسئلة بشكل صحيح!'; }
+  else if (pct >= 0.8) { emoji = '🎉'; msg = 'أحسنت! نتيجة رائعة جداً!'; }
+  else if (pct >= 0.6) { emoji = '👍'; msg = 'جيد! ارجع راجع المحاضرة في النقاط اللي غلطت فيها.'; }
+  else { emoji = '📚'; msg = 'تحتاج مراجعة أكثر. اقرأ المحاضرة مرة تانية وحاول تاني!'; }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-score').textContent = score + ' / ' + total;
+  document.getElementById('result-msg').textContent = msg;
+  document.getElementById('result-screen').style.display = 'block';
+}
+
+function resetQuiz() {
+  score = 0;
+  answered = new Array(10).fill(false);
+  current = 1;
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('score-display').textContent = 'الدرجة: 0';
+  updateProgress();
+
+  for (let i = 1; i <= total; i++) {
+    const card = document.getElementById('q' + i);
+    card.classList.remove('active');
+    card.querySelectorAll('.option-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('correct', 'wrong');
+    });
+    card.querySelector('.explanation').classList.remove('show');
+  }
+  document.getElementById('q1').classList.add('active');
+}
+</script>
+</body>
+</html>

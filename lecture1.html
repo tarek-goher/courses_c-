@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture 1 - أساسيات C++</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0f0;
+    line-height: 1.8;
+  }
+
+  nav {
+    background: #1a1a2e;
+    border-bottom: 2px solid #4a4aff;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(74,74,255,0.3);
+  }
+
+  .nav-brand { font-size: 1.1rem; font-weight: 700; color: #7c7cff; }
+  .nav-brand span { color: #fff; }
+
+  .nav-links { display: flex; gap: 1rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none;
+    color: #b0b0d0;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .nav-links a:hover { background: rgba(124,124,255,0.15); color: #fff; border-color: #4a4aff; }
+
+  .lecture-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
+    padding: 3rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid #2a2a4a;
+  }
+
+  .lec-badge {
+    display: inline-block;
+    background: rgba(74,74,255,0.2);
+    border: 1px solid #4a4aff;
+    color: #9a9aff;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+  }
+
+  .lecture-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .lecture-header p { color: #8888aa; font-size: 1rem; }
+
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .section {
+    background: #1a1a2e;
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #4a4aff, #7c7cff);
+  }
+
+  .section-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .section h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #9a9aff;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #2a2a4a;
+  }
+
+  .section h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7c7cff;
+    margin: 1.2rem 0 0.5rem;
+  }
+
+  .section p {
+    color: #c0c0d8;
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .section ul {
+    list-style: none;
+    margin: 0.5rem 0 0.8rem 0;
+  }
+
+  .section ul li {
+    color: #c0c0d8;
+    font-size: 0.95rem;
+    padding: 0.4rem 0;
+    padding-right: 1.2rem;
+    position: relative;
+    border-bottom: 1px solid #1e1e35;
+  }
+
+  .section ul li:last-child { border-bottom: none; }
+
+  .section ul li::before {
+    content: '▸';
+    position: absolute;
+    right: 0;
+    color: #4a4aff;
+  }
+
+  .code-block {
+    background: #0d0d1a;
+    border: 1px solid #2a2a4a;
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #e0e0ff;
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .code-block .kw { color: #7c7cff; font-weight: bold; }
+  .code-block .str { color: #79d17a; }
+  .code-block .cmt { color: #6a6a8a; font-style: italic; }
+  .code-block .num { color: #ffaa55; }
+  .code-block .fn { color: #55aaff; }
+  .code-block .type { color: #ff8888; }
+
+  .code-label {
+    display: inline-block;
+    background: rgba(74,74,255,0.2);
+    color: #9a9aff;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .highlight-box {
+    background: rgba(74,74,255,0.1);
+    border: 1px solid rgba(74,74,255,0.4);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    color: #c0c0f0;
+    font-size: 0.9rem;
+  }
+
+  .highlight-box strong {
+    color: #9a9aff;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .warning-box {
+    background: rgba(255,100,100,0.08);
+    border: 1px solid rgba(255,100,100,0.3);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    color: #f0c0c0;
+    font-size: 0.9rem;
+  }
+
+  .warning-box strong {
+    color: #ff8888;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .success-box {
+    background: rgba(100,200,100,0.08);
+    border: 1px solid rgba(100,200,100,0.3);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    color: #c0f0c0;
+    font-size: 0.9rem;
+  }
+
+  .success-box strong {
+    color: #79d17a;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    direction: rtl;
+  }
+
+  th {
+    background: rgba(74,74,255,0.2);
+    color: #9a9aff;
+    padding: 0.7rem 1rem;
+    text-align: right;
+    font-weight: 700;
+    border: 1px solid #2a2a4a;
+  }
+
+  td {
+    padding: 0.6rem 1rem;
+    border: 1px solid #2a2a4a;
+    color: #c0c0d8;
+  }
+
+  td:last-child { direction: ltr; text-align: left; font-family: 'Courier New', monospace; }
+
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  .quiz-btn-wrap {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+  }
+
+  .quiz-btn {
+    display: inline-block;
+    padding: 1rem 3rem;
+    background: linear-gradient(135deg, #4a4aff, #7c7cff);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 24px rgba(74,74,255,0.4);
+    border: 2px solid transparent;
+  }
+
+  .quiz-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(74,74,255,0.6);
+    background: linear-gradient(135deg, #5a5aff, #9c9cff);
+  }
+
+  .steps {
+    counter-reset: step;
+  }
+
+  .step-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border: 1px solid #2a2a4a;
+  }
+
+  .step-num {
+    counter-increment: step;
+    min-width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #4a4aff, #7c7cff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: #fff;
+  }
+
+  .step-content h4 {
+    color: #9a9aff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .step-content p {
+    color: #aaaacc;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>CS</span>503 — Lecture 1</div>
+  <ul class="nav-links">
+    <li><a href="index.html">🏠 الرئيسية</a></li>
+    <li><a href="lecture2.html">Lecture 2 →</a></li>
+  </ul>
+</nav>
+
+<div class="lecture-header">
+  <div class="lec-badge">LECTURE 01</div>
+  <h1>أساسيات C++ Programming</h1>
+  <p>C++ History · Program Structure · Variables · Data Types · I/O</p>
+</div>
+
+<div class="content">
+
+  <!-- Section 1 -->
+  <div class="section">
+    <div class="section-icon">🧠</div>
+    <h2>١. إزاي بنحل مشكلة؟ — Solving a Problem</h2>
+
+    <p>قبل ما تكتب أي كود، لازم تفكر كويس في المشكلة وتحل بطريقة منظمة. في الكورس ده هنتبع 5 خطوات:</p>
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Define — تعريف المشكلة</h4>
+          <p>افهم المطلوب منك تعمله بالظبط. ايه الـ input وايه الـ output المتوقع؟</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Analyze — تحليل المشكلة</h4>
+          <p>حلل المشكلة وحدد المتغيرات اللي هتحتاجها والعمليات اللي هتعملها</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Algorithm — الخوارزمية</h4>
+          <p>اكتب خطوات الحل بالترتيب بلغة عادية أو Flowchart (مخطط انسيابي)</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Program — كتابة الكود</h4>
+          <p>ترجم الخوارزمية لكود C++ صح</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Test & Debug — اختبار وتصحيح</h4>
+          <p>جرب البرنامج بقيم مختلفة وصلح الأخطاء</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <strong>💡 مهم</strong>
+      الـ Algorithm هو تسلسل من التعليمات الدقيقة اللي بتوصلنا للحل. والـ Program هو ترجمة الخوارزمية لغة يفهمها الكمبيوتر.
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <div class="section-icon">⚙️</div>
+    <h2>٢. ازاي بيشتغل البرنامج — How a Program Runs</h2>
+
+    <h3>المراحل من الكود للتشغيل:</h3>
+    <ul>
+      <li><strong>Source Code:</strong> الكود اللي إنت كاتبه بـ C++</li>
+      <li><strong>Compiler:</strong> بيترجم الكود لـ Machine Language (اللغة اللي الكمبيوتر يفهمها)</li>
+      <li><strong>Object Code:</strong> الكود المترجم</li>
+      <li><strong>Linker:</strong> بيجمع الكود بتاعك مع مكتبات جاهزة (زي cout و cin)</li>
+      <li><strong>Execution:</strong> التشغيل الفعلي</li>
+    </ul>
+
+    <h3>أنواع الأخطاء:</h3>
+
+    <div class="warning-box">
+      <strong>❌ Syntax Errors — أخطاء في الكتابة</strong>
+      خطأ في قواعد اللغة — الـ Compiler بيكتشفها. مثال: نسيت فاصلة منقوطة <code>;</code>
+    </div>
+
+    <div class="warning-box">
+      <strong>⚠️ Run-time Errors — أخطاء وقت التشغيل</strong>
+      البرنامج بيتترجم لكن لما بتشغله بيحصل خطأ. مثال: القسمة على صفر.
+    </div>
+
+    <div class="warning-box">
+      <strong>🔎 Logic Errors — أخطاء منطقية</strong>
+      البرنامج بيشتغل بس النتيجة غلط! ده أصعب نوع لأن الكمبيوتر مش بيحس إنه فيه خطأ.
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section">
+    <div class="section-icon">📜</div>
+    <h2>٣. تاريخ C++ ومين بيستخدمه</h2>
+
+    <ul>
+      <li>لغة <strong>C</strong> اتصنعت على يد Dennis Ritchie في AT&T Bell Labs في السبعينات — كانت بتستخدم في صيانة UNIX</li>
+      <li>لغة <strong>C++</strong> صنعها Bjarne Stroustrup في الثمانينات — زادت عليها Object-Oriented Programming</li>
+      <li>C لسه موجودة جوا C++ (C is a subset of C++)</li>
+    </ul>
+
+    <h3>C++ بتتستخدم فين؟</h3>
+    <ul>
+      <li>🎮 تطوير الألعاب: Unreal Engine, Unity</li>
+      <li>💻 أنظمة التشغيل: Windows, Linux</li>
+      <li>📡 الأنظمة المضمنة (IoT, microcontrollers)</li>
+      <li>🔬 التطبيقات العلمية والهندسية</li>
+      <li>📈 أنظمة التداول المالي عالية السرعة</li>
+    </ul>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section">
+    <div class="section-icon">🏗️</div>
+    <h2>٤. هيكل برنامج C++ — Program Structure</h2>
+
+    <p>أي برنامج C++ لازم يكون فيه الهيكل ده:</p>
+
+    <div class="code-label">هيكل البرنامج الأساسي</div>
+    <div class="code-block">
+<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>()
+{
+    <span class="cmt">// المتغيرات هنا</span>
+    <span class="cmt">// التعليمات هنا</span>
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}
+    </div>
+
+    <h3>شرح كل جزء:</h3>
+    <ul>
+      <li><strong>#include &lt;iostream&gt;</strong> — بيضيف مكتبة الـ Input/Output عشان نقدر نستخدم cout و cin</li>
+      <li><strong>using namespace std;</strong> — بيخلينا نكتب cout و cin من غير std:: قبليهم</li>
+      <li><strong>int main()</strong> — أي برنامج C++ لازم فيه main function — من هنا بيبدأ التشغيل</li>
+      <li><strong>return 0;</strong> — معناه البرنامج خلص وكل حاجة تمام</li>
+      <li><strong>;</strong> كل تعليمة لازم تنتهي بفاصلة منقوطة</li>
+    </ul>
+
+    <div class="highlight-box">
+      <strong>📌 قاعدة مهمة</strong>
+      كل statement في C++ لازم ينتهي بـ <strong>;</strong> وكل برنامج لازم يحتوي على <strong>main function</strong>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section">
+    <div class="section-icon">💬</div>
+    <h2>٥. التعليقات — Comments</h2>
+
+    <p>التعليقات بيكتبها المبرمج للشرح — الكمبيوتر بيتجاهلها تماماً.</p>
+
+    <div class="code-label">نوعان من التعليقات</div>
+    <div class="code-block">
+<span class="cmt">// تعليق على سطر واحد</span>
+<span class="cmt">// هذا برنامجي الأول بلغة C++</span>
+
+<span class="cmt">/* تعليق على أكثر من سطر
+   يمكن استخدامه
+   للشرح المطول */</span>
+
+<span class="type">int</span> x = <span class="num">5</span>; <span class="cmt">// x تساوي 5</span>
+    </div>
+
+    <div class="highlight-box">
+      <strong>💡 لماذا نستخدم التعليقات؟</strong>
+      لما تفتح الكود بعد شهر، التعليقات بتساعدك تفهم إيه اللي عملته. وكمان بتساعد أي حد تاني يشتغل على كودك.
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section">
+    <div class="section-icon">🖨️</div>
+    <h2>٦. الإخراج — Output باستخدام cout</h2>
+
+    <p>cout (اختصار Character Output) بنستخدمه عشان نطبع على الشاشة. بنستخدم معاه الإشارة &lt;&lt;</p>
+
+    <div class="code-label">مثال على cout</div>
+    <div class="code-block">
+<span class="fn">cout</span> &lt;&lt; <span class="str">"Hello World"</span>;
+
+<span class="fn">cout</span> &lt;&lt; <span class="str">"اسمي Ahmed"</span>;
+
+<span class="fn">cout</span> &lt;&lt; <span class="num">5</span> + <span class="num">6</span>; <span class="cmt">// هيطبع 11</span>
+
+<span class="fn">cout</span> &lt;&lt; <span class="str">"hi"</span> &lt;&lt; <span class="str">" "</span> &lt;&lt; <span class="str">"everyone"</span>;
+    </div>
+
+    <h3>Escape Sequences — رموز التنسيق:</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>الرمز</th><th>المعنى</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td>\n</td><td>سطر جديد (New Line)</td><td>cout &lt;&lt; "سطر1\nسطر2";</td></tr>
+          <tr><td>\t</td><td>مسافة كبيرة (Tab)</td><td>cout &lt;&lt; "اسم\tعمر";</td></tr>
+          <tr><td>\\</td><td>شرطة مائلة \</td><td>cout &lt;&lt; "\\";</td></tr>
+          <tr><td>\"</td><td>علامة تنصيص</td><td>cout &lt;&lt; "\"";</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-label">endl vs \n</div>
+    <div class="code-block">
+<span class="fn">cout</span> &lt;&lt; <span class="str">"السطر الأول"</span> &lt;&lt; <span class="str">"\n"</span>;
+<span class="fn">cout</span> &lt;&lt; <span class="str">"السطر الثاني"</span> &lt;&lt; <span class="fn">endl</span>;
+<span class="cmt">// الاثنين بيعملوا نفس الحاجة — endl أوضح</span>
+    </div>
+
+    <div class="code-label">مثال كامل — Hello World</div>
+    <div class="code-block">
+<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>()
+{
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"Hello World"</span> &lt;&lt; <span class="fn">endl</span>;
+    <span class="kw">return</span> <span class="num">0</span>;
+}
+    </div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section">
+    <div class="section-icon">📦</div>
+    <h2>٧. المتغيرات — Variables</h2>
+
+    <p>المتغير هو مكان في الذاكرة بنخزن فيه بيانات. المتغير ليه <strong>اسم</strong> و <strong>نوع</strong> و <strong>قيمة</strong>.</p>
+
+    <div class="code-label">طريقة تعريف المتغيرات</div>
+    <div class="code-block">
+<span class="type">int</span> x;               <span class="cmt">// متغير من نوع int بدون قيمة</span>
+<span class="type">float</span> num = <span class="num">0.58</span>;   <span class="cmt">// متغير float بقيمة ابتدائية</span>
+<span class="type">char</span> c = <span class="str">'A'</span>;        <span class="cmt">// متغير char — القيمة بين ' '</span>
+<span class="type">bool</span> b, b2, b3;       <span class="cmt">// تعريف أكتر من متغير</span>
+<span class="type">int</span> r, y, i = <span class="num">0</span>;    <span class="cmt">// فقط i بيأخد قيمة 0</span>
+    </div>
+
+    <h3>قواعد تسمية المتغيرات:</h3>
+    <ul>
+      <li>✅ يبدأ بحرف أو underscore _ (مش رقم)</li>
+      <li>✅ يحتوي على حروف وأرقام وـ _</li>
+      <li>✅ حساس لحالة الأحرف: <code>x</code> و <code>X</code> متغيرين مختلفين</li>
+      <li>❌ ما ينفعش يكون اسمه كلمة محجوزة (int, if, else, main...)</li>
+      <li>❌ ما ينفعش يبدأ برقم (مثل 3x, 4r)</li>
+      <li>❌ ما يحتويش على رموز خاصة (@ # $ % ^)</li>
+    </ul>
+
+    <div class="warning-box">
+      <strong>❌ أمثلة على أسماء غلط:</strong>
+      <code>char 4r;</code> — يبدأ برقم &nbsp;|&nbsp;
+      <code>double main;</code> — main كلمة محجوزة &nbsp;|&nbsp;
+      <code>int x=5; float x;</code> — إعادة تعريف نفس المتغير
+    </div>
+
+    <div class="success-box">
+      <strong>✅ أمثلة على أسماء صح:</strong>
+      <code>x, myAge, total_sum, _count, num1, firstName</code>
+    </div>
+
+    <h3>const — الثوابت:</h3>
+    <p>لو عندك قيمة ما هتتغيرش، استخدم <code>const</code></p>
+    <div class="code-block">
+<span class="kw">const</span> <span class="type">int</span> PI_VALUE = <span class="num">3</span>;
+<span class="kw">const</span> <span class="type">char</span> GRADE = <span class="str">'A'</span>;
+<span class="cmt">// PI_VALUE = 5; خطأ! ما تقدرش تغير الثوابت</span>
+    </div>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section">
+    <div class="section-icon">🗄️</div>
+    <h2>٨. أنواع البيانات — Data Types</h2>
+
+    <p>كل متغير له نوع بيحدد إيه البيانات اللي يقدر يخزنها وكام مساحة بيأخدها في الذاكرة.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>النوع</th><th>الوصف</th><th>الحجم</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td>int</td><td>أعداد صحيحة</td><td>4 bytes</td><td>int x = 5;</td></tr>
+          <tr><td>float</td><td>أعداد عشرية (~7 أرقام)</td><td>4 bytes</td><td>float f = 3.14;</td></tr>
+          <tr><td>double</td><td>أعداد عشرية دقيقة (~15 رقم)</td><td>8 bytes</td><td>double d = 3.14159;</td></tr>
+          <tr><td>char</td><td>حرف واحد</td><td>1 byte</td><td>char c = 'A';</td></tr>
+          <tr><td>bool</td><td>قيمة منطقية true/false</td><td>1 byte</td><td>bool b = true;</td></tr>
+          <tr><td>short</td><td>عدد صحيح صغير</td><td>2 bytes</td><td>short s = 100;</td></tr>
+          <tr><td>long</td><td>عدد صحيح كبير</td><td>4 bytes</td><td>long l = 999999;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Type Casting — تغيير النوع:</h3>
+    <p>أحياناً بنضطر نحول من نوع لتاني</p>
+
+    <div class="code-block">
+<span class="type">int</span> x = <span class="num">1</span>, y = <span class="num">2</span>;
+
+<span class="type">double</span> r1 = x / y;             <span class="cmt">// ناتج = 0.0 (قسمة عدد صحيح!)</span>
+<span class="type">double</span> r2 = <span class="type">double</span>(x) / y;    <span class="cmt">// ناتج = 0.5 ✅</span>
+<span class="type">double</span> r3 = x / <span class="type">double</span>(y);    <span class="cmt">// ناتج = 0.5 ✅</span>
+
+<span class="type">int</span> cents = <span class="type">int</span>(r2 * <span class="num">100</span>);     <span class="cmt">// ناتج = 50</span>
+    </div>
+
+    <div class="highlight-box">
+      <strong>💡 انتبه من Integer Division</strong>
+      لو قسمت عدد صحيح على عدد صحيح، الناتج بيتقلبط (truncate). 7/5 = 1 مش 1.4. عشان تاخد الكسر، حول واحد منهم لـ double.
+    </div>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section">
+    <div class="section-icon">⌨️</div>
+    <h2>٩. الإدخال — Input باستخدام cin</h2>
+
+    <p>cin (Character Input) بنستخدمه عشان نقرأ من المستخدم. بنستخدم معاه >> بدل &lt;&lt;</p>
+
+    <div class="code-block">
+<span class="type">int</span> num;
+<span class="fn">cout</span> &lt;&lt; <span class="str">"أدخل رقماً: "</span>;
+<span class="fn">cin</span> &gt;&gt; num;
+<span class="fn">cout</span> &lt;&lt; <span class="str">"الرقم هو: "</span> &lt;&lt; num;
+    </div>
+
+    <h3>قراءة أكتر من متغير:</h3>
+    <div class="code-block">
+<span class="type">int</span> x, y, z;
+<span class="fn">cin</span> &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+<span class="cmt">// المستخدم يكتب: 10 20 30 ثم Enter</span>
+    </div>
+
+    <div class="code-label">مثال كامل — جمع 3 أرقام</div>
+    <div class="code-block">
+<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>()
+{
+    <span class="type">int</span> num1, num2, num3, sum;
+
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"أدخل 3 أرقام: "</span>;
+    <span class="fn">cin</span> &gt;&gt; num1 &gt;&gt; num2 &gt;&gt; num3;
+
+    sum = num1 + num2 + num3;
+
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"المجموع = "</span> &lt;&lt; sum &lt;&lt; <span class="fn">endl</span>;
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"المتوسط = "</span> &lt;&lt; sum / <span class="num">3</span> &lt;&lt; <span class="fn">endl</span>;
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}
+    </div>
+  </div>
+
+</div>
+
+<!-- Quiz Button -->
+<div class="quiz-btn-wrap">
+  <a href="./quiz/quiz1.html" class="quiz-btn">🎯 ابدأ اختبار المحاضرة الأولى</a>
+</div>
+
+<div style="text-align:center; padding: 1rem 1rem 3rem; color: #4a4a6a; font-size: 0.85rem;">
+  CS503 — Lecture 1 &nbsp;|&nbsp; Dr. Shahira Mohamed &nbsp;|&nbsp; Cairo University
+</div>
+
+</body>
+</html>

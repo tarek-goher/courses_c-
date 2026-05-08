@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture 2 - العمليات والجمل الشرطية</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0f0;
+    line-height: 1.8;
+  }
+
+  nav {
+    background: #1a1a2e;
+    border-bottom: 2px solid #4a4aff;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(74,74,255,0.3);
+  }
+
+  .nav-brand { font-size: 1.1rem; font-weight: 700; color: #7c7cff; }
+  .nav-brand span { color: #fff; }
+  .nav-links { display: flex; gap: 1rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: #b0b0d0;
+    padding: 0.4rem 0.9rem; border-radius: 8px;
+    font-size: 0.85rem; transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .nav-links a:hover { background: rgba(124,124,255,0.15); color: #fff; border-color: #4a4aff; }
+
+  .lecture-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
+    padding: 3rem 2rem; text-align: center;
+    border-bottom: 1px solid #2a2a4a;
+  }
+
+  .lec-badge {
+    display: inline-block;
+    background: rgba(74,74,255,0.2);
+    border: 1px solid #4a4aff; color: #9a9aff;
+    padding: 0.3rem 1rem; border-radius: 20px;
+    font-size: 0.8rem; margin-bottom: 1rem; letter-spacing: 1px;
+  }
+
+  .lecture-header h1 { font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+  .lecture-header p { color: #8888aa; font-size: 1rem; }
+
+  .content { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section {
+    background: #1a1a2e; border: 1px solid #2a2a4a;
+    border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+    position: relative; overflow: hidden;
+  }
+
+  .section::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, #4a4aff, #7c7cff);
+  }
+
+  .section-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+  .section h2 {
+    font-size: 1.3rem; font-weight: 700; color: #9a9aff;
+    margin-bottom: 1rem; padding-bottom: 0.5rem;
+    border-bottom: 1px solid #2a2a4a;
+  }
+
+  .section h3 { font-size: 1.05rem; font-weight: 700; color: #7c7cff; margin: 1.2rem 0 0.5rem; }
+
+  .section p { color: #c0c0d8; font-size: 0.95rem; margin-bottom: 0.8rem; }
+
+  .section ul { list-style: none; margin: 0.5rem 0 0.8rem 0; }
+
+  .section ul li {
+    color: #c0c0d8; font-size: 0.95rem; padding: 0.4rem 0;
+    padding-right: 1.2rem; position: relative;
+    border-bottom: 1px solid #1e1e35;
+  }
+
+  .section ul li:last-child { border-bottom: none; }
+
+  .section ul li::before {
+    content: '▸'; position: absolute; right: 0; color: #4a4aff;
+  }
+
+  .code-block {
+    background: #0d0d1a; border: 1px solid #2a2a4a;
+    border-radius: 10px; padding: 1.2rem 1.5rem; margin: 1rem 0;
+    font-family: 'Courier New', monospace; font-size: 0.9rem;
+    color: #e0e0ff; direction: ltr; text-align: left;
+    overflow-x: auto; line-height: 1.7; position: relative;
+  }
+
+  .code-block .kw { color: #7c7cff; font-weight: bold; }
+  .code-block .str { color: #79d17a; }
+  .code-block .cmt { color: #6a6a8a; font-style: italic; }
+  .code-block .num { color: #ffaa55; }
+  .code-block .fn { color: #55aaff; }
+  .code-block .type { color: #ff8888; }
+
+  .code-label {
+    display: inline-block; background: rgba(74,74,255,0.2);
+    color: #9a9aff; font-size: 0.75rem; padding: 0.2rem 0.7rem;
+    border-radius: 6px; margin-bottom: 0.5rem;
+    letter-spacing: 1px; font-family: 'Segoe UI', sans-serif;
+  }
+
+  .highlight-box {
+    background: rgba(74,74,255,0.1); border: 1px solid rgba(74,74,255,0.4);
+    border-radius: 10px; padding: 1rem 1.2rem; margin: 1rem 0;
+    color: #c0c0f0; font-size: 0.9rem;
+  }
+
+  .highlight-box strong { color: #9a9aff; display: block; margin-bottom: 0.3rem; }
+
+  .warning-box {
+    background: rgba(255,100,100,0.08); border: 1px solid rgba(255,100,100,0.3);
+    border-radius: 10px; padding: 1rem 1.2rem; margin: 1rem 0;
+    color: #f0c0c0; font-size: 0.9rem;
+  }
+
+  .warning-box strong { color: #ff8888; display: block; margin-bottom: 0.3rem; }
+
+  .success-box {
+    background: rgba(100,200,100,0.08); border: 1px solid rgba(100,200,100,0.3);
+    border-radius: 10px; padding: 1rem 1.2rem; margin: 1rem 0;
+    color: #c0f0c0; font-size: 0.9rem;
+  }
+
+  .success-box strong { color: #79d17a; display: block; margin-bottom: 0.3rem; }
+
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; direction: rtl; }
+
+  th {
+    background: rgba(74,74,255,0.2); color: #9a9aff;
+    padding: 0.7rem 1rem; text-align: right; font-weight: 700;
+    border: 1px solid #2a2a4a;
+  }
+
+  td { padding: 0.6rem 1rem; border: 1px solid #2a2a4a; color: #c0c0d8; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  @media(max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  .op-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #2a2a4a; border-radius: 10px;
+    padding: 1rem;
+  }
+
+  .op-card h4 { color: #7c7cff; font-size: 0.95rem; margin-bottom: 0.5rem; }
+
+  .truth-table { margin: 1rem 0; }
+  .truth-table table { font-family: 'Courier New', monospace; }
+  .true-val { color: #79d17a; font-weight: bold; }
+  .false-val { color: #ff8888; font-weight: bold; }
+
+  .trace-box {
+    background: #0d0d1a; border: 1px solid #2a2a4a;
+    border-radius: 10px; padding: 1.2rem; margin: 1rem 0;
+  }
+
+  .trace-box h4 { color: #7c7cff; margin-bottom: 0.8rem; font-size: 0.9rem; }
+
+  .trace-step {
+    display: flex; gap: 1rem; align-items: flex-start;
+    margin-bottom: 0.5rem; font-size: 0.85rem;
+  }
+
+  .trace-step .t-num {
+    min-width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(74,74,255,0.3); display: flex;
+    align-items: center; justify-content: center;
+    color: #9a9aff; font-weight: bold; font-size: 0.75rem;
+  }
+
+  .trace-step .t-code { font-family: 'Courier New', monospace; color: #e0e0ff; }
+  .trace-step .t-result { color: #79d17a; margin-right: 0.5rem; }
+
+  .flowchart {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0; margin: 1rem 0;
+  }
+
+  .fc-start, .fc-end {
+    background: rgba(74,74,255,0.3); border: 2px solid #4a4aff;
+    color: #9a9aff; padding: 0.5rem 2rem; border-radius: 30px;
+    font-weight: bold; font-size: 0.9rem;
+  }
+
+  .fc-arrow { color: #4a4a6a; font-size: 1.2rem; line-height: 1; }
+
+  .fc-diamond {
+    background: rgba(255,170,85,0.15); border: 2px solid #ffaa55;
+    color: #ffaa55; padding: 0.7rem 1.5rem;
+    transform: none; font-size: 0.85rem; border-radius: 10px;
+    text-align: center; max-width: 300px;
+  }
+
+  .fc-row { display: flex; gap: 2rem; align-items: center; }
+
+  .fc-action {
+    background: rgba(121,209,122,0.1); border: 1px solid #79d17a;
+    color: #79d17a; padding: 0.5rem 1.5rem;
+    border-radius: 8px; font-size: 0.85rem; text-align: center;
+  }
+
+  .fc-label { font-size: 0.75rem; color: #6a6a8a; }
+
+  .quiz-btn-wrap { text-align: center; padding: 3rem 1rem 2rem; }
+
+  .quiz-btn {
+    display: inline-block; padding: 1rem 3rem;
+    background: linear-gradient(135deg, #4a4aff, #7c7cff);
+    color: #fff; text-decoration: none; border-radius: 14px;
+    font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;
+    transition: all 0.3s; box-shadow: 0 4px 24px rgba(74,74,255,0.4);
+  }
+
+  .quiz-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(74,74,255,0.6);
+  }
+
+  .priority-table td:first-child { font-weight: bold; color: #9a9aff; font-family: monospace; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>CS</span>503 — Lecture 2</div>
+  <ul class="nav-links">
+    <li><a href="index.html">🏠 الرئيسية</a></li>
+    <li><a href="lecture1.html">← Lecture 1</a></li>
+  </ul>
+</nav>
+
+<div class="lecture-header">
+  <div class="lec-badge">LECTURE 02</div>
+  <h1>العمليات والجمل الشرطية</h1>
+  <p>Operators · Prefix/Postfix · Relational · Logical · if/else · Ternary</p>
+</div>
+
+<div class="content">
+
+  <!-- Section 1 -->
+  <div class="section">
+    <div class="section-icon">➕</div>
+    <h2>١. العمليات الحسابية — Arithmetic Operators</h2>
+
+    <p>في C++ عندنا 5 عمليات حسابية أساسية:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>العملية</th><th>الرمز</th><th>مثال</th><th>النتيجة</th></tr></thead>
+        <tbody>
+          <tr><td>الجمع — Addition</td><td>+</td><td>f + 7</td><td>قيمة f + 7</td></tr>
+          <tr><td>الطرح — Subtraction</td><td>-</td><td>p - c</td><td>قيمة p - c</td></tr>
+          <tr><td>الضرب — Multiplication</td><td>*</td><td>b * m</td><td>قيمة b × m</td></tr>
+          <tr><td>القسمة — Division</td><td>/</td><td>x / y</td><td>ناتج قسمة x على y</td></tr>
+          <tr><td>باقي القسمة — Modulus</td><td>%</td><td>r % s</td><td>باقي قسمة r على s</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>نقاط مهمة:</h3>
+
+    <div class="warning-box">
+      <strong>⚠️ Integer Division — القسمة الصحيحة</strong>
+      لما بتقسم عدد صحيح على عدد صحيح، النتيجة بتتقلبط (الكسر بيتشال).
+      <br><code>7 / 5 = 1</code> مش 1.4
+      <br><code>10 / 3 = 3</code> مش 3.33
+    </div>
+
+    <div class="highlight-box">
+      <strong>💡 عملية Modulus %</strong>
+      بترجع باقي القسمة. مثلاً:
+      <br><code>7 % 5 = 2</code> (لأن 7 = 5×1 + 2)
+      <br><code>10 % 3 = 1</code> (لأن 10 = 3×3 + 1)
+      <br>⚠️ الـ % بتشتغل فقط مع الأعداد الصحيحة — <code>7 % 5.0</code> خطأ!
+    </div>
+
+    <div class="code-label">مثال: تحويل بوصات لأقدام</div>
+    <div class="code-block">
+<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>()
+{
+    <span class="type">int</span> len, feet, inch;
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"أدخل الطول بالبوصات: "</span>;
+    <span class="fn">cin</span> &gt;&gt; len;
+
+    feet = len / <span class="num">12</span>;   <span class="cmt">// عدد الأقدام الكاملة</span>
+    inch = len % <span class="num">12</span>;   <span class="cmt">// الباقي بالبوصات</span>
+
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"feet = "</span> &lt;&lt; feet &lt;&lt; <span class="str">"\tinch = "</span> &lt;&lt; inch;
+    <span class="kw">return</span> <span class="num">0</span>;
+}
+<span class="cmt">// 100 بوصة = 8 أقدام و 4 بوصات</span>
+<span class="cmt">// 55 بوصة  = 4 أقدام و 7 بوصات</span>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <div class="section-icon">🔢</div>
+    <h2>٢. عمليات الاختصار — Shorthand Assignment Operators</h2>
+
+    <p>بدل ما تكتب <code>x = x + 2;</code> في C++ في طريقة اختصار أسرع وأوضح:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>الكتابة الطويلة</th><th>الاختصار</th><th>المعنى</th></tr></thead>
+        <tbody>
+          <tr><td>x = x + 2;</td><td>x += 2;</td><td>زود x بمقدار 2</td></tr>
+          <tr><td>x = x - 2;</td><td>x -= 2;</td><td>نقص x بمقدار 2</td></tr>
+          <tr><td>x = x * 2;</td><td>x *= 2;</td><td>اضرب x في 2</td></tr>
+          <tr><td>x = x / 2;</td><td>x /= 2;</td><td>قسم x على 2</td></tr>
+          <tr><td>x = x + 1;</td><td>x += 1; أو x++; أو ++x;</td><td>زود x بواحد</td></tr>
+          <tr><td>x = x - 1;</td><td>x -= 1; أو x--; أو --x;</td><td>نقص x بواحد</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section">
+    <div class="section-icon">⬆️⬇️</div>
+    <h2>٣. Prefix و Postfix — قبل وبعد الزيادة</h2>
+
+    <p>الفرق بين <code>++x</code> و <code>x++</code> بيظهر لما بتستخدمهم جوا Expression (تعبير) أو cout.</p>
+
+    <div class="two-col">
+      <div class="op-card">
+        <h4>++x — Pre-increment (زيادة قبل الاستخدام)</h4>
+        <p style="font-size:0.85rem; color:#aaaacc;">الزيادة بتحصل الأول، وبعدين القيمة الجديدة بتتستخدم</p>
+        <div class="code-block" style="font-size:0.8rem; padding: 0.8rem;">
+<span class="type">int</span> x = <span class="num">5</span>;
+<span class="fn">cout</span> &lt;&lt; ++x; <span class="cmt">// يطبع 6</span>
+<span class="cmt">// x أصبح 6 في الذاكرة</span>
+        </div>
+      </div>
+      <div class="op-card">
+        <h4>x++ — Post-increment (زيادة بعد الاستخدام)</h4>
+        <p style="font-size:0.85rem; color:#aaaacc;">القيمة القديمة بتتستخدم الأول، وبعدين الزيادة بتحصل</p>
+        <div class="code-block" style="font-size:0.8rem; padding: 0.8rem;">
+<span class="type">int</span> x = <span class="num">5</span>;
+<span class="fn">cout</span> &lt;&lt; x++; <span class="cmt">// يطبع 5</span>
+<span class="cmt">// x أصبح 6 في الذاكرة</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>🔍 Trace كامل — تتبع خطوة بخطوة:</h3>
+
+    <div class="code-block" style="margin-bottom: 0.5rem;">
+<span class="type">int</span> x = <span class="num">5</span>;
+<span class="cmt">// السطر 1:</span> x++; <span class="cmt">// x = 6</span>
+<span class="cmt">// السطر 2:</span> <span class="fn">cout</span> &lt;&lt; x++; <span class="cmt">// يطبع 6 ثم x يصبح 7</span>
+    </div>
+
+    <div class="trace-box">
+      <h4>Trace لـ Postfix x++:</h4>
+      <div class="trace-step"><div class="t-num">1</div><div><span class="t-code">int x = 5;</span> → الذاكرة: x=5</div></div>
+      <div class="trace-step"><div class="t-num">2</div><div><span class="t-code">x++;</span> → الذاكرة: x=6</div></div>
+      <div class="trace-step"><div class="t-num">3</div><div><span class="t-code">cout &lt;&lt; x++;</span> → <span class="t-result">يطبع 6</span> ثم x يصبح 7 في الذاكرة</div></div>
+    </div>
+
+    <div class="trace-box">
+      <h4>Trace لـ Prefix ++x:</h4>
+      <div class="trace-step"><div class="t-num">1</div><div><span class="t-code">int x = 5;</span> → الذاكرة: x=5</div></div>
+      <div class="trace-step"><div class="t-num">2</div><div><span class="t-code">++x;</span> → الذاكرة: x=6</div></div>
+      <div class="trace-step"><div class="t-num">3</div><div><span class="t-code">cout &lt;&lt; ++x;</span> → x يصبح 7 أولاً ثم <span class="t-result">يطبع 7</span></div></div>
+    </div>
+
+    <div class="highlight-box">
+      <strong>📌 ملخص سريع</strong>
+      <code>++x</code> = زيد الأول، استخدم بعدين 🔼 قبل<br>
+      <code>x++</code> = استخدم الأول، زيد بعدين 🔼 بعد
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section">
+    <div class="section-icon">⚖️</div>
+    <h2>٤. عمليات المقارنة — Relational Operators</h2>
+
+    <p>بنستخدمها عشان نقارن قيمتين. النتيجة دايماً إما <strong>true (1)</strong> أو <strong>false (0)</strong>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>الرمز</th><th>المعنى</th><th>مثال</th><th>النتيجة</th></tr></thead>
+        <tbody>
+          <tr><td>==</td><td>يساوي</td><td>5 == 5</td><td class="true-val">true (1)</td></tr>
+          <tr><td>!=</td><td>لا يساوي</td><td>5 != 3</td><td class="true-val">true (1)</td></tr>
+          <tr><td>&lt;</td><td>أصغر من</td><td>3 &lt; 5</td><td class="true-val">true (1)</td></tr>
+          <tr><td>&lt;=</td><td>أصغر من أو يساوي</td><td>5 &lt;= 5</td><td class="true-val">true (1)</td></tr>
+          <tr><td>&gt;</td><td>أكبر من</td><td>3 &gt; 5</td><td class="false-val">false (0)</td></tr>
+          <tr><td>&gt;=</td><td>أكبر من أو يساوي</td><td>5 &gt;= 6</td><td class="false-val">false (0)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warning-box">
+      <strong>❌ خطأ شائع جداً!</strong>
+      الـ <code>==</code> للمقارنة. الـ <code>=</code> للإسناد (إعطاء قيمة).
+      لو كتبت <code>if (x = 5)</code> بدل <code>if (x == 5)</code> هيكون خطأ منطقي!
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section">
+    <div class="section-icon">🔗</div>
+    <h2>٥. العمليات المنطقية — Logical Operators</h2>
+
+    <p>بنستخدمها عشان ندمج شرطين أو أكتر.</p>
+
+    <div class="two-col">
+      <div class="op-card">
+        <h4>&amp;&amp; — AND (و)</h4>
+        <p style="font-size:0.85rem; color:#aaaacc;">النتيجة true بس لو الاتنين true</p>
+        <div class="truth-table">
+          <table>
+            <tr><th>A</th><th>B</th><th>A &amp;&amp; B</th></tr>
+            <tr><td>0</td><td>0</td><td class="false-val">0</td></tr>
+            <tr><td>0</td><td>1</td><td class="false-val">0</td></tr>
+            <tr><td>1</td><td>0</td><td class="false-val">0</td></tr>
+            <tr><td>1</td><td>1</td><td class="true-val">1</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="op-card">
+        <h4>|| — OR (أو)</h4>
+        <p style="font-size:0.85rem; color:#aaaacc;">النتيجة true لو واحد على الأقل true</p>
+        <div class="truth-table">
+          <table>
+            <tr><th>A</th><th>B</th><th>A || B</th></tr>
+            <tr><td>0</td><td>0</td><td class="false-val">0</td></tr>
+            <tr><td>0</td><td>1</td><td class="true-val">1</td></tr>
+            <tr><td>1</td><td>0</td><td class="true-val">1</td></tr>
+            <tr><td>1</td><td>1</td><td class="true-val">1</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="op-card" style="margin-top: 1rem;">
+      <h4>! — NOT (نفي)</h4>
+      <p style="font-size:0.85rem; color:#aaaacc;">بيعكس القيمة — true يصبح false والعكس</p>
+      <div class="code-block" style="font-size:0.85rem; padding: 0.8rem;">
+<span class="fn">cout</span> &lt;&lt; !(<span class="num">0</span>); <span class="cmt">// يطبع 1</span>
+<span class="fn">cout</span> &lt;&lt; !(<span class="num">1</span>); <span class="cmt">// يطبع 0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section">
+    <div class="section-icon">📊</div>
+    <h2>٦. أولوية العمليات — Operator Precedence</h2>
+
+    <p>لما في أكتر من عملية في نفس السطر، C++ بتحسبهم في ترتيب معين (زي الرياضيات):</p>
+
+    <div class="table-wrap">
+      <table class="priority-table">
+        <thead><tr><th>الأولوية (من الأعلى)</th><th>نوع العملية</th><th>الاتجاه</th></tr></thead>
+        <tbody>
+          <tr><td>1 — الأعلى</td><td>Prefix: ++x, --x</td><td>يمين لشمال</td></tr>
+          <tr><td>2</td><td>Unary: ! (NOT)</td><td>يمين لشمال</td></tr>
+          <tr><td>3</td><td>Arithmetic: *, /, %</td><td>شمال لـ يمين</td></tr>
+          <tr><td>4</td><td>Arithmetic: +, -</td><td>شمال لـ يمين</td></tr>
+          <tr><td>5</td><td>Relational: &lt;, &gt;, &lt;=, &gt;=</td><td>شمال لـ يمين</td></tr>
+          <tr><td>6</td><td>Equality: ==, !=</td><td>شمال لـ يمين</td></tr>
+          <tr><td>7</td><td>Logical AND: &amp;&amp;</td><td>شمال لـ يمين</td></tr>
+          <tr><td>8</td><td>Logical OR: ||</td><td>شمال لـ يمين</td></tr>
+          <tr><td>9</td><td>Assignment: =, +=, -=, *=, /=, %=</td><td>يمين لشمال</td></tr>
+          <tr><td>10 — الأدنى</td><td>Postfix: x++, x--</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>🔍 Trace أمثلة (x=1, y=2, z=3, w=4):</h3>
+
+    <div class="trace-box">
+      <h4>cout &lt;&lt; x + y * z - w;</h4>
+      <div class="trace-step"><div class="t-num">1</div><div>y * z = 2 * 3 = <span class="t-result">6</span> (ضرب أولاً)</div></div>
+      <div class="trace-step"><div class="t-num">2</div><div>x + 6 = 1 + 6 = <span class="t-result">7</span></div></div>
+      <div class="trace-step"><div class="t-num">3</div><div>7 - w = 7 - 4 = <span class="t-result">3</span> ← الإجابة</div></div>
+    </div>
+
+    <div class="trace-box">
+      <h4>cout &lt;&lt; x + (z - y) + w / x * y * z - 5;</h4>
+      <div class="trace-step"><div class="t-num">1</div><div>z - y = 3 - 2 = <span class="t-result">1</span> (القوس أولاً)</div></div>
+      <div class="trace-step"><div class="t-num">2</div><div>w / x = 4 / 1 = <span class="t-result">4</span></div></div>
+      <div class="trace-step"><div class="t-num">3</div><div>4 * y = 4 * 2 = <span class="t-result">8</span></div></div>
+      <div class="trace-step"><div class="t-num">4</div><div>8 * z = 8 * 3 = <span class="t-result">24</span></div></div>
+      <div class="trace-step"><div class="t-num">5</div><div>x + 1 + 24 - 5 = 1 + 1 + 24 - 5 = <span class="t-result">21</span> ← الإجابة</div></div>
+    </div>
+
+    <div class="trace-box">
+      <h4>cout &lt;&lt; --x || y &amp;&amp; z; (x=1, y=2, z=3)</h4>
+      <div class="trace-step"><div class="t-num">1</div><div>--x = 0 (x يصبح 0)</div></div>
+      <div class="trace-step"><div class="t-num">2</div><div>y &amp;&amp; z = 2 &amp;&amp; 3 = 1 &amp;&amp; 1 = <span class="t-result">1</span></div></div>
+      <div class="trace-step"><div class="t-num">3</div><div>0 || 1 = <span class="t-result">1</span> ← الإجابة</div></div>
+    </div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section">
+    <div class="section-icon">🔀</div>
+    <h2>٧. جمل التحكم والاختيار — Control / Selection Structures</h2>
+
+    <p>في برامج C++، الكود بيتنفذ من فوق لتحت بالترتيب — ده اسمه <strong>Sequential Execution</strong>. بس أحياناً بنحتاج نغير التنفيذ حسب شرط — ده اسمه <strong>Transfer of Control</strong>.</p>
+
+    <p>عندنا نوعين من جمل التحكم:</p>
+    <ul>
+      <li><strong>Selection (اختيار):</strong> if, else, switch — نختار أي كود يتنفذ</li>
+      <li><strong>Repetition (تكرار):</strong> for, while, do-while — سنذكرها في محاضرات قادمة</li>
+    </ul>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section">
+    <div class="section-icon">🔀</div>
+    <h2>٨. جملة if — الجملة الشرطية</h2>
+
+    <h3>One-Way Selection — شرط من طرف واحد:</h3>
+    <div class="code-block">
+<span class="kw">if</span> (الشرط)
+    تعليمة_واحدة;
+
+<span class="kw">if</span> (الشرط)
+{
+    تعليمة1;
+    تعليمة2;
+}
+    </div>
+
+    <h3>Two-Way Selection — شرط من طرفين:</h3>
+    <div class="code-block">
+<span class="kw">if</span> (الشرط)
+    تعليمة_لو_صح;
+<span class="kw">else</span>
+    تعليمة_لو_غلط;
+    </div>
+
+    <div class="code-label">مثال — فردي أم زوجي؟</div>
+    <div class="code-block">
+<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>()
+{
+    <span class="type">int</span> x;
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"أدخل رقماً: "</span>;
+    <span class="fn">cin</span> &gt;&gt; x;
+
+    <span class="kw">if</span> (x % <span class="num">2</span> == <span class="num">0</span>)
+        <span class="fn">cout</span> &lt;&lt; <span class="str">"زوجي (even)"</span>;
+    <span class="kw">else</span>
+        <span class="fn">cout</span> &lt;&lt; <span class="str">"فردي (odd)"</span>;
+
+    <span class="kw">return</span> <span class="num">0</span>;
+}
+    </div>
+
+    <h3>Multiple Selection — أكتر من شرط:</h3>
+    <div class="code-block">
+<span class="kw">if</span> (الشرط الأول)
+    تعليمة1;
+<span class="kw">else if</span> (الشرط الثاني)
+    تعليمة2;
+<span class="kw">else if</span> (الشرط الثالث)
+    تعليمة3;
+<span class="kw">else</span>
+    تعليمة_افتراضية;
+    </div>
+
+    <div class="code-label">مثال — فحص الحروف المتحركة</div>
+    <div class="code-block">
+<span class="type">char</span> alpha;
+<span class="fn">cout</span> &lt;&lt; <span class="str">"أدخل حرفاً: "</span>;
+<span class="fn">cin</span> &gt;&gt; alpha;
+
+<span class="kw">if</span> (alpha == <span class="str">'a'</span> || alpha == <span class="str">'e'</span> || alpha == <span class="str">'i'</span>
+    || alpha == <span class="str">'o'</span> || alpha == <span class="str">'u'</span>)
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"حرف متحرك (vowel)"</span>;
+<span class="kw">else</span>
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"حرف ساكن (consonant)"</span>;
+    </div>
+
+    <div class="code-label">مثال — أكبر 3 أرقام</div>
+    <div class="code-block">
+<span class="type">int</span> x, y, z, max;
+<span class="fn">cin</span> &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+
+<span class="kw">if</span> (x > y)
+    max = x;
+<span class="kw">else</span>
+    max = y;
+
+<span class="kw">if</span> (z > max)
+    max = z;
+
+<span class="fn">cout</span> &lt;&lt; <span class="str">"الأكبر = "</span> &lt;&lt; max;
+    </div>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section">
+    <div class="section-icon">🎯</div>
+    <h2>٩. العملية الثلاثية — Ternary Operator</h2>
+
+    <p>طريقة مختصرة لكتابة if/else في سطر واحد. الصيغة هي:</p>
+
+    <div class="code-block">
+variable = (الشرط) ? قيمة_لو_صح : قيمة_لو_غلط;
+    </div>
+
+    <div class="two-col">
+      <div class="op-card">
+        <h4>الطريقة العادية بـ if/else</h4>
+        <div class="code-block" style="font-size:0.8rem; padding: 0.8rem;">
+<span class="type">int</span> time = <span class="num">20</span>;
+<span class="kw">if</span> (time &lt; <span class="num">18</span>) {
+  <span class="fn">cout</span> &lt;&lt; <span class="str">"Good day"</span>;
+} <span class="kw">else</span> {
+  <span class="fn">cout</span> &lt;&lt; <span class="str">"Good evening"</span>;
+}
+        </div>
+      </div>
+      <div class="op-card">
+        <h4>بالـ Ternary Operator</h4>
+        <div class="code-block" style="font-size:0.8rem; padding: 0.8rem;">
+<span class="type">int</span> time = <span class="num">20</span>;
+string result = (time &lt; <span class="num">18</span>)
+    ? <span class="str">"Good day"</span>
+    : <span class="str">"Good evening"</span>;
+<span class="fn">cout</span> &lt;&lt; result;
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <strong>📌 متى تستخدم Ternary؟</strong>
+      لو الـ if/else بسيط وفيه قيمة واحدة في كل حالة. لو الكود معقد، أحسن تستخدم if/else العادية لأنها أوضح.
+    </div>
+  </div>
+
+</div>
+
+<!-- Quiz Button -->
+<div class="quiz-btn-wrap">
+  <a href="./quiz/quiz2.html" class="quiz-btn">🎯 ابدأ اختبار المحاضرة الثانية</a>
+</div>
+
+<div style="text-align:center; padding: 1rem 1rem 3rem; color: #4a4a6a; font-size: 0.85rem;">
+  CS503 — Lecture 2 &nbsp;|&nbsp; Dr. Shahira Mohamed &nbsp;|&nbsp; Cairo University
+</div>
+
+</body>
+</html>
