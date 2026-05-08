@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz 2 - أساسيات C++ المحاضرة الثانية</title>
+<title>Quiz 2 - CS503</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #0f0f1a; color: #e0e0f0; min-height: 100vh; }
+  body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #0f0f1a; color: #e0e0f0; min-height: 100vh; transition: direction 0.3s; }
 
   nav {
     background: #1a1a2e; border-bottom: 2px solid #4a4aff;
@@ -16,19 +16,26 @@
   }
   .nav-brand { font-size: 1.1rem; font-weight: 700; color: #7c7cff; }
   .nav-brand span { color: #fff; }
-  .nav-links { display: flex; gap: 1rem; list-style: none; }
-  .nav-links a {
-    text-decoration: none; color: #b0b0d0;
-    padding: 0.4rem 0.9rem; border-radius: 8px;
-    font-size: 0.85rem; transition: all 0.2s; border: 1px solid transparent;
+
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+
+  /* Language Toggle */
+  .lang-toggle {
+    display: flex; align-items: center;
+    background: #0f0f1a; border: 1px solid #4a4aff;
+    border-radius: 30px; padding: 3px; gap: 2px;
   }
-  .nav-links a:hover { background: rgba(124,124,255,0.15); color: #fff; border-color: #4a4aff; }
+  .lang-btn {
+    padding: 0.3rem 0.9rem; border-radius: 24px;
+    border: none; cursor: pointer; font-size: 0.8rem; font-weight: 700;
+    transition: all 0.25s; background: transparent; color: #6666cc;
+  }
+  .lang-btn.active { background: linear-gradient(135deg, #4a4aff, #7c7cff); color: #fff; }
 
   .quiz-header {
     background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
     padding: 2.5rem 2rem; text-align: center; border-bottom: 1px solid #2a2a4a;
   }
-
   .quiz-header h1 { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
   .quiz-header p { color: #8888aa; }
 
@@ -37,11 +44,7 @@
     border-bottom: 1px solid #2a2a4a;
     display: flex; align-items: center; gap: 1rem;
   }
-
-  #progress-bar {
-    flex: 1; height: 6px; background: #2a2a4a; border-radius: 3px; overflow: hidden;
-  }
-
+  #progress-bar { flex: 1; height: 6px; background: #2a2a4a; border-radius: 3px; overflow: hidden; }
   #progress-fill { height: 100%; background: linear-gradient(90deg, #4a4aff, #7c7cff); width: 0%; transition: width 0.4s; border-radius: 3px; }
   #progress-text { font-size: 0.85rem; color: #8888aa; white-space: nowrap; }
   #score-display { font-size: 0.85rem; color: #9a9aff; white-space: nowrap; }
@@ -53,9 +56,7 @@
     border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem;
     display: none; animation: fadeIn 0.3s ease;
   }
-
   .question-card.active { display: block; }
-
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
   .q-num { font-size: 0.8rem; color: #4a4aff; font-weight: 700; letter-spacing: 2px; margin-bottom: 0.5rem; }
@@ -69,19 +70,22 @@
   }
 
   .options { display: flex; flex-direction: column; gap: 0.7rem; }
-
   .option-btn {
     background: rgba(255,255,255,0.03); border: 1px solid #2a2a4a;
     border-radius: 10px; padding: 0.9rem 1.2rem;
     color: #c0c0d8; font-size: 0.95rem; cursor: pointer;
     transition: all 0.2s; text-align: right;
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif; line-height: 1.5;
   }
-
   .option-btn:hover { background: rgba(74,74,255,0.1); border-color: #4a4aff; color: #fff; }
   .option-btn.correct { background: rgba(100,200,100,0.15) !important; border-color: #79d17a !important; color: #79d17a !important; }
   .option-btn.wrong { background: rgba(255,100,100,0.1) !important; border-color: #ff8888 !important; color: #ff8888 !important; }
   .option-btn:disabled { cursor: not-allowed; }
+
+  /* LTR mode for English */
+  body.lang-en { direction: ltr; }
+  body.lang-en .option-btn { text-align: left; }
+  body.lang-en .q-num { letter-spacing: 1px; }
 
   .explanation {
     display: none; margin-top: 1rem;
@@ -89,21 +93,16 @@
     border-radius: 10px; padding: 1rem 1.2rem;
     color: #c0c0f0; font-size: 0.9rem; line-height: 1.7;
   }
-
   .explanation.show { display: block; }
   .explanation strong { color: #9a9aff; }
 
-  .nav-btns {
-    display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;
-  }
-
+  .nav-btns { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
   .nav-btn {
     padding: 0.7rem 2rem; border-radius: 10px;
     border: 1px solid #4a4aff; background: transparent;
     color: #9a9aff; font-size: 0.95rem; cursor: pointer;
     transition: all 0.2s; font-family: 'Segoe UI', sans-serif;
   }
-
   .nav-btn:hover { background: rgba(74,74,255,0.2); }
   .nav-btn.primary { background: linear-gradient(135deg, #4a4aff, #7c7cff); color: #fff; border-color: transparent; }
   .nav-btn.primary:hover { opacity: 0.9; }
@@ -113,249 +112,333 @@
     background: #1a1a2e; border: 1px solid #2a2a4a;
     border-radius: 16px; padding: 3rem 2rem; margin-bottom: 2rem;
   }
-
   .result-emoji { font-size: 4rem; margin-bottom: 1rem; }
   .result-score { font-size: 3rem; font-weight: 800; color: #7c7cff; margin-bottom: 0.5rem; }
   .result-label { color: #8888aa; margin-bottom: 2rem; }
   .result-msg { font-size: 1.1rem; color: #c0c0d8; margin-bottom: 2rem; }
-
   .result-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-
   .result-btn {
     padding: 0.8rem 1.5rem; border-radius: 10px;
-    text-decoration: none; font-size: 0.95rem; font-weight: 700; transition: all 0.2s;
+    text-decoration: none; font-size: 0.95rem; font-weight: 700; transition: all 0.2s; cursor: pointer;
   }
-
-  .result-btn.primary { background: linear-gradient(135deg, #4a4aff, #7c7cff); color: #fff; }
+  .result-btn.primary { background: linear-gradient(135deg, #4a4aff, #7c7cff); color: #fff; border: none; }
   .result-btn.secondary { background: transparent; border: 1px solid #4a4aff; color: #9a9aff; }
   .result-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+  .back-btn {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(74, 74, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #4a4aff;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+    margin-left: 1rem; /* للمسافة في وضع العربي */
+  }
+  .back-btn:hover {
+    background: #4a4aff;
+  }
+  body.lang-en .back-btn {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
 </style>
 </head>
-<body>
+<body class="lang-ar">
 
 <nav>
   <div class="nav-brand"><span>CS</span>503 — Quiz 2</div>
-  <ul class="nav-links">
-    <li><a href="../index.html">🏠 الرئيسية</a></li>
-    <li><a href="quiz1.html">← Quiz 1</a></li>
-  </ul>
+  <div class="nav-right">
+         <a href="../lecture1.html" class="back-btn t" data-ar="
+← مراجعة المحاضرة" data-en="🏠 Lecture"></a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ar')">عربي</button>
+      <button class="lang-btn" onclick="setLang('en')">English</button>
+    </div>
+  </div>
 </nav>
 
 <div class="quiz-header">
-  <h1>🎯 اختبار المحاضرة الثانية</h1>
-  <p>العمليات والمؤثرات والجمل الشرطية في C++</p>
+  <h1>🎯 <span class="t" data-ar="اختبار المحاضرة الثانية" data-en="Lecture 2 Quiz"></span></h1>
+  <p class="t" data-ar="العمليات والمؤثرات والجمل الشرطية في C++" data-en="Operators, Expressions & Control Structures in C++"></p>
 </div>
 
 <div id="progress-bar-wrap">
   <div id="progress-bar"><div id="progress-fill"></div></div>
-  <span id="progress-text">السؤال 1 من 10</span>
-  <span id="score-display">الدرجة: 0</span>
+  <span id="progress-text"></span>
+  <span id="score-display"></span>
 </div>
 
 <div class="quiz-wrap">
 
   <!-- Q1 -->
   <div class="question-card active" id="q1">
-    <div class="q-num">السؤال ١ من ١٠</div>
-    <div class="q-text">ما ناتج العملية التالية؟</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ١ من ١٠" data-en="Question 1 of 10"></span></div>
+    <div class="q-text t" data-ar="ما ناتج العملية التالية؟" data-en="What is the output of the following?"></div>
     <div class="code-snippet">cout &lt;&lt; 7 / 5;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) 1.4</button>
-      <button class="option-btn" onclick="answer(this, true)">ب) 1</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) 2</button>
-      <button class="option-btn" onclick="answer(this, false)">د) 0</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 1.4" data-en="A) 1.4"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) 1" data-en="B) 1"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) 2" data-en="C) 2"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 0" data-en="D) 0"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: 1</strong><br>
-      عملية القسمة بين عددين صحيحين (integers) تحذف الكسر — 7/5 = 1.4 لكن النتيجة تتقرب للأسفل وتصبح 1.
+      <strong>✅ <span class="t" data-ar="الإجابة: 1" data-en="Answer: 1"></span></strong><br>
+      <span class="t"
+        data-ar="عملية القسمة بين عددين صحيحين تحذف الكسر — 7/5 = 1.4 لكن النتيجة تُقرَّب للأسفل وتصبح 1."
+        data-en="Integer division truncates the decimal part — 7/5 = 1.4 but the result is truncated to 1.">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn primary" onclick="nextQ(1)">التالي →</button></div>
+    <div class="nav-btns"><button class="nav-btn primary" onclick="nextQ(1)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button></div>
   </div>
 
   <!-- Q2 -->
   <div class="question-card" id="q2">
-    <div class="q-num">السؤال ٢ من ١٠</div>
-    <div class="q-text">ما ناتج العملية التالية؟</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ٢ من ١٠" data-en="Question 2 of 10"></span></div>
+    <div class="q-text t" data-ar="ما ناتج العملية التالية؟" data-en="What is the output of the following?"></div>
     <div class="code-snippet">cout &lt;&lt; 7 % 5;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) 1</button>
-      <button class="option-btn" onclick="answer(this, true)">ب) 2</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) 1.4</button>
-      <button class="option-btn" onclick="answer(this, false)">د) خطأ</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 1" data-en="A) 1"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) 2" data-en="B) 2"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) 1.4" data-en="C) 1.4"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) خطأ" data-en="D) Error"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: 2</strong><br>
-      المؤثر % (Modulus) يرجع باقي القسمة — 7 ÷ 5 = 1 والباقي 2.
+      <strong>✅ <span class="t" data-ar="الإجابة: 2" data-en="Answer: 2"></span></strong><br>
+      <span class="t"
+        data-ar="المؤثر % (Modulus) يرجع باقي القسمة — 7 ÷ 5 = 1 والباقي 2."
+        data-en="The % (Modulus) operator returns the remainder — 7 ÷ 5 = 1 with remainder 2.">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(2)">← السابق</button><button class="nav-btn primary" onclick="nextQ(2)">التالي →</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(2)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="nextQ(2)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q3 -->
   <div class="question-card" id="q3">
-    <div class="q-num">السؤال ٣ من ١٠</div>
-    <div class="q-text">ما الفرق بين <code>x++</code> و <code>++x</code> عند استخدامهما داخل تعبير؟</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ٣ من ١٠" data-en="Question 3 of 10"></span></div>
+    <div class="q-text t"
+      data-ar="ما الفرق بين x++ و ++x عند استخدامهما داخل تعبير؟"
+      data-en="What is the difference between x++ and ++x inside an expression?"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) لا فرق بينهما</button>
-      <button class="option-btn" onclick="answer(this, true)">ب) x++ يستخدم القيمة الحالية ثم يزيدها، ++x يزيدها أولاً ثم يستخدمها</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) ++x يستخدم القيمة الحالية ثم يزيدها، x++ يزيدها أولاً</button>
-      <button class="option-btn" onclick="answer(this, false)">د) x++ للأعداد الموجبة فقط</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) لا فرق بينهما" data-en="A) No difference"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) x++ يستخدم القيمة الحالية ثم يزيدها، ++x يزيدها أولاً ثم يستخدمها" data-en="B) x++ uses current value then increments, ++x increments first then uses"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) ++x يستخدم القيمة الحالية ثم يزيدها" data-en="C) ++x uses current value then increments"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) x++ للأعداد الموجبة فقط" data-en="D) x++ is for positive numbers only"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: x++ يستخدم القيمة الحالية ثم يزيدها</strong><br>
-      — <strong>Postfix (x++)</strong>: يُعيد القيمة الحالية أولاً، ثم يزيد x بـ 1.<br>
-      — <strong>Prefix (++x)</strong>: يزيد x بـ 1 أولاً، ثم يُعيد القيمة الجديدة.
+      <strong>✅ <span class="t" data-ar="الإجابة: ب" data-en="Answer: B"></span></strong><br>
+      <span class="t"
+        data-ar="Postfix (x++): يُعيد القيمة الحالية أولاً ثم يزيد x. — Prefix (++x): يزيد x أولاً ثم يُعيد القيمة الجديدة."
+        data-en="Postfix (x++): returns the current value first, then increments x. — Prefix (++x): increments x first, then returns the new value.">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(3)">← السابق</button><button class="nav-btn primary" onclick="nextQ(3)">التالي →</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(3)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="nextQ(3)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q4 -->
   <div class="question-card" id="q4">
-    <div class="q-num">السؤال ٤ من ١٠</div>
-    <div class="q-text">ما ناتج الكود التالي؟ (x = 5)</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ٤ من ١٠" data-en="Question 4 of 10"></span></div>
+    <div class="q-text t" data-ar="ما ناتج الكود التالي؟" data-en="What is the output of the following code?"></div>
     <div class="code-snippet">int x = 5;
 x++;
 cout &lt;&lt; x++;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) 5</button>
-      <button class="option-btn" onclick="answer(this, true)">ب) 6</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) 7</button>
-      <button class="option-btn" onclick="answer(this, false)">د) 8</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 5" data-en="A) 5"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) 6" data-en="B) 6"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) 7" data-en="C) 7"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 8" data-en="D) 8"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: 6</strong><br>
-      1- x=5<br>2- x++ → x أصبح 6<br>3- cout&lt;&lt;x++ → يطبع القيمة الحالية (6) ثم يزيد x لـ 7 في الذاكرة
+      <strong>✅ <span class="t" data-ar="الإجابة: 6" data-en="Answer: 6"></span></strong><br>
+      <span class="t"
+        data-ar="1- x=5 ، 2- x++ فأصبح x=6 ، 3- cout&lt;&lt;x++ يطبع القيمة الحالية (6) ثم يزيد x لـ 7 في الذاكرة."
+        data-en="1- x=5, 2- x++ makes x=6, 3- cout&lt;&lt;x++ prints the current value (6) then increments x to 7 in memory.">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(4)">← السابق</button><button class="nav-btn primary" onclick="nextQ(4)">التالي →</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(4)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="nextQ(4)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q5 -->
   <div class="question-card" id="q5">
-    <div class="q-num">السؤال ٥ من ١٠</div>
-    <div class="q-text">باستخدام القيم: x=1, y=2, z=3, w=4 — ما ناتج التعبير التالي؟</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ٥ من ١٠" data-en="Question 5 of 10"></span></div>
+    <div class="q-text t"
+      data-ar="باستخدام القيم: x=1, y=2, z=3, w=4 — ما ناتج التعبير التالي؟"
+      data-en="Given x=1, y=2, z=3, w=4 — what is the output of the following?"></div>
     <div class="code-snippet">cout &lt;&lt; x + y * z - w;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) 5</button>
-      <button class="option-btn" onclick="answer(this, false)">ب) 9</button>
-      <button class="option-btn" onclick="answer(this, true)">ج) 3</button>
-      <button class="option-btn" onclick="answer(this, false)">د) 1</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 5" data-en="A) 5"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) 9" data-en="B) 9"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ج) 3" data-en="C) 3"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 1" data-en="D) 1"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: 3</strong><br>
-      حسب أولوية العمليات: الضرب أولاً → y*z = 2*3 = 6<br>
-      ثم من اليسار: x + 6 - w = 1 + 6 - 4 = 3
+      <strong>✅ <span class="t" data-ar="الإجابة: 3" data-en="Answer: 3"></span></strong><br>
+      <span class="t"
+        data-ar="الضرب له أولوية أعلى: y*z = 2*3 = 6، ثم x + 6 - w = 1 + 6 - 4 = 3"
+        data-en="Multiplication has higher precedence: y*z = 2*3 = 6, then x + 6 - w = 1 + 6 - 4 = 3">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(5)">← السابق</button><button class="nav-btn primary" onclick="nextQ(5)">التالي →</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(5)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="nextQ(5)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q6 -->
   <div class="question-card" id="q6">
-    <div class="q-num">السؤال ٦ من ١٠</div>
-    <div class="q-text">أي من التالي يمثل الطريقة الصحيحة لكتابة <code>x = x * 2</code> بالصيغة المختصرة؟</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ٦ من ١٠" data-en="Question 6 of 10"></span></div>
+    <div class="q-text t"
+      data-ar="أي من التالي هو الصيغة المختصرة الصحيحة لـ x = x * 2 ؟"
+      data-en="Which is the correct shorthand for x = x * 2 ?"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) x+*2;</button>
-      <button class="option-btn" onclick="answer(this, true)">ب) x*=2;</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) x==2*;</button>
-      <button class="option-btn" onclick="answer(this, false)">د) *x=2;</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) x+*2;" data-en="A) x+*2;"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) x*=2;" data-en="B) x*=2;"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) x==2*;" data-en="C) x==2*;"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) *x=2;" data-en="D) *x=2;"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: x*=2;</strong><br>
-      مؤثرات الإسناد المختصرة: x+=2 (جمع)، x-=2 (طرح)، x*=2 (ضرب)، x/=2 (قسمة).
+      <strong>✅ <span class="t" data-ar="الإجابة: x*=2" data-en="Answer: x*=2"></span></strong><br>
+      <span class="t"
+        data-ar="مؤثرات الإسناد المختصرة: x+=2 (جمع)، x-=2 (طرح)، x*=2 (ضرب)، x/=2 (قسمة)."
+        data-en="Shorthand assignment operators: x+=2 (add), x-=2 (subtract), x*=2 (multiply), x/=2 (divide).">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(6)">← السابق</button><button class="nav-btn primary" onclick="nextQ(6)">التالي →</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(6)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="nextQ(6)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q7 -->
   <div class="question-card" id="q7">
-    <div class="q-num">السؤال ٧ من ١٠</div>
-    <div class="q-text">ما ناتج التعبير التالي؟ (x=1, y=2, z=3)</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ٧ من ١٠" data-en="Question 7 of 10"></span></div>
+    <div class="q-text t"
+      data-ar="ما ناتج التعبير التالي؟ (x=1, y=2, z=3)"
+      data-en="What is the output? (x=1, y=2, z=3)"></div>
     <div class="code-snippet">cout &lt;&lt; x &gt; y || z &lt;= y;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, true)">أ) 0</button>
-      <button class="option-btn" onclick="answer(this, false)">ب) 1</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) خطأ في الكمبايل</button>
-      <button class="option-btn" onclick="answer(this, false)">د) 2</button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="أ) 0" data-en="A) 0"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) 1" data-en="B) 1"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) خطأ في الكمبايل" data-en="C) Compile Error"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 2" data-en="D) 2"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: 0</strong><br>
-      1&gt;2 = false (0) || 3&lt;=2 = false (0)<br>
-      0 || 0 = 0
+      <strong>✅ <span class="t" data-ar="الإجابة: 0" data-en="Answer: 0"></span></strong><br>
+      <span class="t"
+        data-ar="1&gt;2 = false (0) || 3&lt;=2 = false (0) → 0 || 0 = 0"
+        data-en="1&gt;2 = false (0) || 3&lt;=2 = false (0) → 0 || 0 = 0">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(7)">← السابق</button><button class="nav-btn primary" onclick="nextQ(7)">التالي →</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(7)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="nextQ(7)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q8 -->
   <div class="question-card" id="q8">
-    <div class="q-num">السؤال ٨ من ١٠</div>
-    <div class="q-text">ما نوع الجملة الشرطية التالية؟</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ٨ من ١٠" data-en="Question 8 of 10"></span></div>
+    <div class="q-text t"
+      data-ar="ما نوع الجملة الشرطية التالية؟"
+      data-en="What type of selection statement is this?"></div>
     <div class="code-snippet">if (x % 2 == 0)
     cout &lt;&lt; "even";
 else
     cout &lt;&lt; "odd";</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) One-Way Selection</button>
-      <button class="option-btn" onclick="answer(this, true)">ب) Two-Way Selection</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) Multiple Selection</button>
-      <button class="option-btn" onclick="answer(this, false)">د) Switch Statement</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) One-Way Selection" data-en="A) One-Way Selection"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) Two-Way Selection" data-en="B) Two-Way Selection"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) Multiple Selection" data-en="C) Multiple Selection"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) Switch Statement" data-en="D) Switch Statement"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: Two-Way Selection</strong><br>
-      وجود if مع else يعني اختيار ثنائي — إما المسار الأول أو الثاني.
-      One-Way Selection تكون if بدون else.
+      <strong>✅ <span class="t" data-ar="الإجابة: Two-Way Selection" data-en="Answer: Two-Way Selection"></span></strong><br>
+      <span class="t"
+        data-ar="وجود if مع else يعني اختيار ثنائي — إما المسار الأول أو الثاني. One-Way Selection تكون if بدون else."
+        data-en="Having if with else means two-way selection — either the first or the second path. One-Way Selection is if without else.">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(8)">← السابق</button><button class="nav-btn primary" onclick="nextQ(8)">التالي →</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(8)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="nextQ(8)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q9 -->
   <div class="question-card" id="q9">
-    <div class="q-num">السؤال ٩ من ١٠</div>
-    <div class="q-text">ما ناتج التعبير الثلاثي (Ternary) التالي؟</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ٩ من ١٠" data-en="Question 9 of 10"></span></div>
+    <div class="q-text t"
+      data-ar="ما ناتج التعبير الثلاثي (Ternary) التالي؟"
+      data-en="What is the output of the following Ternary expression?"></div>
     <div class="code-snippet">int time = 20;
 string result = (time &lt; 18) ? "Good day." : "Good evening.";
 cout &lt;&lt; result;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) Good day.</button>
-      <button class="option-btn" onclick="answer(this, true)">ب) Good evening.</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) خطأ في الكمبايل</button>
-      <button class="option-btn" onclick="answer(this, false)">د) 20</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar='أ) "Good day."' data-en='A) "Good day."'></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar='ب) "Good evening."' data-en='B) "Good evening."'></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) خطأ في الكمبايل" data-en="C) Compile Error"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 20" data-en="D) 20"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: Good evening.</strong><br>
-      time = 20، والشرط هو time &lt; 18 = false (20 مش أقل من 18).<br>
-      لما الشرط false → تُنفَّذ القيمة بعد الـ : وهي "Good evening."
+      <strong>✅ <span class="t" data-ar='الإجابة: "Good evening."' data-en='Answer: "Good evening."'></span></strong><br>
+      <span class="t"
+        data-ar="time=20، الشرط time&lt;18 = false → تُنفَّذ القيمة بعد الـ : وهي 'Good evening.'"
+        data-en="time=20, condition time&lt;18 = false → the value after : is used which is 'Good evening.'">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(9)">← السابق</button><button class="nav-btn primary" onclick="nextQ(9)">التالي →</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(9)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="nextQ(9)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q10 -->
   <div class="question-card" id="q10">
-    <div class="q-num">السؤال ١٠ من ١٠</div>
-    <div class="q-text">في المثال ده، إيه اللي بيحسب عدد الأقدام والبوصات المتبقية من طول معطى بالبوصات؟</div>
+    <div class="q-num"><span class="t" data-ar="السؤال ١٠ من ١٠" data-en="Question 10 of 10"></span></div>
+    <div class="q-text t"
+      data-ar="إيه اللي بيحسب عدد الأقدام والبوصات المتبقية من طول معطى بالبوصات؟"
+      data-en="What correctly calculates the number of feet and remaining inches from a length in inches?"></div>
     <div class="code-snippet">feet = len / 12;
 inch = len % 12;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)">أ) feet بيحسب الباقي وinch بيحسب العدد الصحيح</button>
-      <button class="option-btn" onclick="answer(this, true)">ب) feet بيستخدم القسمة الصحيحة وinch بيستخدم Modulus</button>
-      <button class="option-btn" onclick="answer(this, false)">ج) كلاهما بيستخدمان القسمة العادية</button>
-      <button class="option-btn" onclick="answer(this, false)">د) الكود ده غلط</button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) feet بيحسب الباقي وinch بيحسب العدد الصحيح" data-en="A) feet gets the remainder and inch gets the integer part"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) feet بيستخدم القسمة الصحيحة وinch بيستخدم Modulus" data-en="B) feet uses integer division and inch uses Modulus"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) كلاهما بيستخدمان القسمة العادية" data-en="C) Both use regular division"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) الكود ده غلط" data-en="D) This code is wrong"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ الإجابة: feet بيستخدم القسمة الصحيحة وinch بيستخدم Modulus</strong><br>
-      — len/12: قسمة صحيحة تعطي عدد الأقدام الكاملة (مثلاً 100/12 = 8)<br>
-      — len%12: يعطي الباقي وهو البوصات المتبقية (مثلاً 100%12 = 4)
+      <strong>✅ <span class="t" data-ar="الإجابة: ب" data-en="Answer: B"></span></strong><br>
+      <span class="t"
+        data-ar="len/12: قسمة صحيحة تعطي عدد الأقدام (مثلاً 100/12=8) — len%12: يعطي الباقي وهو البوصات المتبقية (100%12=4)"
+        data-en="len/12: integer division gives full feet (e.g. 100/12=8) — len%12: gives the remainder which is the remaining inches (100%12=4)">
+      </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn" onclick="prevQ(10)">← السابق</button><button class="nav-btn primary" onclick="showResult()">إنهاء الاختبار 🎯</button></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevQ(10)"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+      <button class="nav-btn primary" onclick="showResult()"><span class="t" data-ar="إنهاء الاختبار 🎯" data-en="Finish Quiz 🎯"></span></button>
+    </div>
   </div>
 
   <!-- Result -->
   <div id="result-screen">
     <div class="result-emoji" id="result-emoji">🎉</div>
     <div class="result-score" id="result-score">0/10</div>
-    <div class="result-label">درجتك في اختبار المحاضرة الثانية</div>
+    <div class="result-label t" data-ar="درجتك في اختبار المحاضرة الثانية" data-en="Your score in Lecture 2 Quiz"></div>
     <div class="result-msg" id="result-msg"></div>
     <div class="result-actions">
-      <a href="quiz1.html" class="result-btn secondary">← Quiz 1</a>
-      <a href="quiz3.html" class="result-btn primary">التالي: Quiz 3 →</a>
-      <button onclick="resetQuiz()" class="result-btn secondary" style="cursor:pointer; border: 1px solid #4a4aff; color:#9a9aff; border-radius:10px; font-size:0.95rem; font-weight:700;">🔄 إعادة الاختبار</button>
+      <a href="quiz1.html" class="result-btn secondary"><span class="t" data-ar="← Quiz 1" data-en="← Quiz 1"></span></a>
+      <a href="quiz3.html" class="result-btn primary"><span class="t" data-ar="التالي: Quiz 3 →" data-en="Next: Quiz 3 →"></span></a>
+      <button onclick="resetQuiz()" class="result-btn secondary"><span class="t" data-ar="🔄 إعادة الاختبار" data-en="🔄 Retry Quiz"></span></button>
     </div>
   </div>
 
@@ -366,6 +449,60 @@ let score = 0;
 let answered = new Array(10).fill(false);
 let current = 1;
 const total = 10;
+let currentLang = 'ar';
+
+const strings = {
+  ar: {
+    progress: (c, t) => `السؤال ${c} من ${t}`,
+    score: (s) => `الدرجة: ${s}`,
+    emoji100: '🏆', msg100: 'ممتاز! أجبت على كل الأسئلة بشكل صحيح!',
+    emoji80:  '🎉', msg80:  'أحسنت! نتيجة رائعة جداً!',
+    emoji60:  '👍', msg60:  'جيد! ارجع راجع المحاضرة في النقاط اللي غلطت فيها.',
+    emojiLow: '📚', msgLow: 'تحتاج مراجعة أكثر. اقرأ المحاضرة مرة تانية وحاول تاني!',
+    resultLabel: 'درجتك في اختبار المحاضرة الثانية'
+  },
+  en: {
+    progress: (c, t) => `Question ${c} of ${t}`,
+    score: (s) => `Score: ${s}`,
+    emoji100: '🏆', msg100: 'Perfect! You answered all questions correctly!',
+    emoji80:  '🎉', msg80:  'Great job! Excellent result!',
+    emoji60:  '👍', msg60:  'Good! Review the lecture topics you got wrong.',
+    emojiLow: '📚', msgLow: 'You need more review. Read the lecture again and retry!',
+    resultLabel: 'Your score in Lecture 2 Quiz'
+  }
+};
+
+function setLang(lang) {
+  currentLang = lang;
+  document.body.className = 'lang-' + lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+
+  // Toggle buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+
+  // Update all translatable elements
+  document.querySelectorAll('.t[data-ar][data-en]').forEach(el => {
+    el.textContent = el.dataset[lang];
+  });
+  document.querySelectorAll('span.t[data-ar][data-en]').forEach(el => {
+    el.textContent = el.dataset[lang];
+  });
+
+  updateProgress();
+  updateScoreDisplay();
+}
+
+function updateProgress() {
+  const s = strings[currentLang];
+  document.getElementById('progress-text').textContent = s.progress(current, total);
+}
+
+function updateScoreDisplay() {
+  const s = strings[currentLang];
+  document.getElementById('score-display').textContent = s.score(score);
+}
 
 function answer(btn, correct) {
   const card = btn.closest('.question-card');
@@ -379,12 +516,11 @@ function answer(btn, correct) {
   if (correct) {
     btn.classList.add('correct');
     score++;
-    document.getElementById('score-display').textContent = 'الدرجة: ' + score;
+    updateScoreDisplay();
   } else {
     btn.classList.add('wrong');
     buttons.forEach(b => { if (b.onclick.toString().includes('true')) b.classList.add('correct'); });
   }
-
   card.querySelector('.explanation').classList.add('show');
 }
 
@@ -404,21 +540,17 @@ function prevQ(n) {
   updateProgress();
 }
 
-function updateProgress() {
-  document.getElementById('progress-fill').style.width = ((current-1)/total * 100) + '%';
-  document.getElementById('progress-text').textContent = 'السؤال ' + current + ' من ' + total;
-}
-
 function showResult() {
   document.getElementById('q10').classList.remove('active');
   document.getElementById('progress-fill').style.width = '100%';
 
   const pct = score / total;
+  const s = strings[currentLang];
   let emoji, msg;
-  if (pct === 1) { emoji = '🏆'; msg = 'ممتاز! أجبت على كل الأسئلة بشكل صحيح!'; }
-  else if (pct >= 0.8) { emoji = '🎉'; msg = 'أحسنت! نتيجة رائعة جداً!'; }
-  else if (pct >= 0.6) { emoji = '👍'; msg = 'جيد! ارجع راجع المحاضرة في النقاط اللي غلطت فيها.'; }
-  else { emoji = '📚'; msg = 'تحتاج مراجعة أكثر. اقرأ المحاضرة مرة تانية وحاول تاني!'; }
+  if (pct === 1)      { emoji = s.emoji100; msg = s.msg100; }
+  else if (pct >= 0.8){ emoji = s.emoji80;  msg = s.msg80; }
+  else if (pct >= 0.6){ emoji = s.emoji60;  msg = s.msg60; }
+  else                { emoji = s.emojiLow; msg = s.msgLow; }
 
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-score').textContent = score + ' / ' + total;
@@ -431,8 +563,9 @@ function resetQuiz() {
   answered = new Array(10).fill(false);
   current = 1;
   document.getElementById('result-screen').style.display = 'none';
-  document.getElementById('score-display').textContent = 'الدرجة: 0';
   updateProgress();
+  updateScoreDisplay();
+  document.getElementById('progress-fill').style.width = '0%';
 
   for (let i = 1; i <= total; i++) {
     const card = document.getElementById('q' + i);
@@ -445,6 +578,14 @@ function resetQuiz() {
   }
   document.getElementById('q1').classList.add('active');
 }
+
+// Init
+updateProgress();
+updateScoreDisplay();
+// Apply initial translations
+document.querySelectorAll('.t[data-ar]').forEach(el => {
+  el.textContent = el.dataset.ar;
+});
 </script>
 </body>
 </html>
