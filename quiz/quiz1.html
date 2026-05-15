@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz 2 - CS503</title>
+<title>Quiz 1 - CS503</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #0f0f1a; color: #e0e0f0; min-height: 100vh; transition: direction 0.3s; }
+  body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #0f0f1a; color: #e0e0f0; min-height: 100vh; }
 
   nav {
     background: #1a1a2e; border-bottom: 2px solid #4a4aff;
@@ -16,10 +16,15 @@
   }
   .nav-brand { font-size: 1.1rem; font-weight: 700; color: #7c7cff; }
   .nav-brand span { color: #fff; }
-
   .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .nav-links { display: flex; gap: 1rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: #b0b0d0;
+    padding: 0.4rem 0.9rem; border-radius: 8px;
+    font-size: 0.85rem; transition: all 0.2s; border: 1px solid transparent;
+  }
+  .nav-links a:hover { background: rgba(124,124,255,0.15); color: #fff; border-color: #4a4aff; }
 
-  /* Language Toggle */
   .lang-toggle {
     display: flex; align-items: center;
     background: #0f0f1a; border: 1px solid #4a4aff;
@@ -75,17 +80,15 @@
     border-radius: 10px; padding: 0.9rem 1.2rem;
     color: #c0c0d8; font-size: 0.95rem; cursor: pointer;
     transition: all 0.2s; text-align: right;
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif; line-height: 1.5;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
   }
   .option-btn:hover { background: rgba(74,74,255,0.1); border-color: #4a4aff; color: #fff; }
   .option-btn.correct { background: rgba(100,200,100,0.15) !important; border-color: #79d17a !important; color: #79d17a !important; }
   .option-btn.wrong { background: rgba(255,100,100,0.1) !important; border-color: #ff8888 !important; color: #ff8888 !important; }
   .option-btn:disabled { cursor: not-allowed; }
 
-  /* LTR mode for English */
   body.lang-en { direction: ltr; }
   body.lang-en .option-btn { text-align: left; }
-  body.lang-en .q-num { letter-spacing: 1px; }
 
   .explanation {
     display: none; margin-top: 1rem;
@@ -124,50 +127,26 @@
   .result-btn.primary { background: linear-gradient(135deg, #4a4aff, #7c7cff); color: #fff; border: none; }
   .result-btn.secondary { background: transparent; border: 1px solid #4a4aff; color: #9a9aff; }
   .result-btn:hover { opacity: 0.9; transform: translateY(-2px); }
-  .back-btn {
-    text-decoration: none;
-    color: #fff;
-    background: rgba(74, 74, 255, 0.2);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #4a4aff;
-    font-size: 0.85rem;
-    transition: all 0.3s;
-    margin-left: 1rem; /* للمسافة في وضع العربي */
-  }
-  .back-btn:hover {
-    background: #4a4aff;
-  }
-  body.lang-en .back-btn {
-    margin-left: 0;
-    margin-right: 1rem;
-  }
 </style>
 </head>
 <body class="lang-ar">
 
 <nav>
-  <div class="nav-brand"><span>CS</span>503 — Quiz 2</div>
-  <nav>
   <div class="nav-brand"><span>CS</span>503 — Quiz 1</div>
-  <ul class="nav-links">
-
-  </ul>
-</nav>
   <div class="nav-right">
-         <a href="../lecture1.html" class="back-btn t" data-ar="
-← مراجعة المحاضرة" data-en="🏠 Lecture"></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">🏠 <span class="t" data-ar="الرئيسية" data-en="Home"></span></a></li>
+    </ul>
     <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('ar')">عربي</button>
-      <button class="lang-btn" onclick="setLang('en')">English</button>
+      <button class="lang-btn active" onclick="setLang('ar', this)">عربي</button>
+      <button class="lang-btn" onclick="setLang('en', this)">English</button>
     </div>
-    <a href=""></a>
   </div>
 </nav>
 
 <div class="quiz-header">
-  <h1>🎯 <span class="t" data-ar="اختبار المحاضرة الثانية" data-en="Lecture 2 Quiz"></span></h1>
-  <p class="t" data-ar="العمليات والمؤثرات والجمل الشرطية في C++" data-en="Operators, Expressions & Control Structures in C++"></p>
+  <h1>🎯 <span class="t" data-ar="اختبار المحاضرة الأولى" data-en="Lecture 1 Quiz"></span></h1>
+  <p class="t" data-ar="أساسيات C++ — المتغيرات وأنواع البيانات والـ I/O" data-en="C++ Basics — Variables, Data Types & I/O"></p>
 </div>
 
 <div id="progress-bar-wrap">
@@ -181,40 +160,43 @@
   <!-- Q1 -->
   <div class="question-card active" id="q1">
     <div class="q-num"><span class="t" data-ar="السؤال ١ من ١٠" data-en="Question 1 of 10"></span></div>
-    <div class="q-text t" data-ar="ما ناتج العملية التالية؟" data-en="What is the output of the following?"></div>
-    <div class="code-snippet">cout &lt;&lt; 7 / 5;</div>
+    <div class="q-text t" data-ar="ما هو أول شيء يجب أن يحتويه أي برنامج C++ ليعمل؟" data-en="What is the first thing every C++ program must have to run?"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 1.4" data-en="A) 1.4"></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) 1" data-en="B) 1"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) 2" data-en="C) 2"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 0" data-en="D) 0"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) المتغيرات" data-en="A) Variables"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) دالة main()" data-en="B) The main() function"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) تعليقات" data-en="C) Comments"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) #define" data-en="D) #define"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: 1" data-en="Answer: 1"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: دالة main()" data-en="Answer: The main() function"></span></strong><br>
       <span class="t"
-        data-ar="عملية القسمة بين عددين صحيحين تحذف الكسر — 7/5 = 1.4 لكن النتيجة تُقرَّب للأسفل وتصبح 1."
-        data-en="Integer division truncates the decimal part — 7/5 = 1.4 but the result is truncated to 1.">
+        data-ar="أي برنامج C++ لازم يحتوي على main() لأن التشغيل بيبدأ منها. من غيرها البرنامج مش هيشتغل."
+        data-en="Every C++ program must have a main() function because execution starts there. Without it, the program won't run.">
       </span>
     </div>
-    <div class="nav-btns"><button class="nav-btn primary" onclick="nextQ(1)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button></div>
+    <div class="nav-btns">
+      <button class="nav-btn primary" onclick="nextQ(1)"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+    </div>
   </div>
 
   <!-- Q2 -->
   <div class="question-card" id="q2">
     <div class="q-num"><span class="t" data-ar="السؤال ٢ من ١٠" data-en="Question 2 of 10"></span></div>
-    <div class="q-text t" data-ar="ما ناتج العملية التالية؟" data-en="What is the output of the following?"></div>
-    <div class="code-snippet">cout &lt;&lt; 7 % 5;</div>
+    <div class="q-text t" data-ar="ما ناتج الكود التالي؟" data-en="What is the output of the following code?"></div>
+    <div class="code-snippet">int x = 1, y = 2;
+double result = x / y;
+cout &lt;&lt; result;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 1" data-en="A) 1"></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) 2" data-en="B) 2"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) 1.4" data-en="C) 1.4"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) خطأ" data-en="D) Error"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 0.5" data-en="A) 0.5"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) 0" data-en="B) 0"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) 0.0000" data-en="C) 0.0000"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) خطأ في الكمبايل" data-en="D) Compile Error"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: 2" data-en="Answer: 2"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: 0" data-en="Answer: 0"></span></strong><br>
       <span class="t"
-        data-ar="المؤثر % (Modulus) يرجع باقي القسمة — 7 ÷ 5 = 1 والباقي 2."
-        data-en="The % (Modulus) operator returns the remainder — 7 ÷ 5 = 1 with remainder 2.">
+        data-ar="x و y كلاهما int، فـ x/y = 1/2 = 0 (integer division تحذف الكسر). ثم 0 يتحول لـ double فيصبح 0.0"
+        data-en="x and y are both int, so x/y = 1/2 = 0 (integer division truncates the decimal). Then 0 is converted to double becoming 0.0">
       </span>
     </div>
     <div class="nav-btns">
@@ -226,20 +208,18 @@
   <!-- Q3 -->
   <div class="question-card" id="q3">
     <div class="q-num"><span class="t" data-ar="السؤال ٣ من ١٠" data-en="Question 3 of 10"></span></div>
-    <div class="q-text t"
-      data-ar="ما الفرق بين x++ و ++x عند استخدامهما داخل تعبير؟"
-      data-en="What is the difference between x++ and ++x inside an expression?"></div>
+    <div class="q-text t" data-ar="أي من التالي اسم متغير صحيح في C++؟" data-en="Which of the following is a valid variable name in C++?"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) لا فرق بينهما" data-en="A) No difference"></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) x++ يستخدم القيمة الحالية ثم يزيدها، ++x يزيدها أولاً ثم يستخدمها" data-en="B) x++ uses current value then increments, ++x increments first then uses"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) ++x يستخدم القيمة الحالية ثم يزيدها" data-en="C) ++x uses current value then increments"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) x++ للأعداد الموجبة فقط" data-en="D) x++ is for positive numbers only"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 4myVar" data-en="A) 4myVar"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) my-var" data-en="B) my-var"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ج) _myVar" data-en="C) _myVar"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) int" data-en="D) int"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: ب" data-en="Answer: B"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: _myVar" data-en="Answer: _myVar"></span></strong><br>
       <span class="t"
-        data-ar="Postfix (x++): يُعيد القيمة الحالية أولاً ثم يزيد x. — Prefix (++x): يزيد x أولاً ثم يُعيد القيمة الجديدة."
-        data-en="Postfix (x++): returns the current value first, then increments x. — Prefix (++x): increments x first, then returns the new value.">
+        data-ar="— 4myVar يبدأ برقم ❌ — my-var فيه شرطة ناقص ❌ — int كلمة محجوزة ❌ — _myVar يبدأ بـ underscore ✅"
+        data-en="— 4myVar starts with a digit ❌ — my-var contains a minus sign ❌ — int is a reserved keyword ❌ — _myVar starts with underscore ✅">
       </span>
     </div>
     <div class="nav-btns">
@@ -251,21 +231,18 @@
   <!-- Q4 -->
   <div class="question-card" id="q4">
     <div class="q-num"><span class="t" data-ar="السؤال ٤ من ١٠" data-en="Question 4 of 10"></span></div>
-    <div class="q-text t" data-ar="ما ناتج الكود التالي؟" data-en="What is the output of the following code?"></div>
-    <div class="code-snippet">int x = 5;
-x++;
-cout &lt;&lt; x++;</div>
+    <div class="q-text t" data-ar="ما الفرق بين \n و endl في C++؟" data-en="What is the difference between \n and endl in C++?"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 5" data-en="A) 5"></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) 6" data-en="B) 6"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) 7" data-en="C) 7"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 8" data-en="D) 8"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) endl للأرقام و \n للنصوص" data-en="A) endl is for numbers and \n is for text"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) \n للأعداد الكبيرة" data-en="B) \n is for large numbers"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ج) كلاهما ينقل للسطر التالي، endl أكثر وضوحاً" data-en="C) Both move to a new line, endl also flushes the buffer"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) \n يطبع حرف n" data-en="D) \n prints the letter n"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: 6" data-en="Answer: 6"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: كلاهما ينقل للسطر التالي" data-en="Answer: Both move to a new line"></span></strong><br>
       <span class="t"
-        data-ar="1- x=5 ، 2- x++ فأصبح x=6 ، 3- cout&lt;&lt;x++ يطبع القيمة الحالية (6) ثم يزيد x لـ 7 في الذاكرة."
-        data-en="1- x=5, 2- x++ makes x=6, 3- cout&lt;&lt;x++ prints the current value (6) then increments x to 7 in memory.">
+        data-ar="\n و endl بيعملوا نفس الوظيفة (سطر جديد). الفرق إن endl بيفضي الـ buffer أيضاً، لكن في الاستخدام العادي هما متكافئين."
+        data-en="\n and endl both create a new line. The difference is that endl also flushes the output buffer, but in normal use they are equivalent.">
       </span>
     </div>
     <div class="nav-btns">
@@ -277,21 +254,18 @@ cout &lt;&lt; x++;</div>
   <!-- Q5 -->
   <div class="question-card" id="q5">
     <div class="q-num"><span class="t" data-ar="السؤال ٥ من ١٠" data-en="Question 5 of 10"></span></div>
-    <div class="q-text t"
-      data-ar="باستخدام القيم: x=1, y=2, z=3, w=4 — ما ناتج التعبير التالي؟"
-      data-en="Given x=1, y=2, z=3, w=4 — what is the output of the following?"></div>
-    <div class="code-snippet">cout &lt;&lt; x + y * z - w;</div>
+    <div class="q-text t" data-ar="ما نوع البيانات المناسب لتخزين قيمة الراتب 5500.75؟" data-en="What is the appropriate data type to store the value 5500.75?"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 5" data-en="A) 5"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) 9" data-en="B) 9"></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ج) 3" data-en="C) 3"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 1" data-en="D) 1"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) int" data-en="A) int"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) char" data-en="B) char"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ج) double أو float" data-en="C) double or float"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) bool" data-en="D) bool"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: 3" data-en="Answer: 3"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: double أو float" data-en="Answer: double or float"></span></strong><br>
       <span class="t"
-        data-ar="الضرب له أولوية أعلى: y*z = 2*3 = 6، ثم x + 6 - w = 1 + 6 - 4 = 3"
-        data-en="Multiplication has higher precedence: y*z = 2*3 = 6, then x + 6 - w = 1 + 6 - 4 = 3">
+        data-ar="5500.75 رقم عشري، فنحتاج float أو double. int فقط للأعداد الصحيحة. double أفضل لأنه أدق."
+        data-en="5500.75 is a decimal number, so we need float or double. int is only for whole numbers. double is preferred for better precision.">
       </span>
     </div>
     <div class="nav-btns">
@@ -303,20 +277,19 @@ cout &lt;&lt; x++;</div>
   <!-- Q6 -->
   <div class="question-card" id="q6">
     <div class="q-num"><span class="t" data-ar="السؤال ٦ من ١٠" data-en="Question 6 of 10"></span></div>
-    <div class="q-text t"
-      data-ar="أي من التالي هو الصيغة المختصرة الصحيحة لـ x = x * 2 ؟"
-      data-en="Which is the correct shorthand for x = x * 2 ?"></div>
+    <div class="q-text t" data-ar="ما ناتج التعبير التالي؟" data-en="What is the output of the following expression?"></div>
+    <div class="code-snippet">cout &lt;&lt; double(1) / 2;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) x+*2;" data-en="A) x+*2;"></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) x*=2;" data-en="B) x*=2;"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) x==2*;" data-en="C) x==2*;"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) *x=2;" data-en="D) *x=2;"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) 0" data-en="A) 0"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) 0.5" data-en="B) 0.5"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) 1" data-en="C) 1"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) خطأ" data-en="D) Error"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: x*=2" data-en="Answer: x*=2"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: 0.5" data-en="Answer: 0.5"></span></strong><br>
       <span class="t"
-        data-ar="مؤثرات الإسناد المختصرة: x+=2 (جمع)، x-=2 (طرح)، x*=2 (ضرب)، x/=2 (قسمة)."
-        data-en="Shorthand assignment operators: x+=2 (add), x-=2 (subtract), x*=2 (multiply), x/=2 (divide).">
+        data-ar="double(1) بتحول الـ 1 لـ double، فبقت 1.0 / 2 = 0.5 (مش integer division)"
+        data-en="double(1) casts 1 to double, so it becomes 1.0 / 2 = 0.5 (not integer division)">
       </span>
     </div>
     <div class="nav-btns">
@@ -328,21 +301,18 @@ cout &lt;&lt; x++;</div>
   <!-- Q7 -->
   <div class="question-card" id="q7">
     <div class="q-num"><span class="t" data-ar="السؤال ٧ من ١٠" data-en="Question 7 of 10"></span></div>
-    <div class="q-text t"
-      data-ar="ما ناتج التعبير التالي؟ (x=1, y=2, z=3)"
-      data-en="What is the output? (x=1, y=2, z=3)"></div>
-    <div class="code-snippet">cout &lt;&lt; x &gt; y || z &lt;= y;</div>
+    <div class="q-text t" data-ar="ما وظيفة السطر: using namespace std;" data-en="What is the purpose of: using namespace std;"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="أ) 0" data-en="A) 0"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) 1" data-en="B) 1"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) خطأ في الكمبايل" data-en="C) Compile Error"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 2" data-en="D) 2"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) إضافة مكتبة الأرقام" data-en="A) Adds the math library"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) تخلينا نكتب cout و cin بدون std::" data-en="B) Lets us write cout and cin without std::"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) تعريف متغير اسمه std" data-en="C) Declares a variable named std"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) إنهاء البرنامج" data-en="D) Ends the program"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: 0" data-en="Answer: 0"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: تخلينا نكتب cout و cin بدون std::" data-en="Answer: Lets us write cout and cin without std::"></span></strong><br>
       <span class="t"
-        data-ar="1&gt;2 = false (0) || 3&lt;=2 = false (0) → 0 || 0 = 0"
-        data-en="1&gt;2 = false (0) || 3&lt;=2 = false (0) → 0 || 0 = 0">
+        data-ar="بدون هذا السطر كنا لازم نكتب std::cout و std::cin في كل مرة."
+        data-en="Without this line we would have to write std::cout and std::cin every time.">
       </span>
     </div>
     <div class="nav-btns">
@@ -354,24 +324,18 @@ cout &lt;&lt; x++;</div>
   <!-- Q8 -->
   <div class="question-card" id="q8">
     <div class="q-num"><span class="t" data-ar="السؤال ٨ من ١٠" data-en="Question 8 of 10"></span></div>
-    <div class="q-text t"
-      data-ar="ما نوع الجملة الشرطية التالية؟"
-      data-en="What type of selection statement is this?"></div>
-    <div class="code-snippet">if (x % 2 == 0)
-    cout &lt;&lt; "even";
-else
-    cout &lt;&lt; "odd";</div>
+    <div class="q-text t" data-ar="كيف تعلن عن متغير const يساوي 100 من نوع int؟" data-en="How do you declare an integer constant equal to 100?"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) One-Way Selection" data-en="A) One-Way Selection"></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) Two-Way Selection" data-en="B) Two-Way Selection"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) Multiple Selection" data-en="C) Multiple Selection"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) Switch Statement" data-en="D) Switch Statement"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) int const = 100;" data-en="A) int const = 100;"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) fixed int N = 100;" data-en="B) fixed int N = 100;"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ج) const int N = 100;" data-en="C) const int N = 100;"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) int N = const(100);" data-en="D) int N = const(100);"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: Two-Way Selection" data-en="Answer: Two-Way Selection"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: const int N = 100;" data-en="Answer: const int N = 100;"></span></strong><br>
       <span class="t"
-        data-ar="وجود if مع else يعني اختيار ثنائي — إما المسار الأول أو الثاني. One-Way Selection تكون if بدون else."
-        data-en="Having if with else means two-way selection — either the first or the second path. One-Way Selection is if without else.">
+        data-ar="الصيغة الصحيحة: const [نوع البيانات] [الاسم] = [القيمة]; والثوابت لازم تأخد قيمة وقت التعريف."
+        data-en="The correct syntax is: const [datatype] [name] = [value]; Constants must be assigned a value at declaration time.">
       </span>
     </div>
     <div class="nav-btns">
@@ -383,23 +347,20 @@ else
   <!-- Q9 -->
   <div class="question-card" id="q9">
     <div class="q-num"><span class="t" data-ar="السؤال ٩ من ١٠" data-en="Question 9 of 10"></span></div>
-    <div class="q-text t"
-      data-ar="ما ناتج التعبير الثلاثي (Ternary) التالي؟"
-      data-en="What is the output of the following Ternary expression?"></div>
-    <div class="code-snippet">int time = 20;
-string result = (time &lt; 18) ? "Good day." : "Good evening.";
-cout &lt;&lt; result;</div>
+    <div class="q-text t" data-ar="ما نوع الخطأ في الكود التالي؟" data-en="What type of error exists in the following code?"></div>
+    <div class="code-snippet">int x = 5
+cout &lt;&lt; x;</div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar='أ) "Good day."' data-en='A) "Good day."'></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar='ب) "Good evening."' data-en='B) "Good evening."'></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) خطأ في الكمبايل" data-en="C) Compile Error"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) 20" data-en="D) 20"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="أ) Syntax Error — خطأ في الكتابة" data-en="A) Syntax Error — writing mistake"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ب) Logic Error — خطأ منطقي" data-en="B) Logic Error — logical mistake"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) Run-time Error — خطأ وقت التشغيل" data-en="C) Run-time Error — runtime mistake"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) لا يوجد خطأ" data-en="D) No error"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar='الإجابة: "Good evening."' data-en='Answer: "Good evening."'></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: Syntax Error" data-en="Answer: Syntax Error"></span></strong><br>
       <span class="t"
-        data-ar="time=20، الشرط time&lt;18 = false → تُنفَّذ القيمة بعد الـ : وهي 'Good evening.'"
-        data-en="time=20, condition time&lt;18 = false → the value after : is used which is 'Good evening.'">
+        data-ar="السطر الأول int x = 5 ناقصه فاصلة منقوطة ; — ده خطأ في الكتابة والـ Compiler هيكتشفه."
+        data-en="The first line int x = 5 is missing a semicolon ; — this is a syntax error that the compiler will detect.">
       </span>
     </div>
     <div class="nav-btns">
@@ -411,22 +372,18 @@ cout &lt;&lt; result;</div>
   <!-- Q10 -->
   <div class="question-card" id="q10">
     <div class="q-num"><span class="t" data-ar="السؤال ١٠ من ١٠" data-en="Question 10 of 10"></span></div>
-    <div class="q-text t"
-      data-ar="إيه اللي بيحسب عدد الأقدام والبوصات المتبقية من طول معطى بالبوصات؟"
-      data-en="What correctly calculates the number of feet and remaining inches from a length in inches?"></div>
-    <div class="code-snippet">feet = len / 12;
-inch = len % 12;</div>
+    <div class="q-text t" data-ar="ما الـ #include اللازم لاستخدام cout و cin؟" data-en="Which #include is required to use cout and cin?"></div>
     <div class="options">
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) feet بيحسب الباقي وinch بيحسب العدد الصحيح" data-en="A) feet gets the remainder and inch gets the integer part"></span></button>
-      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) feet بيستخدم القسمة الصحيحة وinch بيستخدم Modulus" data-en="B) feet uses integer division and inch uses Modulus"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) كلاهما بيستخدمان القسمة العادية" data-en="C) Both use regular division"></span></button>
-      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) الكود ده غلط" data-en="D) This code is wrong"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="أ) #include &lt;stdio.h&gt;" data-en="A) #include &lt;stdio.h&gt;"></span></button>
+      <button class="option-btn" onclick="answer(this, true)"><span class="t" data-ar="ب) #include &lt;iostream&gt;" data-en="B) #include &lt;iostream&gt;"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="ج) #include &lt;string&gt;" data-en="C) #include &lt;string&gt;"></span></button>
+      <button class="option-btn" onclick="answer(this, false)"><span class="t" data-ar="د) #include &lt;math.h&gt;" data-en="D) #include &lt;math.h&gt;"></span></button>
     </div>
     <div class="explanation">
-      <strong>✅ <span class="t" data-ar="الإجابة: ب" data-en="Answer: B"></span></strong><br>
+      <strong>✅ <span class="t" data-ar="الإجابة: #include &lt;iostream&gt;" data-en="Answer: #include &lt;iostream&gt;"></span></strong><br>
       <span class="t"
-        data-ar="len/12: قسمة صحيحة تعطي عدد الأقدام (مثلاً 100/12=8) — len%12: يعطي الباقي وهو البوصات المتبقية (100%12=4)"
-        data-en="len/12: integer division gives full feet (e.g. 100/12=8) — len%12: gives the remainder which is the remaining inches (100%12=4)">
+        data-ar="iostream اختصار Input-Output Stream — بتضيف تعريفات cout و cin و endl."
+        data-en="iostream stands for Input-Output Stream — it provides the definitions for cout, cin, and endl.">
       </span>
     </div>
     <div class="nav-btns">
@@ -439,11 +396,10 @@ inch = len % 12;</div>
   <div id="result-screen">
     <div class="result-emoji" id="result-emoji">🎉</div>
     <div class="result-score" id="result-score">0/10</div>
-    <div class="result-label t" data-ar="درجتك في اختبار المحاضرة الثانية" data-en="Your score in Lecture 2 Quiz"></div>
+    <div class="result-label t" data-ar="درجتك في اختبار المحاضرة الأولى" data-en="Your score in Lecture 1 Quiz"></div>
     <div class="result-msg" id="result-msg"></div>
     <div class="result-actions">
-      <a href="quiz1.html" class="result-btn secondary"><span class="t" data-ar="← Quiz 1" data-en="← Quiz 1"></span></a>
-      <a href="quiz3.html" class="result-btn primary"><span class="t" data-ar="التالي: Quiz 3 →" data-en="Next: Quiz 3 →"></span></a>
+      <a href="quiz2.html" class="result-btn primary"><span class="t" data-ar="التالي: Quiz 2 →" data-en="Next: Quiz 2 →"></span></a>
       <button onclick="resetQuiz()" class="result-btn secondary"><span class="t" data-ar="🔄 إعادة الاختبار" data-en="🔄 Retry Quiz"></span></button>
     </div>
   </div>
@@ -464,8 +420,7 @@ const strings = {
     emoji100: '🏆', msg100: 'ممتاز! أجبت على كل الأسئلة بشكل صحيح!',
     emoji80:  '🎉', msg80:  'أحسنت! نتيجة رائعة جداً!',
     emoji60:  '👍', msg60:  'جيد! ارجع راجع المحاضرة في النقاط اللي غلطت فيها.',
-    emojiLow: '📚', msgLow: 'تحتاج مراجعة أكثر. اقرأ المحاضرة مرة تانية وحاول تاني!',
-    resultLabel: 'درجتك في اختبار المحاضرة الثانية'
+    emojiLow: '📚', msgLow: 'تحتاج مراجعة أكثر. اقرأ المحاضرة مرة تانية وحاول تاني!'
   },
   en: {
     progress: (c, t) => `Question ${c} of ${t}`,
@@ -473,26 +428,20 @@ const strings = {
     emoji100: '🏆', msg100: 'Perfect! You answered all questions correctly!',
     emoji80:  '🎉', msg80:  'Great job! Excellent result!',
     emoji60:  '👍', msg60:  'Good! Review the lecture topics you got wrong.',
-    emojiLow: '📚', msgLow: 'You need more review. Read the lecture again and retry!',
-    resultLabel: 'Your score in Lecture 2 Quiz'
+    emojiLow: '📚', msgLow: 'You need more review. Read the lecture again and retry!'
   }
 };
 
-function setLang(lang) {
+function setLang(lang, btn) {
   currentLang = lang;
   document.body.className = 'lang-' + lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   document.documentElement.lang = lang;
 
-  // Toggle buttons
-  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 
-  // Update all translatable elements
   document.querySelectorAll('.t[data-ar][data-en]').forEach(el => {
-    el.textContent = el.dataset[lang];
-  });
-  document.querySelectorAll('span.t[data-ar][data-en]').forEach(el => {
     el.textContent = el.dataset[lang];
   });
 
@@ -501,18 +450,17 @@ function setLang(lang) {
 }
 
 function updateProgress() {
-  const s = strings[currentLang];
-  document.getElementById('progress-text').textContent = s.progress(current, total);
+  document.getElementById('progress-fill').style.width = ((current - 1) / total * 100) + '%';
+  document.getElementById('progress-text').textContent = strings[currentLang].progress(current, total);
 }
 
 function updateScoreDisplay() {
-  const s = strings[currentLang];
-  document.getElementById('score-display').textContent = s.score(score);
+  document.getElementById('score-display').textContent = strings[currentLang].score(score);
 }
 
 function answer(btn, correct) {
   const card = btn.closest('.question-card');
-  const qIndex = parseInt(card.id.replace('q','')) - 1;
+  const qIndex = parseInt(card.id.replace('q', '')) - 1;
   if (answered[qIndex]) return;
 
   answered[qIndex] = true;
@@ -533,7 +481,7 @@ function answer(btn, correct) {
 function nextQ(n) {
   document.getElementById('q' + n).classList.remove('active');
   if (n < total) {
-    document.getElementById('q' + (n+1)).classList.add('active');
+    document.getElementById('q' + (n + 1)).classList.add('active');
     current = n + 1;
     updateProgress();
   }
@@ -541,7 +489,7 @@ function nextQ(n) {
 
 function prevQ(n) {
   document.getElementById('q' + n).classList.remove('active');
-  document.getElementById('q' + (n-1)).classList.add('active');
+  document.getElementById('q' + (n - 1)).classList.add('active');
   current = n - 1;
   updateProgress();
 }
@@ -553,10 +501,10 @@ function showResult() {
   const pct = score / total;
   const s = strings[currentLang];
   let emoji, msg;
-  if (pct === 1)      { emoji = s.emoji100; msg = s.msg100; }
-  else if (pct >= 0.8){ emoji = s.emoji80;  msg = s.msg80; }
-  else if (pct >= 0.6){ emoji = s.emoji60;  msg = s.msg60; }
-  else                { emoji = s.emojiLow; msg = s.msgLow; }
+  if (pct === 1)       { emoji = s.emoji100; msg = s.msg100; }
+  else if (pct >= 0.8) { emoji = s.emoji80;  msg = s.msg80; }
+  else if (pct >= 0.6) { emoji = s.emoji60;  msg = s.msg60; }
+  else                 { emoji = s.emojiLow; msg = s.msgLow; }
 
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-score').textContent = score + ' / ' + total;
@@ -569,9 +517,9 @@ function resetQuiz() {
   answered = new Array(10).fill(false);
   current = 1;
   document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('progress-fill').style.width = '0%';
   updateProgress();
   updateScoreDisplay();
-  document.getElementById('progress-fill').style.width = '0%';
 
   for (let i = 1; i <= total; i++) {
     const card = document.getElementById('q' + i);
@@ -588,7 +536,6 @@ function resetQuiz() {
 // Init
 updateProgress();
 updateScoreDisplay();
-// Apply initial translations
 document.querySelectorAll('.t[data-ar]').forEach(el => {
   el.textContent = el.dataset.ar;
 });

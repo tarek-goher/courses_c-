@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ Loops — شرح الحلقات</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #a78bfa;
+    --accent4: #34d399;
+    --text: #e2e8f0;
+    --text-muted: #8892a4;
+    --border: #1e2d45;
+    --code-bg: #0d1117;
+    --keyword: #ff79c6;
+    --number: #bd93f9;
+    --type: #8be9fd;
+    --comment: #6272a4;
+    --string: #f1fa8c;
+    --func: #50fa7b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 20% 10%, rgba(0,212,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(167,139,250,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 50px 0 60px;
+    position: relative;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: rgba(0,212,255,0.12);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-family: 'Fira Code', monospace;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+  }
+
+  .header h1 {
+    font-size: clamp(32px, 6vw, 64px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .header h1 .en { color: var(--accent); display: block; font-family: 'Fira Code', monospace; }
+  .header h1 .ar { color: white; font-size: 0.75em; }
+
+  .header p {
+    color: var(--text-muted);
+    font-size: 17px;
+    max-width: 600px;
+    margin: 16px auto 0;
+    line-height: 1.8;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 60px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .num-blue { background: rgba(0,212,255,0.15); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+  .num-orange { background: rgba(255,107,53,0.15); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); }
+  .num-purple { background: rgba(167,139,250,0.15); color: var(--accent3); border: 1px solid rgba(167,139,250,0.3); }
+  .num-green { background: rgba(52,211,153,0.15); color: var(--accent4); border: 1px solid rgba(52,211,153,0.3); }
+
+  .section-title { flex: 1; }
+  .section-title .en { font-family: 'Fira Code', monospace; font-size: 22px; font-weight: 700; }
+  .section-title .ar { color: var(--text-muted); font-size: 14px; margin-top: 2px; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card h3 .icon { font-size: 18px; }
+
+  .card p, .card li {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.9;
+  }
+
+  .card ul { padding-right: 20px; }
+  .card li { margin-bottom: 6px; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    font-family: 'Fira Code', monospace;
+    direction: ltr;
+  }
+
+  .code-header {
+    background: var(--bg3);
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .code-lang {
+    margin-right: auto;
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  pre {
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+
+  .kw { color: var(--keyword); }
+  .ty { color: var(--type); }
+  .nm { color: var(--number); }
+  .cm { color: var(--comment); font-style: italic; }
+  .st { color: var(--string); }
+  .fn { color: var(--func); }
+  .wh { color: white; }
+
+  /* SYNTAX BOX */
+  .syntax-box {
+    background: rgba(0,212,255,0.05);
+    border: 1px dashed rgba(0,212,255,0.3);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    direction: ltr;
+    color: var(--text);
+    line-height: 2;
+  }
+
+  .syn-kw { color: var(--keyword); font-weight: 700; }
+  .syn-bracket { color: var(--accent); }
+  .syn-comment { color: var(--comment); font-style: italic; }
+  .syn-hl { color: var(--accent2); font-weight: 700; }
+
+  /* INFO CARDS */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .info-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .info-card h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  .info-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  /* POSITIONS TABLE */
+  .pos-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    direction: ltr;
+    margin-bottom: 16px;
+  }
+
+  .pos-table th {
+    background: var(--bg3);
+    padding: 12px 16px;
+    text-align: left;
+    color: var(--accent);
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pos-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: top;
+  }
+
+  .pos-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .pos-table code { background: var(--code-bg); padding: 2px 8px; border-radius: 4px; }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+  }
+
+  .tag-blue { background: rgba(0,212,255,0.15); color: var(--accent); }
+  .tag-orange { background: rgba(255,107,53,0.15); color: var(--accent2); }
+  .tag-purple { background: rgba(167,139,250,0.15); color: var(--accent3); }
+  .tag-green { background: rgba(52,211,153,0.15); color: var(--accent4); }
+
+  /* COMPARISON TABLE */
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  .cmp-table th {
+    background: var(--bg3);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Fira Code', monospace;
+    letter-spacing: 1px;
+  }
+
+  .cmp-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    font-size: 13px;
+  }
+
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .check { color: var(--accent4); }
+  .cross { color: #f87171; }
+
+  /* HIGHLIGHT BOX */
+  .hl-box {
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    border-right: 4px solid;
+  }
+
+  .hl-blue { background: rgba(0,212,255,0.06); border-color: var(--accent); }
+  .hl-orange { background: rgba(255,107,53,0.06); border-color: var(--accent2); }
+  .hl-purple { background: rgba(167,139,250,0.06); border-color: var(--accent3); }
+  .hl-green { background: rgba(52,211,153,0.06); border-color: var(--accent4); }
+
+  .hl-box strong { font-size: 14px; font-weight: 700; display: block; margin-bottom: 6px; }
+  .hl-box p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 48px 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .footer span { color: var(--accent); font-family: 'Fira Code', monospace; }
+
+  @media (max-width: 700px) {
+    .grid-2, .info-grid { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">C++ LOOPS GUIDE</div>
+    <h1>
+      <span class="en">Loops in C++</span>
+      <span class="ar">الحلقات في ++C</span>
+    </h1>
+    <p>شرح شامل ومفصّل لـ for, nested for, while, do-while مع أمثلة تفاعلية على مستوى جامعي</p>
+    <p style="color:#8892a4;font-size:14px;margin-top:6px;">A complete university-level guide with all variations and tricky cases</p>
+  </div>
+
+  <!-- ===================== SECTION 1: FOR LOOP ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num num-blue">01</div>
+      <div class="section-title">
+        <div class="en" style="color:var(--accent)">for Loop</div>
+        <div class="ar">حلقة for — متى تعرف عدد التكرارات</div>
+      </div>
+    </div>
+
+    <div class="hl-box hl-blue">
+      <strong>📌 المفهوم | Concept</strong>
+      <p>حلقة <code>for</code> تُستخدم لما تعرف عدد التكرارات مسبقاً. بتتكون من 3 أجزاء: التهيئة، الشرط، التحديث.<br>
+      The <code>for</code> loop is ideal when you know the exact number of iterations. It has 3 parts: initialization, condition, update.</p>
+    </div>
+
+    <!-- SYNTAX -->
+    <div class="syntax-box">
+<span class="syn-kw">for</span> <span class="syn-bracket">(</span> <span style="color:var(--accent2)">/* Part 1: init */</span>  ;  <span style="color:var(--accent3)">/* Part 2: condition */</span>  ;  <span style="color:var(--accent4)">/* Part 3: update */</span> <span class="syn-bracket">)</span><br>
+<span class="syn-bracket">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-comment">// body — executed while condition is true</span><br>
+<span class="syn-bracket">}</span>
+    </div>
+
+    <!-- THE 3 POSITIONS -->
+    <div class="card">
+      <h3><span class="icon">🔥</span> الـ 3 أماكن للـ <code>++</code> — The 3 Positions of Increment (University Trap!)</h3>
+      <p style="margin-bottom:16px;color:var(--text);">الفرق بين وضع <code>i++</code> و <code>++i</code> في أجزاء الـ for هو سلاح الاختبارات الجامعية الأول!</p>
+
+      <table class="pos-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>POSITION</th>
+            <th>Example</th>
+            <th>الشرح بالعربي</th>
+            <th>Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-orange">1</span></td>
+            <td>Init (Part 1)</td>
+            <td><code>for(int i=0; i&lt;5; i++)</code></td>
+            <td>التهيئة — بتتنفذ مرة واحدة بس</td>
+            <td><span style="color:var(--accent4)">Normal — runs once</span></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-purple">2</span></td>
+            <td>Update — <code>i++</code></td>
+            <td><code>for(int i=0; i&lt;5; i++)</code></td>
+            <td>post-increment: يُرجع القيمة القديمة ثم يزيد</td>
+            <td><span style="color:var(--accent)">Uses old value, then adds 1</span></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-green">3</span></td>
+            <td>Update — <code>++i</code></td>
+            <td><code>for(int i=0; i&lt;5; ++i)</code></td>
+            <td>pre-increment: يزيد أولاً ثم يُرجع القيمة</td>
+            <td><span style="color:var(--accent4)">Adds 1 first, then uses</span></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-orange">!</span></td>
+            <td>Inside body</td>
+            <td><code>for(int i=0; i&lt;5; ) { cout &lt;&lt; i++; }</code></td>
+            <td>الـ increment جوه الـ body نفسه — خطير!</td>
+            <td><span style="color:var(--accent2)">Most dangerous — tricky output</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- EXAMPLES -->
+    <div class="grid-2">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot dot-r"></span>
+          <span class="code-dot dot-y"></span>
+          <span class="code-dot dot-g"></span>
+          <span class="code-lang">C++ — i++ vs ++i in update</span>
+        </div>
+        <pre><span class="cm">// Both produce SAME output here:</span>
+<span class="cm">// مخرجات متشابهة في الـ for</span>
+
+<span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">0</span>; i&lt;<span class="nm">5</span>; i++)
+    <span class="fn">cout</span> &lt;&lt; i &lt;&lt; <span class="st">" "</span>;
+<span class="cm">// Output: 0 1 2 3 4</span>
+
+<span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">0</span>; i&lt;<span class="nm">5</span>; ++i)
+    <span class="fn">cout</span> &lt;&lt; i &lt;&lt; <span class="st">" "</span>;
+<span class="cm">// Output: 0 1 2 3 4  ← Same!</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot dot-r"></span>
+          <span class="code-dot dot-y"></span>
+          <span class="code-dot dot-g"></span>
+          <span class="code-lang">C++ — increment INSIDE body (tricky!)</span>
+        </div>
+        <pre><span class="cm">// ⚠️ Tricky — increment in body!</span>
+<span class="cm">// الـ ++ جوه الـ body</span>
+
+<span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">0</span>; i&lt;<span class="nm">5</span>; )
+{
+    <span class="fn">cout</span> &lt;&lt; i++ &lt;&lt; <span class="st">" "</span>;
+}
+<span class="cm">// Output: 0 1 2 3 4</span>
+
+<span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">0</span>; i&lt;<span class="nm">5</span>; )
+{
+    <span class="fn">cout</span> &lt;&lt; ++i &lt;&lt; <span class="st">" "</span>;
+}
+<span class="cm">// Output: 1 2 3 4 5  ← Different!</span></pre>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-dot dot-r"></span>
+        <span class="code-dot dot-y"></span>
+        <span class="code-dot dot-g"></span>
+        <span class="code-lang">C++ — mixed tricks in condition and body</span>
+      </div>
+      <pre><span class="cm">// 🔥 University Exam Level!</span>
+<span class="kw">int</span> i = <span class="nm">0</span>;
+<span class="kw">for</span>( ; i&lt;<span class="nm">3</span>; ) {
+    i++;                     <span class="cm">// i becomes 1,2,3</span>
+    <span class="fn">cout</span> &lt;&lt; i * <span class="nm">2</span> &lt;&lt; <span class="st">" "</span>;  <span class="cm">// prints 2 4 6</span>
+}
+<span class="cm">// Output: 2 4 6</span>
+
+<span class="kw">for</span>(<span class="ty">int</span> x=<span class="nm">1</span>; x&lt;=<span class="nm">4</span>; x+=<span class="nm">2</span>)  <span class="cm">// step by 2</span>
+    <span class="fn">cout</span> &lt;&lt; x &lt;&lt; <span class="st">" "</span>;
+<span class="cm">// Output: 1 3</span></pre>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===================== SECTION 2: NESTED FOR ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num num-orange">02</div>
+      <div class="section-title">
+        <div class="en" style="color:var(--accent2)">Nested for Loop</div>
+        <div class="ar">الحلقة المتداخلة — for داخل for</div>
+      </div>
+    </div>
+
+    <div class="hl-box hl-orange">
+      <strong>📌 المفهوم | Concept</strong>
+      <p>حلقة for جوة حلقة for تانية. الـ outer loop بتتحكم في الصفوف والـ inner loop بتتحكم في الأعمدة. لكل تكرارة في الخارجية، الداخلية بتتنفذ بالكامل.<br>
+      A for loop inside another. The outer controls rows, inner controls columns. For each outer iteration, the inner loop runs completely.</p>
+    </div>
+
+    <div class="info-grid" style="margin-bottom:16px;">
+      <div class="info-card">
+        <h4 style="color:var(--accent2);">⏱️ Total Iterations</h4>
+        <p>لو outer = n وinner = m فإجمالي التكرارات = n × m<br>
+        If outer = n and inner = m → total = n × m iterations</p>
+      </div>
+      <div class="info-card">
+        <h4 style="color:var(--accent2);">🔢 Variable Scope</h4>
+        <p>متغير الـ outer loop مش موجود في الـ inner بـ scope منفصل<br>
+        Outer variable is accessible inside inner loop body</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot dot-r"></span>
+          <span class="code-dot dot-y"></span>
+          <span class="code-dot dot-g"></span>
+          <span class="code-lang">C++ — Multiplication Table</span>
+        </div>
+        <pre><span class="cm">// جدول الضرب — Multiplication Table</span>
+<span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">1</span>; i&lt;=<span class="nm">3</span>; i++) {
+    <span class="kw">for</span>(<span class="ty">int</span> j=<span class="nm">1</span>; j&lt;=<span class="nm">3</span>; j++) {
+        <span class="fn">cout</span> &lt;&lt; i*j &lt;&lt; <span class="st">"\t"</span>;
+    }
+    <span class="fn">cout</span> &lt;&lt; <span class="st">"\n"</span>;
+}
+<span class="cm">/* Output:
+   1  2  3
+   2  4  6
+   3  6  9  */</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot dot-r"></span>
+          <span class="code-dot dot-y"></span>
+          <span class="code-dot dot-g"></span>
+          <span class="code-lang">C++ — Star Pattern (Triangle)</span>
+        </div>
+        <pre><span class="cm">// مثلث من النجوم — Star Triangle</span>
+<span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">1</span>; i&lt;=<span class="nm">4</span>; i++) {
+    <span class="kw">for</span>(<span class="ty">int</span> j=<span class="nm">1</span>; j&lt;=i; j++) {
+        <span class="fn">cout</span> &lt;&lt; <span class="st">"* "</span>;
+    }
+    <span class="fn">cout</span> &lt;&lt; <span class="st">"\n"</span>;
+}
+<span class="cm">/* Output:
+   *
+   * *
+   * * *
+   * * * *  */</span></pre>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-dot dot-r"></span>
+        <span class="code-dot dot-y"></span>
+        <span class="code-dot dot-g"></span>
+        <span class="code-lang">C++ — Tricky nested: variable shared between loops</span>
+      </div>
+      <pre><span class="cm">// 🔥 Tricky: inner loop uses outer variable</span>
+<span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">1</span>; i&lt;=<span class="nm">3</span>; i++) {
+    <span class="kw">for</span>(<span class="ty">int</span> j=i; j&lt;=<span class="nm">3</span>; j++) {  <span class="cm">// j starts from i!</span>
+        <span class="fn">cout</span> &lt;&lt; j &lt;&lt; <span class="st">" "</span>;
+    }
+    <span class="fn">cout</span> &lt;&lt; <span class="st">"\n"</span>;
+}
+<span class="cm">/* Output:
+   1 2 3
+   2 3
+   3       */</span></pre>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===================== SECTION 3: WHILE ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num num-purple">03</div>
+      <div class="section-title">
+        <div class="en" style="color:var(--accent3)">while Loop</div>
+        <div class="ar">حلقة while — بتفحص الشرط قبل التنفيذ</div>
+      </div>
+    </div>
+
+    <div class="hl-box hl-purple">
+      <strong>📌 المفهوم | Concept</strong>
+      <p>حلقة <code>while</code> بتفحص الشرط الأول قبل ما تنفذ أي حاجة. لو الشرط false من الأول — مش هتتنفذ خالص (zero times possible!).<br>
+      The <code>while</code> loop checks its condition BEFORE executing. If false from the start — it never runs (0 executions possible).</p>
+    </div>
+
+    <div class="syntax-box">
+<span class="syn-kw">while</span> <span class="syn-bracket">(</span> <span class="syn-hl">condition</span> <span class="syn-bracket">)</span><br>
+<span class="syn-bracket">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-comment">// body — executed while condition is true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-comment">// ⚠️ must update variable inside or = infinite loop!</span><br>
+<span class="syn-bracket">}</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot dot-r"></span>
+          <span class="code-dot dot-y"></span>
+          <span class="code-dot dot-g"></span>
+          <span class="code-lang">C++ — Basic while</span>
+        </div>
+        <pre><span class="cm">// Basic while loop</span>
+<span class="ty">int</span> i = <span class="nm">0</span>;
+<span class="kw">while</span>(i &lt; <span class="nm">5</span>) {
+    <span class="fn">cout</span> &lt;&lt; i &lt;&lt; <span class="st">" "</span>;
+    i++;  <span class="cm">// ← MUST update!</span>
+}
+<span class="cm">// Output: 0 1 2 3 4</span>
+
+<span class="cm">// Zero executions example:</span>
+<span class="ty">int</span> x = <span class="nm">10</span>;
+<span class="kw">while</span>(x &lt; <span class="nm">5</span>) {  <span class="cm">// false from start!</span>
+    <span class="fn">cout</span> &lt;&lt; x;   <span class="cm">// never runs!</span>
+}
+<span class="cm">// Output: (nothing)</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot dot-r"></span>
+          <span class="code-dot dot-y"></span>
+          <span class="code-dot dot-g"></span>
+          <span class="code-lang">C++ — while with tricky increment</span>
+        </div>
+        <pre><span class="cm">// 🔥 Tricky: post vs pre increment</span>
+<span class="ty">int</span> n = <span class="nm">1</span>;
+<span class="kw">while</span>(n++ &lt; <span class="nm">4</span>)  <span class="cm">// checks THEN increments</span>
+    <span class="fn">cout</span> &lt;&lt; n &lt;&lt; <span class="st">" "</span>;
+<span class="cm">// Checks 1&lt;4 → true, n becomes 2, prints 2</span>
+<span class="cm">// Checks 2&lt;4 → true, n becomes 3, prints 3</span>
+<span class="cm">// Checks 3&lt;4 → true, n becomes 4, prints 4</span>
+<span class="cm">// Checks 4&lt;4 → false, n becomes 5, stops</span>
+<span class="cm">// Output: 2 3 4</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===================== SECTION 4: DO WHILE ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num num-green">04</div>
+      <div class="section-title">
+        <div class="en" style="color:var(--accent4)">do-while Loop</div>
+        <div class="ar">حلقة do-while — بتنفذ الأول وبعدين تفحص</div>
+      </div>
+    </div>
+
+    <div class="hl-box hl-green">
+      <strong>📌 المفهوم | Concept</strong>
+      <p>حلقة <code>do-while</code> بتنفذ الـ body الأول، وبعدين تفحص الشرط. دي الفرق الجوهري عن while — بتضمن تنفيذ مرة واحدة على الأقل دايماً.<br>
+      The <code>do-while</code> runs the body FIRST, then checks the condition. Guaranteed to execute at least ONCE unlike while.</p>
+    </div>
+
+    <div class="syntax-box">
+<span class="syn-kw">do</span><br>
+<span class="syn-bracket">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-comment">// body — runs at least once guaranteed!</span><br>
+<span class="syn-bracket">}</span> <span class="syn-kw">while</span> <span class="syn-bracket">(</span> <span class="syn-hl">condition</span> <span class="syn-bracket">)</span> <span style="color:var(--accent2);">;</span>  <span class="syn-comment">// ← don't forget semicolon!</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot dot-r"></span>
+          <span class="code-dot dot-y"></span>
+          <span class="code-dot dot-g"></span>
+          <span class="code-lang">C++ — do-while runs at least once</span>
+        </div>
+        <pre><span class="cm">// Even if condition is false — runs once!</span>
+<span class="ty">int</span> i = <span class="nm">10</span>;
+<span class="kw">do</span> {
+    <span class="fn">cout</span> &lt;&lt; i &lt;&lt; <span class="st">" "</span>;
+    i++;
+} <span class="kw">while</span>(i &lt; <span class="nm">5</span>);  <span class="cm">// false from start!</span>
+<span class="cm">// Output: 10  (ran ONCE!)</span>
+
+<span class="ty">int</span> k = <span class="nm">0</span>;
+<span class="kw">do</span> {
+    <span class="fn">cout</span> &lt;&lt; k &lt;&lt; <span class="st">" "</span>;
+    k++;
+} <span class="kw">while</span>(k &lt; <span class="nm">4</span>);
+<span class="cm">// Output: 0 1 2 3</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot dot-r"></span>
+          <span class="code-dot dot-y"></span>
+          <span class="code-dot dot-g"></span>
+          <span class="code-lang">C++ — Menu system (real use case)</span>
+        </div>
+        <pre><span class="cm">// Perfect use case: menu loop</span>
+<span class="ty">int</span> choice;
+<span class="kw">do</span> {
+    <span class="fn">cout</span> &lt;&lt; <span class="st">"1.Add 2.Delete 3.Exit\n"</span>;
+    <span class="fn">cout</span> &lt;&lt; <span class="st">"Enter choice: "</span>;
+    <span class="fn">cin</span> >> choice;
+
+    <span class="kw">if</span>(choice == <span class="nm">1</span>)
+        <span class="fn">cout</span> &lt;&lt; <span class="st">"Adding...\n"</span>;
+
+} <span class="kw">while</span>(choice != <span class="nm">3</span>);
+<span class="cm">// Keeps showing menu until user picks 3</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===================== COMPARISON TABLE ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(255,255,255,0.08);color:white;border:1px solid rgba(255,255,255,0.15);">⚡</div>
+      <div class="section-title">
+        <div class="en" style="color:white;">Quick Comparison</div>
+        <div class="ar">جدول المقارنة السريعة</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <table class="cmp-table" dir="ltr">
+        <thead>
+          <tr>
+            <th>Loop</th>
+            <th>Checks Condition</th>
+            <th>Min Executions</th>
+            <th>Best Used For</th>
+            <th>الاستخدام الأمثل</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-blue">for</span></td>
+            <td>Before body</td>
+            <td>0 times</td>
+            <td>Known count</td>
+            <td>عارف عدد التكرارات</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-orange">nested for</span></td>
+            <td>Before each body</td>
+            <td>0 times</td>
+            <td>2D patterns, matrices</td>
+            <td>المصفوفات والأشكال</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-purple">while</span></td>
+            <td>Before body</td>
+            <td>0 times</td>
+            <td>Unknown count</td>
+            <td>مش عارف عدد التكرارات</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-green">do-while</span></td>
+            <td>After body</td>
+            <td>1 time ✓</td>
+            <td>Menu / validate input</td>
+            <td>اختيارات المستخدم والقوائم</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>C++ Loops — Explanation Page &nbsp;|&nbsp; صفحة الشرح</p>
+  <p style="margin-top:8px;">Prepared for university-level study &nbsp;·&nbsp; <span>for · nested for · while · do-while</span></p>
+</div>
+
+</body>
+</html>

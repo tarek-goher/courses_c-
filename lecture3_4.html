@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS503 — مراجعة شاملة المحاضرات 3 & 4 + امتحان نهائي</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #080812;
+    --surface: #10101e;
+    --surface2: #181828;
+    --border: #252540;
+    --accent: #5555ff;
+    --accent2: #8888ff;
+    --accent3: #00d4aa;
+    --accent4: #ff6b6b;
+    --accent5: #ffaa00;
+    --text: #e0e0f0;
+    --text2: #9090b0;
+    --text3: #6060a0;
+    --green: #4ade80;
+    --red: #f87171;
+    --yellow: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 4px 30px rgba(85,85,255,0.25);
+  }
+  .nav-brand { font-size: 1.15rem; font-weight: 900; color: var(--accent2); }
+  .nav-brand span { color: #fff; }
+  .nav-links { display: flex; gap: 0.5rem; list-style: none; flex-wrap: wrap; }
+  .nav-links a {
+    text-decoration: none; color: var(--text2);
+    padding: 0.35rem 0.85rem; border-radius: 8px;
+    font-size: 0.82rem; transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    background: rgba(85,85,255,0.15);
+    color: #fff; border-color: var(--accent);
+  }
+
+  /* ===== PAGE TABS ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(135deg, #10102a 0%, #080818 60%, #0a0a20 100%);
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at center, rgba(85,85,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(85,85,255,0.15);
+    border: 1px solid var(--accent);
+    color: var(--accent2);
+    padding: 0.3rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  .hero h1 { font-size: 2.2rem; font-weight: 900; color: #fff; margin-bottom: 0.5rem; }
+  .hero h1 span { color: var(--accent2); }
+  .hero p { color: var(--text2); font-size: 1rem; }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    max-width: 900px;
+    margin: 2rem auto 0;
+  }
+  .quick-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: center;
+  }
+  .quick-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(85,85,255,0.2); }
+  .quick-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .quick-card h3 { font-size: 0.95rem; color: #fff; font-weight: 700; }
+  .quick-card p { font-size: 0.8rem; color: var(--text2); margin-top: 0.3rem; }
+
+  /* ===== CONTENT ===== */
+  .content { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+  }
+  .section.green::before { background: linear-gradient(180deg, var(--accent3), #00a080); }
+  .section.orange::before { background: linear-gradient(180deg, var(--accent5), #ff8800); }
+  .section.red::before { background: linear-gradient(180deg, var(--accent4), #cc4444); }
+
+  .section-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon { font-size: 1.6rem; }
+  .section h2 { font-size: 1.2rem; font-weight: 800; color: var(--accent2); }
+  .section h3 { font-size: 1rem; font-weight: 700; color: var(--accent3); margin: 1.2rem 0 0.5rem; }
+  .section p { color: #c0c0d8; font-size: 0.95rem; margin-bottom: 0.7rem; line-height: 1.9; }
+  .section ul { list-style: none; margin: 0.5rem 0 0.8rem; }
+  .section ul li {
+    color: #c0c0d8; font-size: 0.93rem;
+    padding: 0.45rem 1.2rem 0.45rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+  }
+  .section ul li:last-child { border-bottom: none; }
+  .section ul li::before { content: '▸'; position: absolute; right: 0; color: var(--accent); }
+
+  .code-block {
+    background: #06060f;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin: 0.8rem 0;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 0.88rem;
+    color: #e0e0ff;
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+    line-height: 1.8;
+  }
+  .kw { color: #7c7cff; font-weight: 700; }
+  .str { color: #4ade80; }
+  .cmt { color: #555580; font-style: italic; }
+  .num { color: #ffaa55; }
+  .fn { color: #00d4aa; }
+  .type { color: #ff8888; }
+
+  .highlight-box {
+    background: rgba(85,85,255,0.08);
+    border: 1px solid rgba(85,85,255,0.3);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+    font-size: 0.93rem;
+    color: #c0c0f0;
+    line-height: 1.8;
+  }
+  .highlight-box.green { background: rgba(0,212,170,0.08); border-color: rgba(0,212,170,0.3); color: #a0ffe0; }
+  .highlight-box.yellow { background: rgba(255,170,0,0.08); border-color: rgba(255,170,0,0.3); color: #ffe0a0; }
+  .highlight-box.red { background: rgba(255,107,107,0.08); border-color: rgba(255,107,107,0.3); color: #ffa0a0; }
+
+  .diff-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  .diff-table th { background: rgba(85,85,255,0.2); color: var(--accent2); padding: 0.7rem 1rem; text-align: right; border: 1px solid var(--border); }
+  .diff-table td { padding: 0.65rem 1rem; border: 1px solid var(--border); color: #c0c0d8; vertical-align: top; }
+  .diff-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* ===== GLOSSARY ===== */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .term-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem;
+    transition: border-color 0.2s;
+  }
+  .term-card:hover { border-color: var(--accent); }
+  .term-card .term-en {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--accent3);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .term-card .term-ar {
+    font-size: 0.95rem;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .term-card .term-def { font-size: 0.85rem; color: var(--text2); line-height: 1.7; }
+  .term-card .term-ex {
+    margin-top: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent5);
+    background: rgba(0,0,0,0.3);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    direction: ltr;
+    text-align: left;
+  }
+
+  /* ===== EXAM ===== */
+  .exam-header {
+    text-align: center;
+    padding: 3rem 2rem 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .exam-header h1 { font-size: 1.9rem; font-weight: 900; color: #fff; margin-bottom: 0.5rem; }
+  .exam-header p { color: var(--text2); }
+
+  .exam-controls {
+    max-width: 900px; margin: 1.5rem auto;
+    padding: 0 1.5rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .progress-wrap { flex: 1; min-width: 200px; }
+  .progress-bar-bg {
+    height: 8px; background: var(--surface2);
+    border-radius: 4px; overflow: hidden; margin-bottom: 0.4rem;
+  }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; transition: width 0.4s; }
+  .progress-label { font-size: 0.82rem; color: var(--text2); }
+  .score-badge {
+    background: rgba(85,85,255,0.15); border: 1px solid var(--accent);
+    border-radius: 10px; padding: 0.4rem 1rem;
+    font-size: 0.9rem; color: var(--accent2); font-weight: 700;
+  }
+
+  .question-wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+  .q-card {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 0.3s ease;
+  }
+  .q-card.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .q-meta {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .q-num-badge {
+    background: rgba(85,85,255,0.2); border: 1px solid var(--accent);
+    color: var(--accent2); padding: 0.25rem 0.75rem;
+    border-radius: 20px; font-size: 0.78rem; font-weight: 700; letter-spacing: 1px;
+  }
+  .q-topic { font-size: 0.78rem; color: var(--text3); }
+  .q-text { font-size: 1.05rem; color: #fff; font-weight: 600; margin-bottom: 1.2rem; line-height: 1.7; }
+  .code-snip {
+    background: #06060f; border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.9rem 1.2rem; margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+    color: #e0e0ff; direction: ltr; text-align: left; overflow-x: auto; line-height: 1.7;
+  }
+  .options { display: flex; flex-direction: column; gap: 0.65rem; }
+  .opt-btn {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1.2rem;
+    color: #c0c0d8;
+    font-size: 0.93rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: right;
+    font-family: 'Cairo', sans-serif;
+  }
+  .opt-btn:hover:not(:disabled) { background: rgba(85,85,255,0.12); border-color: var(--accent); color: #fff; }
+  .opt-btn.correct { background: rgba(74,222,128,0.12) !important; border-color: var(--green) !important; color: var(--green) !important; }
+  .opt-btn.wrong { background: rgba(248,113,113,0.1) !important; border-color: var(--red) !important; color: var(--red) !important; }
+  .opt-btn:disabled { cursor: not-allowed; }
+
+  .explanation {
+    display: none;
+    margin-top: 1rem;
+    background: rgba(85,85,255,0.08);
+    border: 1px solid rgba(85,85,255,0.25);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    color: #c0c0f0;
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--accent2); }
+
+  .q-nav { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+  .nav-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.6rem 1.4rem;
+    color: var(--text2); font-size: 0.88rem;
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'Cairo', sans-serif;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: #fff; }
+  .nav-btn.primary { background: rgba(85,85,255,0.2); border-color: var(--accent); color: var(--accent2); font-weight: 700; }
+  .nav-btn.primary:hover { background: rgba(85,85,255,0.35); }
+
+  .result-screen {
+    display: none; max-width: 600px; margin: 3rem auto;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 3rem 2rem;
+    text-align: center;
+  }
+  .result-screen.show { display: block; }
+  .result-emoji { font-size: 4rem; margin-bottom: 1rem; }
+  .result-score { font-size: 3rem; font-weight: 900; color: var(--accent2); margin-bottom: 0.5rem; }
+  .result-label { font-size: 1.2rem; color: #fff; font-weight: 700; margin-bottom: 0.5rem; }
+  .result-sub { color: var(--text2); font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .restart-btn {
+    background: rgba(85,85,255,0.2); border: 1px solid var(--accent);
+    color: var(--accent2); padding: 0.8rem 2rem;
+    border-radius: 10px; font-size: 1rem;
+    cursor: pointer; font-family: 'Cairo', sans-serif;
+    font-weight: 700; transition: all 0.2s;
+  }
+  .restart-btn:hover { background: rgba(85,85,255,0.4); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.5rem; }
+    .nav-links { gap: 0.25rem; }
+    .nav-links a { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
+    .section { padding: 1.2rem; }
+    .q-card { padding: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>CS</span>503 — C++</div>
+  <ul class="nav-links">
+    <li><a href="./index.html" class="active" >🏠 الرئيسية</a></li>
+    <li><a href="#" onclick="showPage('lec3', this)">📖 محاضرة 3</a></li>
+    <li><a href="#" onclick="showPage('lec4', this)">📖 محاضرة 4</a></li>
+    <li><a href="#" onclick="showPage('glossary', this)">📚 مصطلحات</a></li>
+    <li><a href="#" onclick="showPage('exam', this)">🎯 امتحان شامل</a></li>
+  </ul>
+</nav>
+
+<!-- ===================== HOME ===================== -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge">CS503 — DIPLOMA C++</div>
+    <h1>مراجعة شاملة <span>المحاضرات 3 و 4</span></h1>
+    <p>Nested If / Switch / Loops — مع امتحان نهائي 40 سؤال على الـ 4 محاضرات</p>
+    <div class="cards-grid">
+      <div class="quick-card" onclick="showPage('lec3', document.querySelectorAll('.nav-links a')[1])">
+        <div class="icon">🔀</div>
+        <h3>محاضرة 3</h3>
+        <p>Nested if / switch / break / default</p>
+      </div>
+      <div class="quick-card" onclick="showPage('lec4', document.querySelectorAll('.nav-links a')[2])">
+        <div class="icon">🔁</div>
+        <h3>محاضرة 4</h3>
+        <p>while / do-while / for / break / continue</p>
+      </div>
+      <div class="quick-card" onclick="showPage('glossary', document.querySelectorAll('.nav-links a')[3])">
+        <div class="icon">📚</div>
+        <h3>المصطلحات</h3>
+        <p>جميع مصطلحات الـ 4 محاضرات</p>
+      </div>
+      <div class="quick-card" onclick="showPage('exam', document.querySelectorAll('.nav-links a')[4])">
+        <div class="icon">🎯</div>
+        <h3>الامتحان الشامل</h3>
+        <p>40 سؤال بأسلوب امتحانات الجامعة</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LECTURE 3 ===================== -->
+<div id="page-lec3" class="page">
+  <div class="hero" style="padding: 2.5rem 2rem;">
+    <div class="hero-badge">LECTURE 3</div>
+    <h1>الجمل الشرطية المتداخلة <span>& Switch</span></h1>
+    <p>Nested if-else — Switch Statement — Break & Default</p>
+  </div>
+  <div class="content">
+
+    <!-- Nested If -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">🔀</span>
+        <h2>Nested If — الـ if المتداخل</h2>
+      </div>
+      <p>الـ <strong>Nested if</strong> هو ببساطة إنك تحط if جواه if تاني. ده بيخليك تفحص أكتر من شرط على التسلسل.</p>
+      <h3>الصيغة (Multiway if-else)</h3>
+      <div class="code-block">
+<span class="kw">if</span> (Boolean_Expression_1)
+    Statement_1
+<span class="kw">else if</span> (Boolean_Expression_2)
+    Statement_2
+<span class="cmt">// ... ممكن أكتر</span>
+<span class="kw">else if</span> (Boolean_Expression_n)
+    Statement_n
+<span class="kw">else</span>
+    Statement_For_All_Other_Possibilities</div>
+
+      <h3>مثال 1 — تحقق من الإشارة</h3>
+      <div class="code-block">
+<span class="kw">int</span> x;
+<span class="fn">cout</span> &lt;&lt; <span class="str">"أدخل رقم: "</span>;
+<span class="fn">cin</span> &gt;&gt; x;
+<span class="kw">if</span>(x &lt; <span class="num">0</span>)
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"-ve"</span>;
+<span class="kw">else if</span>(x &gt; <span class="num">0</span>)
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"+ve"</span>;
+<span class="kw">else</span>
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"zero"</span>;</div>
+
+      <h3>مثال 2 — نظام الدرجات</h3>
+      <div class="code-block">
+<span class="kw">int</span> score;
+<span class="fn">cin</span> &gt;&gt; score;
+<span class="kw">if</span>(score &gt;= <span class="num">85</span>)        <span class="fn">cout</span> &lt;&lt; <span class="str">"Excellent"</span>;
+<span class="kw">else if</span>(score &gt;= <span class="num">75</span>) <span class="fn">cout</span> &lt;&lt; <span class="str">"Very Good"</span>;
+<span class="kw">else if</span>(score &gt;= <span class="num">65</span>) <span class="fn">cout</span> &lt;&lt; <span class="str">"Good"</span>;
+<span class="kw">else if</span>(score &gt;= <span class="num">50</span>) <span class="fn">cout</span> &lt;&lt; <span class="str">"Pass"</span>;
+<span class="kw">else if</span>(score &gt;= <span class="num">0</span>)  <span class="fn">cout</span> &lt;&lt; <span class="str">"Fail"</span>;
+<span class="kw">else</span>                 <span class="fn">cout</span> &lt;&lt; <span class="str">"Invalid"</span>;</div>
+
+      <div class="highlight-box yellow">⚡ <strong>ملاحظة مهمة:</strong> في الـ else-if المتسلسلة، بمجرد ما شرط واحد يتحقق، باقي الشروط مش بتتفحص — ده بيخلي الكود أسرع وأوفر.</div>
+    </div>
+
+    <!-- Switch -->
+    <div class="section green">
+      <div class="section-header">
+        <span class="section-icon">🎛️</span>
+        <h2>Switch Statement — جملة التبديل</h2>
+      </div>
+      <p>الـ <strong>switch</strong> بيستخدم لما عندك متغير وعايز تقارنه بقيم ثابتة محددة. هو بديل للـ else-if المتعددة بشكل أنيق.</p>
+
+      <h3>الصيغة</h3>
+      <div class="code-block">
+<span class="kw">switch</span> (controlling_expression)
+{
+    <span class="kw">case</span> Constant_1:
+        Statement_Sequence_1;
+        <span class="kw">break</span>;
+    <span class="kw">case</span> Constant_2:
+        Statement_Sequence_2;
+        <span class="kw">break</span>;
+    <span class="cmt">// ...</span>
+    <span class="kw">default</span>:
+        Default_Statement;
+}</div>
+
+      <h3>الأنواع المسموح بها في switch</h3>
+      <ul>
+        <li><strong>int</strong> — أعداد صحيحة</li>
+        <li><strong>char</strong> — حرف واحد</li>
+        <li><strong>bool</strong> — true/false (1/0)</li>
+        <li><strong>enum</strong> — قيم مخصصة</li>
+        <li>❌ <strong>float/double</strong> — غير مسموح! الكود مش هيكمبايل</li>
+      </ul>
+
+      <h3>مثال — آلة حاسبة</h3>
+      <div class="code-block">
+<span class="kw">char</span> op;
+<span class="kw">int</span> a, b;
+<span class="fn">cin</span> &gt;&gt; a &gt;&gt; b &gt;&gt; op;
+<span class="kw">switch</span>(op)
+{
+    <span class="kw">case</span> <span class="str">'+'</span>: <span class="fn">cout</span> &lt;&lt; a+b; <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'-'</span>: <span class="fn">cout</span> &lt;&lt; a-b; <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'*'</span>: <span class="fn">cout</span> &lt;&lt; a*b; <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'/'</span>:
+        <span class="kw">if</span>(b == <span class="num">0</span>) <span class="fn">cout</span> &lt;&lt; <span class="str">"Error: div by zero"</span>;
+        <span class="kw">else</span> <span class="fn">cout</span> &lt;&lt; a/b;
+        <span class="kw">break</span>;
+    <span class="kw">default</span>: <span class="fn">cout</span> &lt;&lt; <span class="str">"Invalid operator"</span>;
+}</div>
+
+      <h3>تجميع الـ cases (Fallthrough مقصود)</h3>
+      <div class="code-block">
+<span class="kw">switch</span>(ch)
+{
+    <span class="kw">case</span> <span class="str">'a'</span>:
+    <span class="kw">case</span> <span class="str">'e'</span>:
+    <span class="kw">case</span> <span class="str">'i'</span>:
+    <span class="kw">case</span> <span class="str">'o'</span>:
+    <span class="kw">case</span> <span class="str">'u'</span>: <span class="fn">cout</span> &lt;&lt; <span class="str">"Vowel"</span>; <span class="kw">break</span>;
+    <span class="kw">default</span>: <span class="fn">cout</span> &lt;&lt; <span class="str">"Consonant"</span>;
+}</div>
+      <div class="highlight-box">💡 لو نسيت الـ <code>break</code>، البرنامج هيكمل في الـ case التالي (Fallthrough) — ده في الغالب بيكون خطأ لو مش متعمد!</div>
+    </div>
+
+    <!-- If vs Switch -->
+    <div class="section orange">
+      <div class="section-header">
+        <span class="section-icon">⚖️</span>
+        <h2>if مقابل switch — الفرق والاختيار</h2>
+      </div>
+      <table class="diff-table">
+        <tr><th>الـ if-else</th><th>الـ switch</th></tr>
+        <tr><td>يقبل أي شرط (مقارنات، نطاقات، تعبيرات منطقية)</td><td>يقبل مقارنة التساوي فقط مع قيم ثابتة</td></tr>
+        <tr><td>يقبل float/double</td><td>لا يقبل float/double</td></tr>
+        <tr><td>أبطأ مع أشروط كتيرة</td><td>أسرع في الحالات الكتيرة (jump table)</td></tr>
+        <tr><td>مرونة أعلى</td><td>كود أنظف وأكثر قراءة مع القيم الثابتة</td></tr>
+      </table>
+    </div>
+
+    <!-- Common Pitfalls -->
+    <div class="section red">
+      <div class="section-header">
+        <span class="section-icon">⚠️</span>
+        <h2>أخطاء شائعة ومزالق</h2>
+      </div>
+      <ul>
+        <li><strong>نسيان الـ break في switch</strong> → Fallthrough غير مقصود</li>
+        <li><strong>وضع فاصلة منقوطة بعد switch(x);</strong> → switch بجسم فاضي = بيتجاه كل الـ cases</li>
+        <li><strong>استخدام float في switch</strong> → Compile error</li>
+        <li><strong>case c بدون single quotes</strong> → يتعامل معه كمتغير مش كحرف — Compile error</li>
+        <li><strong>score=50 في المثال</strong>: if(score&gt;=85) false → else { if(score&gt;=75) false → cout&lt;&lt;" and not excellent" } → output: <em>" and not excellent"</em> ثم <em>"program finishes"</em></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== LECTURE 4 ===================== -->
+<div id="page-lec4" class="page">
+  <div class="hero" style="padding: 2.5rem 2rem;">
+    <div class="hero-badge">LECTURE 4</div>
+    <h1>جمل التكرار <span>Loops</span></h1>
+    <p>while — do-while — for — break — continue — Nested Loops</p>
+  </div>
+  <div class="content">
+
+    <!-- Intro -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">🔁</span>
+        <h2>مقدمة — أنواع الحلقات</h2>
+      </div>
+      <p>الـ <strong>loop</strong> بيتيح إنك تكرر كود معين عدد من المرات أو لحد ما شرط معين يتحقق. في C++ عندنا 3 أنواع:</p>
+      <ul>
+        <li><strong>while</strong> — يفحص الشرط أولاً قبل ما يدخل</li>
+        <li><strong>do-while</strong> — ينفذ مرة واحدة على الأقل، يفحص الشرط في الآخر</li>
+        <li><strong>for</strong> — مناسب لما عارف عدد التكرارات مسبقاً</li>
+      </ul>
+      <p>كل loop عنده 4 مكونات: <strong>Initialization</strong> (بداية العداد) | <strong>Condition</strong> (الشرط) | <strong>Body</strong> (الجسم) | <strong>Step/Update</strong> (التحديث)</p>
+    </div>
+
+    <!-- While -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">⚙️</span>
+        <h2>while Loop</h2>
+      </div>
+      <h3>الصيغة</h3>
+      <div class="code-block">
+<span class="type">initialization</span>;
+<span class="kw">while</span> (boolean_expression)
+{
+    statements_to_repeat;
+    <span class="type">update/step</span>;
+}</div>
+      <p><strong>كيف يشتغل:</strong> يفحص الشرط أول → لو false يخرج فوراً → لو true ينفذ الجسم → يرجع يفحص الشرط → يكرر لحد ما الشرط يبقى false.</p>
+      <div class="highlight-box red">⚠️ الـ while ممكن <strong>ما يتنفذ خالص</strong> لو الشرط false من الأول!</div>
+
+      <h3>مثال — طباعة 1 إلى 5</h3>
+      <div class="code-block">
+<span class="kw">int</span> i = <span class="num">1</span>;
+<span class="kw">while</span>(i &lt;= <span class="num">5</span>)
+{
+    <span class="fn">cout</span> &lt;&lt; i;
+    i++;
+}
+<span class="cmt">// Output: 12345</span></div>
+
+      <h3>نسخة مختصرة (Single Statement)</h3>
+      <div class="code-block">
+<span class="kw">int</span> i = <span class="num">1</span>;
+<span class="kw">while</span>(i &lt;= <span class="num">5</span>)
+    <span class="fn">cout</span> &lt;&lt; i++; <span class="cmt">// i++ يطبع أولاً ثم يزيد</span></div>
+    </div>
+
+    <!-- Do-While -->
+    <div class="section green">
+      <div class="section-header">
+        <span class="section-icon">🔂</span>
+        <h2>do-while Loop</h2>
+      </div>
+      <h3>الصيغة</h3>
+      <div class="code-block">
+<span class="type">initialization</span>;
+<span class="kw">do</span>
+{
+    statements_to_repeat;
+    <span class="type">update/step</span>;
+} <span class="kw">while</span>(boolean_expression); <span class="cmt">// ← لا تنسى الفاصلة المنقوطة!</span></div>
+
+      <p><strong>كيف يشتغل:</strong> ينفذ الجسم مرة أولاً → يفحص الشرط → لو true يرجع ينفذ → لو false يخرج.</p>
+      <div class="highlight-box green">✅ الـ do-while <strong>دايماً بينفذ مرة واحدة على الأقل</strong> حتى لو الشرط false من الأول!</div>
+
+      <h3>استخدام عملي — Perfect Number Checker</h3>
+      <div class="code-block">
+<span class="kw">char</span> ch;
+<span class="kw">do</span> {
+    <span class="kw">int</span> num, sum = <span class="num">0</span>;
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"Enter a number: "</span>;
+    <span class="fn">cin</span> &gt;&gt; num;
+    <span class="kw">int</span> i = <span class="num">1</span>;
+    <span class="kw">while</span>(i &lt;= num/<span class="num">2</span>) {
+        <span class="kw">if</span>(num % i == <span class="num">0</span>) sum += i;
+        i++;
+    }
+    <span class="kw">if</span>(sum == num) <span class="fn">cout</span> &lt;&lt; num &lt;&lt; <span class="str">" is perfect\n"</span>;
+    <span class="kw">else</span> <span class="fn">cout</span> &lt;&lt; num &lt;&lt; <span class="str">" is NOT perfect\n"</span>;
+    <span class="fn">cout</span> &lt;&lt; <span class="str">"Try another? (y/n): "</span>;
+    <span class="fn">cin</span> &gt;&gt; ch;
+} <span class="kw">while</span>(ch == <span class="str">'y'</span> || ch == <span class="str">'Y'</span>);</div>
+    </div>
+
+    <!-- For -->
+    <div class="section orange">
+      <div class="section-header">
+        <span class="section-icon">🔢</span>
+        <h2>for Loop</h2>
+      </div>
+      <h3>الصيغة</h3>
+      <div class="code-block">
+<span class="kw">for</span> (<span class="type">initialization</span>; <span class="type">condition</span>; <span class="type">update</span>)
+{
+    body;
+}</div>
+
+      <p>الـ for loop بيجمع الـ initialization والـ condition والـ update في سطر واحد — بيكون أنسب لما عارف عدد التكرارات من الأول.</p>
+
+      <h3>مثال — جمع الأعداد من a إلى b</h3>
+      <div class="code-block">
+<span class="kw">int</span> a, b, sum = <span class="num">0</span>;
+<span class="fn">cin</span> &gt;&gt; a &gt;&gt; b;
+<span class="kw">for</span>(<span class="kw">int</span> x = a; x &lt;= b; x++)
+    sum += x;
+<span class="fn">cout</span> &lt;&lt; sum;</div>
+
+      <h3>while مقابل for — نفس الكود</h3>
+      <div class="code-block">
+<span class="cmt">// while version</span>
+sum = <span class="num">0</span>; n = <span class="num">1</span>;
+<span class="kw">while</span>(n &lt;= <span class="num">10</span>) { sum += n; n++; }
+
+<span class="cmt">// for version — أنظف وأقصر</span>
+sum = <span class="num">0</span>;
+<span class="kw">for</span>(n = <span class="num">1</span>; n &lt;= <span class="num">10</span>; n++) sum += n;</div>
+
+      <h3>مثال — الأعداد الزوجية من 300 إلى 1000</h3>
+      <div class="code-block">
+<span class="kw">for</span>(<span class="kw">int</span> x = <span class="num">300</span>; x &lt;= <span class="num">1000</span>; x += <span class="num">2</span>)
+    <span class="fn">cout</span> &lt;&lt; x &lt;&lt; <span class="str">"\t"</span>;</div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">⚖️</span>
+        <h2>مقارنة الـ 3 أنواع — متى تستخدم كل واحدة؟</h2>
+      </div>
+      <table class="diff-table">
+        <tr><th>الحالة</th><th>أفضل نوع</th></tr>
+        <tr><td>تعرف عدد التكرارات مسبقاً</td><td>for loop</td></tr>
+        <tr><td>مش عارف عدد التكرارات وممكن يكون صفر</td><td>while loop</td></tr>
+        <tr><td>مش عارف عدد التكرارات لكن لازم تنفذ مرة واحدة على الأقل</td><td>do-while loop</td></tr>
+      </table>
+      <table class="diff-table" style="margin-top:1rem">
+        <tr><th>الـ while</th><th>الـ do-while</th></tr>
+        <tr><td>يفحص الشرط في الأول (Pre-check)</td><td>يفحص الشرط في الآخر (Post-check)</td></tr>
+        <tr><td>ممكن ما يتنفذ خالص</td><td>دايماً بينفذ مرة على الأقل</td></tr>
+        <tr><td>مناسب للبحث والفلترة</td><td>مناسب لقوائم "هل تريد الاستمرار؟"</td></tr>
+      </table>
+    </div>
+
+    <!-- Break & Continue -->
+    <div class="section red">
+      <div class="section-header">
+        <span class="section-icon">⏹️</span>
+        <h2>break & continue</h2>
+      </div>
+      <h3>break — الخروج الفوري من الـ loop</h3>
+      <div class="code-block">
+<span class="kw">for</span>(<span class="kw">int</span> a = <span class="num">2</span>; a &lt; num/<span class="num">2</span>; a++)
+{
+    <span class="kw">if</span>(num % a == <span class="num">0</span>)
+    {
+        isPrime = <span class="num">0</span>;
+        <span class="kw">break</span>; <span class="cmt">// خرج من الـ loop فوراً</span>
+    }
+}</div>
+      <div class="highlight-box">⚡ في الـ nested loops، الـ break بيخرج من الـ loop الداخلي فقط — مش من الكل!</div>
+
+      <h3>continue — تخطي الـ iteration الحالية</h3>
+      <div class="code-block">
+<span class="kw">for</span>(<span class="kw">int</span> i = <span class="num">0</span>; i &lt; <span class="num">50</span>; i++)
+{
+    <span class="kw">if</span>(i % <span class="num">5</span> == <span class="num">0</span>)
+        <span class="kw">continue</span>; <span class="cmt">// تخطى الأرقام المقسومة على 5</span>
+    <span class="fn">cout</span> &lt;&lt; i &lt;&lt; <span class="str">"\t"</span>;
+}</div>
+      <div class="highlight-box yellow">💡 <strong>continue</strong> بيتخطى باقي الكود في الـ iteration الحالية ويروح للـ iteration الجاية مباشرة.</div>
+    </div>
+
+    <!-- Nested Loops -->
+    <div class="section green">
+      <div class="section-header">
+        <span class="section-icon">🔲</span>
+        <h2>Nested Loops — الحلقات المتداخلة</h2>
+      </div>
+      <p>الـ nested loop هو loop جوه loop. كل مرة الـ outer loop بيمشي خطوة، الـ inner loop بيكمل كل تكراراته.</p>
+
+      <h3>مثال — مثلث أرقام</h3>
+      <div class="code-block">
+<span class="kw">for</span>(<span class="kw">int</span> l = <span class="num">1</span>; l &lt;= <span class="num">5</span>; l++)
+{
+    <span class="kw">for</span>(<span class="kw">int</span> n = <span class="num">1</span>; n &lt;= l; n++)
+        <span class="fn">cout</span> &lt;&lt; n;
+    <span class="fn">cout</span> &lt;&lt; <span class="fn">endl</span>;
+}
+<span class="cmt">// Output:
+// 1
+// 12
+// 123
+// 1234
+// 12345</span></div>
+
+      <h3>مثال — مثلث نجوم مرتكز</h3>
+      <div class="code-block">
+<span class="kw">for</span>(<span class="kw">int</span> l = <span class="num">1</span>; l &lt;= <span class="num">5</span>; l++)
+{
+    <span class="kw">for</span>(<span class="kw">int</span> n = <span class="num">1</span>; n &lt;= <span class="num">5</span>-l; n++) <span class="fn">cout</span> &lt;&lt; <span class="str">" "</span>;  <span class="cmt">// مسافات</span>
+    <span class="kw">for</span>(<span class="kw">int</span> s = <span class="num">1</span>; s &lt;= <span class="num">2</span>*l-<span class="num">1</span>; s++) <span class="fn">cout</span> &lt;&lt; <span class="str">"*"</span>; <span class="cmt">// نجوم</span>
+    <span class="fn">cout</span> &lt;&lt; <span class="fn">endl</span>;
+}
+<span class="cmt">// Output:
+//     *
+//    ***
+//   *****
+//  *******
+// *********</span></div>
+    </div>
+
+    <!-- Infinite Loop -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">♾️</span>
+        <h2>Infinite Loop — حلقة لا نهائية</h2>
+      </div>
+      <p>الـ infinite loop هو loop مش بيوقف — بيحصل لما الشرط ما بيبقاش false أبداً.</p>
+      <div class="code-block">
+<span class="cmt">// خطأ! x دائماً فردي فمش بيوصل 12 أبداً</span>
+x = <span class="num">1</span>;
+<span class="kw">while</span>(x != <span class="num">12</span>)  <span class="cmt">// ← يجب تكون: x &lt; 12</span>
+{
+    <span class="fn">cout</span> &lt;&lt; x &lt;&lt; <span class="fn">endl</span>;
+    x = x + <span class="num">2</span>;
+}</div>
+      <div class="highlight-box red">⚠️ دايماً تأكد إن الـ loop body فيها سطر هيخلي الشرط يبقى false في النهاية!</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== GLOSSARY ===================== -->
+<div id="page-glossary" class="page">
+  <div class="hero" style="padding: 2.5rem 2rem;">
+    <div class="hero-badge">GLOSSARY</div>
+    <h1>📚 قاموس <span>المصطلحات</span></h1>
+    <p>جميع المصطلحات المهمة في الـ 4 محاضرات — بالعربي والانجليزي</p>
+  </div>
+  <div class="content">
+
+    <div class="section">
+      <div class="section-header"><span class="section-icon">🔤</span><h2>محاضرة 1 — الأساسيات</h2></div>
+      <div class="glossary-grid">
+        <div class="term-card">
+          <div class="term-en">Variable</div><div class="term-ar">متغير</div>
+          <div class="term-def">مكان في الذاكرة بيخزن قيمة ممكن تتغير. لازم له اسم ونوع.</div>
+          <div class="term-ex">int age = 20;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Data Type</div><div class="term-ar">نوع البيانات</div>
+          <div class="term-def">بيحدد نوع القيمة المخزنة وحجمها في الذاكرة.</div>
+          <div class="term-ex">int, float, double, char, bool</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Constant (const)</div><div class="term-ar">ثابت</div>
+          <div class="term-def">متغير قيمته مش ممكن تتغير بعد التعريف.</div>
+          <div class="term-ex">const int MAX = 100;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">cout</div><div class="term-ar">إخراج (طباعة)</div>
+          <div class="term-def">يُستخدم لطباعة البيانات على الشاشة.</div>
+          <div class="term-ex">cout &lt;&lt; "Hello";</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">cin</div><div class="term-ar">إدخال</div>
+          <div class="term-def">يُستخدم لقراءة البيانات من لوحة المفاتيح.</div>
+          <div class="term-ex">cin &gt;&gt; x;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">#include &lt;iostream&gt;</div><div class="term-ar">تضمين المكتبة</div>
+          <div class="term-def">لازمة لاستخدام cout و cin. دايماً في أول البرنامج.</div>
+          <div class="term-ex">#include &lt;iostream&gt;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">namespace std</div><div class="term-ar">الـ namespace</div>
+          <div class="term-def">بيوفر عليك كتابة std:: قبل cout و cin وغيرهم.</div>
+          <div class="term-ex">using namespace std;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Integer Division</div><div class="term-ar">قسمة الأعداد الصحيحة</div>
+          <div class="term-def">لو قسمت int على int، الكسر بيتحذف (truncation).</div>
+          <div class="term-ex">5/2 = 2 (مش 2.5)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section green">
+      <div class="section-header"><span class="section-icon">➕</span><h2>محاضرة 2 — العمليات والمؤثرات</h2></div>
+      <div class="glossary-grid">
+        <div class="term-card">
+          <div class="term-en">Operator</div><div class="term-ar">مؤثر / عملية</div>
+          <div class="term-def">رمز بيجري عملية على قيمة أو أكتر (Operands).</div>
+          <div class="term-ex">+, -, *, /, %, ==, !=</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Modulus (%)</div><div class="term-ar">باقي القسمة</div>
+          <div class="term-def">بيرجع الباقي من عملية القسمة.</div>
+          <div class="term-ex">7 % 3 = 1</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Increment (++)</div><div class="term-ar">زيادة بواحد</div>
+          <div class="term-def">i++ يستخدم القيمة أولاً ثم يزيد. ++i يزيد أولاً ثم يستخدم.</div>
+          <div class="term-ex">i++ vs ++i</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Ternary Operator</div><div class="term-ar">المؤثر الثلاثي</div>
+          <div class="term-def">اختصار للـ if-else في سطر واحد.</div>
+          <div class="term-ex">x = (a&gt;b) ? a : b;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Type Casting</div><div class="term-ar">تحويل النوع</div>
+          <div class="term-def">تحويل قيمة من نوع لنوع تاني يدوياً.</div>
+          <div class="term-ex">(double)5/2 = 2.5</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Logical Operators</div><div class="term-ar">العمليات المنطقية</div>
+          <div class="term-def">&&(AND), ||(OR), !(NOT) — للربط بين الشروط.</div>
+          <div class="term-ex">x&gt;0 &amp;&amp; x&lt;10</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Compound Assignment</div><div class="term-ar">التعيين المركب</div>
+          <div class="term-def">+=, -=, *=, /=, %= — صيغ مختصرة.</div>
+          <div class="term-ex">x *= 2 → x = x*2</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Boolean Expression</div><div class="term-ar">تعبير منطقي</div>
+          <div class="term-def">تعبير بيطلع true أو false (1 أو 0).</div>
+          <div class="term-ex">x &gt; 5, a == b</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section orange">
+      <div class="section-header"><span class="section-icon">🔀</span><h2>محاضرة 3 — الجمل الشرطية</h2></div>
+      <div class="glossary-grid">
+        <div class="term-card">
+          <div class="term-en">Nested if</div><div class="term-ar">الـ if المتداخل</div>
+          <div class="term-def">if جواه if لفحص شروط متعددة ومتسلسلة.</div>
+          <div class="term-ex">if(x) { if(y) {...} }</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">else-if chain</div><div class="term-ar">سلسلة else-if</div>
+          <div class="term-def">لاختبار أكتر من حالة. بيوقف عند أول شرط صحيح.</div>
+          <div class="term-ex">if...else if...else</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">switch</div><div class="term-ar">جملة التبديل</div>
+          <div class="term-def">يقارن متغير بقيم ثابتة محددة ويختار الـ case المناسب.</div>
+          <div class="term-ex">switch(x) {case 1:...}</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">case</div><div class="term-ar">حالة</div>
+          <div class="term-def">القيمة الثابتة اللي بيقارن بيها switch.</div>
+          <div class="term-ex">case 'A': ...</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">break (in switch)</div><div class="term-ar">قطع التنفيذ</div>
+          <div class="term-def">يوقف التنفيذ ويخرج من الـ switch. بدونه حصل Fallthrough.</div>
+          <div class="term-ex">break;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">default</div><div class="term-ar">الحالة الافتراضية</div>
+          <div class="term-def">بيتنفذ لو ما حدش من الـ cases اتطابق. زي الـ else.</div>
+          <div class="term-ex">default: cout &lt;&lt; "?";</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Fallthrough</div><div class="term-ar">التسرب للـ case التالي</div>
+          <div class="term-def">لما ما في break، بيكمل تنفيذ الـ case اللي بعده.</div>
+          <div class="term-ex">case 2: cout&lt;&lt;"Two"; (no break)</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Controlling Expression</div><div class="term-ar">التعبير المتحكم</div>
+          <div class="term-def">التعبير جوه switch() اللي بيتحدد على أساسه الـ case.</div>
+          <div class="term-ex">switch(x%2)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><span class="section-icon">🔁</span><h2>محاضرة 4 — الحلقات</h2></div>
+      <div class="glossary-grid">
+        <div class="term-card">
+          <div class="term-en">Loop</div><div class="term-ar">حلقة / تكرار</div>
+          <div class="term-def">تنفيذ جزء من الكود أكتر من مرة.</div>
+          <div class="term-ex">while, do-while, for</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Initialization</div><div class="term-ar">التهيئة</div>
+          <div class="term-def">تعيين القيمة الابتدائية للعداد قبل بدء الحلقة.</div>
+          <div class="term-ex">int i = 1; / for(int i=0;...)</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Loop Condition</div><div class="term-ar">شرط الحلقة</div>
+          <div class="term-def">الشرط اللي لازم يكون true عشان الحلقة تكمل.</div>
+          <div class="term-ex">i &lt;= 10</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Loop Body</div><div class="term-ar">جسم الحلقة</div>
+          <div class="term-def">الكود اللي بيتكرر في كل iteration.</div>
+          <div class="term-ex">{ cout &lt;&lt; i; }</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Step / Update</div><div class="term-ar">الخطوة / التحديث</div>
+          <div class="term-def">التعديل على العداد في نهاية كل iteration.</div>
+          <div class="term-ex">i++ / i+=2 / i--</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Iteration</div><div class="term-ar">تكرار واحد</div>
+          <div class="term-def">دورة واحدة كاملة من تنفيذ جسم الحلقة.</div>
+          <div class="term-ex">كل مرة بيدخل الـ loop</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">break (in loop)</div><div class="term-ar">كسر الحلقة</div>
+          <div class="term-def">يخرج من الحلقة فوراً قبل ما الشرط يبقى false.</div>
+          <div class="term-ex">if(found) break;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">continue</div><div class="term-ar">تخطي الـ iteration</div>
+          <div class="term-def">يتخطى باقي كود الـ iteration الحالية ويروح للـ iteration الجاية.</div>
+          <div class="term-ex">if(i%5==0) continue;</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Infinite Loop</div><div class="term-ar">حلقة لانهائية</div>
+          <div class="term-def">حلقة ما بيكونش فيها شرط خروج صحيح — بيوقف البرنامج.</div>
+          <div class="term-ex">while(true) {...}</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Nested Loop</div><div class="term-ar">حلقة متداخلة</div>
+          <div class="term-def">حلقة جوه حلقة — الـ inner بتكمل كل دوراتها لكل دورة من الـ outer.</div>
+          <div class="term-ex">for(i) { for(j) {...} }</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Counter-Controlled Loop</div><div class="term-ar">حلقة بعداد</div>
+          <div class="term-def">الحلقة اللي بيتحكم فيها عداد معروف عدد مراته مسبقاً.</div>
+          <div class="term-ex">for(i=1; i&lt;=n; i++)</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Sentinel-Controlled Loop</div><div class="term-ar">حلقة بقيمة نهاية</div>
+          <div class="term-def">الحلقة بتوقف لما المستخدم يدخل قيمة خاصة (sentinel).</div>
+          <div class="term-ex">while(x != -1)</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Flag-Controlled Loop</div><div class="term-ar">حلقة بعلامة</div>
+          <div class="term-def">الحلقة بتستخدم متغير bool للتحكم في الخروج.</div>
+          <div class="term-ex">bool found=false; while(!found)</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Pre-test Loop</div><div class="term-ar">حلقة فحص مسبق</div>
+          <div class="term-def">يفحص الشرط قبل التنفيذ — ممكن ما يتنفذش خالص.</div>
+          <div class="term-ex">while loop</div>
+        </div>
+        <div class="term-card">
+          <div class="term-en">Post-test Loop</div><div class="term-ar">حلقة فحص لاحق</div>
+          <div class="term-def">يفحص الشرط بعد التنفيذ — بينفذ مرة على الأقل.</div>
+          <div class="term-ex">do-while loop</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== EXAM ===================== -->
+<div id="page-exam" class="page">
+  <div class="exam-header">
+    <div class="hero-badge">FINAL EXAM</div>
+    <h1>🎯 الامتحان الشامل</h1>
+    <p>40 سؤال على المحاضرات 1، 2، 3، 4 — بأسلوب امتحانات الجامعة</p>
+  </div>
+
+  <div class="exam-controls">
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-fill" id="exam-progress" style="width:2.5%"></div></div>
+      <div class="progress-label" id="exam-label">السؤال 1 من 40</div>
+    </div>
+    <div class="score-badge" id="exam-score">الدرجة: 0 / 40</div>
+  </div>
+
+  <div class="question-wrap" id="exam-questions">
+
+    <!-- Q1 -->
+    <div class="q-card active" id="eq1">
+      <div class="q-meta"><span class="q-num-badge">سؤال 1 / 40</span><span class="q-topic">محاضرة 1 — الأساسيات</span></div>
+      <div class="q-text">ما هو الشرط الأساسي لأي برنامج C++ كي يعمل؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,1)">أ) وجود #include &lt;iostream&gt;</button>
+        <button class="opt-btn" onclick="ans(this,true,1)">ب) وجود دالة main()</button>
+        <button class="opt-btn" onclick="ans(this,false,1)">ج) وجود using namespace std</button>
+        <button class="opt-btn" onclick="ans(this,false,1)">د) وجود متغيرات</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — كل برنامج C++ لازم يحتوي على دالة <code>main()</code> لأن التنفيذ يبدأ منها.</div>
+      <div class="q-nav"><button class="nav-btn primary" onclick="nextQ(1,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" id="eq2">
+      <div class="q-meta"><span class="q-num-badge">سؤال 2 / 40</span><span class="q-topic">محاضرة 1 — أنواع البيانات</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟</div>
+      <div class="code-snip">int x = 1, y = 2;
+double result = x / y;
+cout &lt;&lt; result;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,2)">أ) 0.5</button>
+        <button class="opt-btn" onclick="ans(this,true,2)">ب) 0</button>
+        <button class="opt-btn" onclick="ans(this,false,2)">ج) 0.5000</button>
+        <button class="opt-btn" onclick="ans(this,false,2)">د) خطأ في الكمبايل</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — x/y عملية بين int وint، فالنتيجة 0 (integer division). ثم 0 بيتخزن في result كـ double فتطلع 0.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(2)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(2,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" id="eq3">
+      <div class="q-meta"><span class="q-num-badge">سؤال 3 / 40</span><span class="q-topic">محاضرة 1 — المتغيرات</span></div>
+      <div class="q-text">أي من التالي اسم متغير صحيح في C++؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,3)">أ) 4myVar</button>
+        <button class="opt-btn" onclick="ans(this,false,3)">ب) my-var</button>
+        <button class="opt-btn" onclick="ans(this,true,3)">ج) _myVar</button>
+        <button class="opt-btn" onclick="ans(this,false,3)">د) int</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ج</strong> — اسم المتغير لازم يبدأ بحرف أو underscore. لا يبدأ برقم، لا يحتوي على -، ولا يكون keyword زي int.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(3)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(3,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-card" id="eq4">
+      <div class="q-meta"><span class="q-num-badge">سؤال 4 / 40</span><span class="q-topic">محاضرة 1 — I/O</span></div>
+      <div class="q-text">ما الفرق بين \n و endl في C++؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,4)">أ) لا فرق بينهما تماماً</button>
+        <button class="opt-btn" onclick="ans(this,true,4)">ب) endl ينقل للسطر التالي ويفرغ الـ buffer، \n ينقل للسطر فقط</button>
+        <button class="opt-btn" onclick="ans(this,false,4)">ج) \n أبطأ من endl</button>
+        <button class="opt-btn" onclick="ans(this,false,4)">د) \n لا يعمل في C++</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — endl يعمل سطر جديد + flush للـ output buffer. \n يعمل سطر جديد فقط وأسرع.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(4)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(4,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-card" id="eq5">
+      <div class="q-meta"><span class="q-num-badge">سؤال 5 / 40</span><span class="q-topic">محاضرة 2 — العمليات</span></div>
+      <div class="q-text">ما ناتج العملية التالية؟</div>
+      <div class="code-snip">cout &lt;&lt; 7 / 5;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,5)">أ) 1.4</button>
+        <button class="opt-btn" onclick="ans(this,true,5)">ب) 1</button>
+        <button class="opt-btn" onclick="ans(this,false,5)">ج) 2</button>
+        <button class="opt-btn" onclick="ans(this,false,5)">د) 0</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — قسمة int/int تحذف الكسر. 7/5 = 1.4 لكن النتيجة 1.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(5)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(5,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q-card" id="eq6">
+      <div class="q-meta"><span class="q-num-badge">سؤال 6 / 40</span><span class="q-topic">محاضرة 2 — Modulus</span></div>
+      <div class="q-text">ما ناتج العملية التالية؟</div>
+      <div class="code-snip">cout &lt;&lt; 7 % 5;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,6)">أ) 1</button>
+        <button class="opt-btn" onclick="ans(this,true,6)">ب) 2</button>
+        <button class="opt-btn" onclick="ans(this,false,6)">ج) 1.4</button>
+        <button class="opt-btn" onclick="ans(this,false,6)">د) 0</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — المؤثر % يرجع باقي القسمة. 7 ÷ 5 = 1 والباقي 2.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(6)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(6,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="q-card" id="eq7">
+      <div class="q-meta"><span class="q-num-badge">سؤال 7 / 40</span><span class="q-topic">محاضرة 2 — Increment</span></div>
+      <div class="q-text">ما الفرق بين x++ و ++x عند استخدامهما داخل تعبير؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,7)">أ) لا فرق بينهما</button>
+        <button class="opt-btn" onclick="ans(this,true,7)">ب) x++ يستخدم القيمة الحالية ثم يزيدها — ++x يزيدها أولاً ثم يستخدمها</button>
+        <button class="opt-btn" onclick="ans(this,false,7)">ج) ++x يستخدم القيمة الحالية ثم يزيدها — x++ يزيدها أولاً</button>
+        <button class="opt-btn" onclick="ans(this,false,7)">د) x++ للأعداد الموجبة فقط</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — cout&lt;&lt;i++ يطبع i ثم يزيدها. cout&lt;&lt;++i يزيد i أولاً ثم يطبعها.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(7)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(7,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="q-card" id="eq8">
+      <div class="q-meta"><span class="q-num-badge">سؤال 8 / 40</span><span class="q-topic">محاضرة 2 — Ternary</span></div>
+      <div class="q-text">ما ناتج التعبير الثلاثي التالي؟ (a=5, b=3)</div>
+      <div class="code-snip">int x = (a &gt; b) ? a : b;
+cout &lt;&lt; x;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,8)">أ) 3</button>
+        <button class="opt-btn" onclick="ans(this,true,8)">ب) 5</button>
+        <button class="opt-btn" onclick="ans(this,false,8)">ج) 0</button>
+        <button class="opt-btn" onclick="ans(this,false,8)">د) خطأ في الكمبايل</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — a>b هو 5>3 = true، فالناتج a = 5.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(8)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(8,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="q-card" id="eq9">
+      <div class="q-meta"><span class="q-num-badge">سؤال 9 / 40</span><span class="q-topic">محاضرة 2 — Compound Assignment</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟ (x = 10)</div>
+      <div class="code-snip">x *= 2;
+x -= 5;
+cout &lt;&lt; x;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,9)">أ) 25</button>
+        <button class="opt-btn" onclick="ans(this,true,9)">ب) 15</button>
+        <button class="opt-btn" onclick="ans(this,false,9)">ج) 20</button>
+        <button class="opt-btn" onclick="ans(this,false,9)">د) 10</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — x=10 → x*=2 → x=20 → x-=5 → x=15.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(9)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(9,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="q-card" id="eq10">
+      <div class="q-meta"><span class="q-num-badge">سؤال 10 / 40</span><span class="q-topic">محاضرة 2 — Type Casting</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟</div>
+      <div class="code-snip">cout &lt;&lt; (double)5 / 2;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,10)">أ) 2</button>
+        <button class="opt-btn" onclick="ans(this,true,10)">ب) 2.5</button>
+        <button class="opt-btn" onclick="ans(this,false,10)">ج) 2.0</button>
+        <button class="opt-btn" onclick="ans(this,false,10)">د) 0.5</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — (double)5 يحول 5 لـ double، فالقسمة بتبقى double/int = 2.5.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(10)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(10,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q-card" id="eq11">
+      <div class="q-meta"><span class="q-num-badge">سؤال 11 / 40</span><span class="q-topic">محاضرة 3 — Nested if</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟ (score = 50)</div>
+      <div class="code-snip">if(score >= 85)
+    cout &lt;&lt; "excellent";
+else {
+    if(score >= 75)
+        cout &lt;&lt; "very good ";
+    cout &lt;&lt; "and not excellent";
+}
+cout &lt;&lt; " done";</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,11)">أ) excellent done</button>
+        <button class="opt-btn" onclick="ans(this,true,11)">ب) and not excellent done</button>
+        <button class="opt-btn" onclick="ans(this,false,11)">ج) very good and not excellent done</button>
+        <button class="opt-btn" onclick="ans(this,false,11)">د) done</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — score=50، أول if false → دخل else → score&gt;=75 false → تخطى "very good" → طبع "and not excellent" → طبع " done".</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(11)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(11,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-card" id="eq12">
+      <div class="q-meta"><span class="q-num-badge">سؤال 12 / 40</span><span class="q-topic">محاضرة 3 — Switch</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟</div>
+      <div class="code-snip">int num = 2;
+switch(num) {
+    case 1: cout &lt;&lt; "One ";
+    case 2: cout &lt;&lt; "Two ";
+    case 3: cout &lt;&lt; "Three ";
+    default: cout &lt;&lt; "Default ";
+}</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,12)">أ) Two</button>
+        <button class="opt-btn" onclick="ans(this,false,12)">ب) Two Default</button>
+        <button class="opt-btn" onclick="ans(this,true,12)">ج) Two Three Default</button>
+        <button class="opt-btn" onclick="ans(this,false,12)">د) One Two Three Default</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ج</strong> — بدون break، بعد case 2 يكمل في case 3 و default (Fallthrough). case 1 ما اتنفذش لأن num=2.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(12)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(12,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="q-card" id="eq13">
+      <div class="q-meta"><span class="q-num-badge">سؤال 13 / 40</span><span class="q-topic">محاضرة 3 — Switch Limitations</span></div>
+      <div class="q-text">أي من التالي يسبب Compile Error في الـ switch؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,13)">أ) switch(x) حيث x من نوع int</button>
+        <button class="opt-btn" onclick="ans(this,false,13)">ب) switch(x) حيث x من نوع char</button>
+        <button class="opt-btn" onclick="ans(this,true,13)">ج) switch(x) حيث x من نوع float</button>
+        <button class="opt-btn" onclick="ans(this,false,13)">د) switch(x%2) حيث x من نوع int</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ج</strong> — الـ switch لا يقبل float أو double. يقبل int, char, bool, enum فقط.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(13)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(13,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="q-card" id="eq14">
+      <div class="q-meta"><span class="q-num-badge">سؤال 14 / 40</span><span class="q-topic">محاضرة 3 — Switch with semicolon</span></div>
+      <div class="q-text">ما مشكلة الكود التالي؟</div>
+      <div class="code-snip">switch(x);  // ← لاحظ الفاصلة المنقوطة
+{
+    case 1: cout &lt;&lt; "one"; break;
+    default: cout &lt;&lt; "other";
+}</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,14)">أ) يعمل بشكل طبيعي</button>
+        <button class="opt-btn" onclick="ans(this,true,14)">ب) الـ switch بجسم فاضي — الـ {} بيتعامل معه كـ block عادي وليس جسم الـ switch</button>
+        <button class="opt-btn" onclick="ans(this,false,14)">ج) Compile error لأن ; بعد switch خطأ في الصياغة</button>
+        <button class="opt-btn" onclick="ans(this,false,14)">د) يطبع "other" دايماً</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — الـ ; بعد switch() تعني switch بلا جسم. الـ {} بعده بيبقى block عادي، فالـ cases مش جزء من الـ switch.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(14)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(14,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="q-card" id="eq15">
+      <div class="q-meta"><span class="q-num-badge">سؤال 15 / 40</span><span class="q-topic">محاضرة 3 — Grade System</span></div>
+      <div class="q-text">في نظام الدرجات: ما الدرجة الصحيحة للطالب اللي عنده score = 72؟</div>
+      <div class="code-snip">if(score>=85) cout&lt;&lt;"Excellent";
+else if(score>=75) cout&lt;&lt;"Very Good";
+else if(score>=65) cout&lt;&lt;"Good";
+else if(score>=50) cout&lt;&lt;"Pass";
+else if(score>=0) cout&lt;&lt;"Fail";</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,15)">أ) Very Good</button>
+        <button class="opt-btn" onclick="ans(this,true,15)">ب) Good</button>
+        <button class="opt-btn" onclick="ans(this,false,15)">ج) Pass</button>
+        <button class="opt-btn" onclick="ans(this,false,15)">د) Fail</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — 72 أقل من 75 فـ "Very Good" ما اتنفذتش. 72 أكبر من أو يساوي 65 فـ "Good" هي الصحيحة.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(15)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(15,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="q-card" id="eq16">
+      <div class="q-meta"><span class="q-num-badge">سؤال 16 / 40</span><span class="q-topic">محاضرة 4 — while</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟</div>
+      <div class="code-snip">int i = 1;
+while(i &lt;= 5)
+    cout &lt;&lt; i++;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,16)">أ) 23456</button>
+        <button class="opt-btn" onclick="ans(this,true,16)">ب) 12345</button>
+        <button class="opt-btn" onclick="ans(this,false,16)">ج) 1234</button>
+        <button class="opt-btn" onclick="ans(this,false,16)">د) حلقة لانهائية</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — i++ يطبع القيمة الحالية ثم يزيد. i=1 يطبع 1 ثم i=2... حتى i=5 يطبع 5 ثم i=6 فالشرط يكون false.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(16)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(16,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="q-card" id="eq17">
+      <div class="q-meta"><span class="q-num-badge">سؤال 17 / 40</span><span class="q-topic">محاضرة 4 — do-while</span></div>
+      <div class="q-text">كم مرة يتنفذ الكود التالي؟</div>
+      <div class="code-snip">int x = 10;
+do {
+    cout &lt;&lt; x;
+    x++;
+} while(x &lt; 5);</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,17)">أ) صفر مرات — الشرط false من الأول</button>
+        <button class="opt-btn" onclick="ans(this,true,17)">ب) مرة واحدة فقط — يطبع 10</button>
+        <button class="opt-btn" onclick="ans(this,false,17)">ج) خمس مرات</button>
+        <button class="opt-btn" onclick="ans(this,false,17)">د) حلقة لانهائية</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — do-while بينفذ مرة واحدة على الأقل. يطبع 10، ثم x=11، يفحص 11&lt;5 = false، فيخرج.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(17)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(17,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="q-card" id="eq18">
+      <div class="q-meta"><span class="q-num-badge">سؤال 18 / 40</span><span class="q-topic">محاضرة 4 — for loop</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟</div>
+      <div class="code-snip">for(int i = 1; i &lt;= 4; i++)
+    cout &lt;&lt; i * 2 &lt;&lt; " ";</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,18)">أ) 1 2 3 4</button>
+        <button class="opt-btn" onclick="ans(this,false,18)">ب) 2 4 6 8 10</button>
+        <button class="opt-btn" onclick="ans(this,true,18)">ج) 2 4 6 8</button>
+        <button class="opt-btn" onclick="ans(this,false,18)">د) 1 3 5 7</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ج</strong> — i*2 لما i=1,2,3,4 يطلع 2,4,6,8.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(18)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(18,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="q-card" id="eq19">
+      <div class="q-meta"><span class="q-num-badge">سؤال 19 / 40</span><span class="q-topic">محاضرة 4 — break</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟</div>
+      <div class="code-snip">for(int i = 1; i &lt;= 10; i++) {
+    if(i == 5) break;
+    cout &lt;&lt; i &lt;&lt; " ";
+}</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,true,19)">أ) 1 2 3 4</button>
+        <button class="opt-btn" onclick="ans(this,false,19)">ب) 1 2 3 4 5</button>
+        <button class="opt-btn" onclick="ans(this,false,19)">ج) 5 6 7 8 9 10</button>
+        <button class="opt-btn" onclick="ans(this,false,19)">د) 1 2 3 4 6 7 8 9 10</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: أ</strong> — لما i=5 يتنفذ break فالحلقة تخرج. الأرقام المطبوعة 1,2,3,4 فقط.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(19)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(19,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="q-card" id="eq20">
+      <div class="q-meta"><span class="q-num-badge">سؤال 20 / 40</span><span class="q-topic">محاضرة 4 — continue</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟</div>
+      <div class="code-snip">for(int i = 1; i &lt;= 5; i++) {
+    if(i == 3) continue;
+    cout &lt;&lt; i &lt;&lt; " ";
+}</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,20)">أ) 1 2</button>
+        <button class="opt-btn" onclick="ans(this,true,20)">ب) 1 2 4 5</button>
+        <button class="opt-btn" onclick="ans(this,false,20)">ج) 3 4 5</button>
+        <button class="opt-btn" onclick="ans(this,false,20)">د) 1 2 3 4 5</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — لما i=3 تتنفذ continue فيتخطى الطباعة لـ i=3. باقي الأرقام 1,2,4,5 بيتطبعوا.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(20)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(20,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q21 -->
+    <div class="q-card" id="eq21">
+      <div class="q-meta"><span class="q-num-badge">سؤال 21 / 40</span><span class="q-topic">محاضرة 4 — Nested loops</span></div>
+      <div class="q-text">كم مرة تتطبع النجمة * في الكود التالي؟</div>
+      <div class="code-snip">for(int i = 1; i &lt;= 3; i++)
+    for(int j = 1; j &lt;= 4; j++)
+        cout &lt;&lt; "*";</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,21)">أ) 7</button>
+        <button class="opt-btn" onclick="ans(this,false,21)">ب) 3</button>
+        <button class="opt-btn" onclick="ans(this,true,21)">ج) 12</button>
+        <button class="opt-btn" onclick="ans(this,false,21)">د) 4</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ج</strong> — الـ outer loop 3 مرات × الـ inner loop 4 مرات = 12 مرة إجمالاً.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(21)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(21,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q22 -->
+    <div class="q-card" id="eq22">
+      <div class="q-meta"><span class="q-num-badge">سؤال 22 / 40</span><span class="q-topic">محاضرة 4 — Infinite Loop</span></div>
+      <div class="q-text">أيهم loop لانهائي؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,22)">أ) int x=1; while(x&lt;=5) {cout&lt;&lt;x; x++;}</button>
+        <button class="opt-btn" onclick="ans(this,true,22)">ب) int x=1; while(x!=12) {cout&lt;&lt;x; x+=2;}</button>
+        <button class="opt-btn" onclick="ans(this,false,22)">ج) for(int i=0; i&lt;10; i++) cout&lt;&lt;i;</button>
+        <button class="opt-btn" onclick="ans(this,false,22)">د) do {x++;} while(x&lt;100);</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — x تبدأ من 1 وتزيد بـ 2 (1,3,5,7,9,11,13...) ما بتوصلش 12 أبداً لأنها تتخطاه! الصح لازم يكون !=12 أو &lt;12.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(22)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(22,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q23 -->
+    <div class="q-card" id="eq23">
+      <div class="q-meta"><span class="q-num-badge">سؤال 23 / 40</span><span class="q-topic">محاضرة 4 — do-while vs while</span></div>
+      <div class="q-text">ما الفرق الجوهري بين while و do-while؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,23)">أ) while أسرع من do-while</button>
+        <button class="opt-btn" onclick="ans(this,true,23)">ب) while يفحص الشرط قبل التنفيذ — do-while يفحصه بعد التنفيذ</button>
+        <button class="opt-btn" onclick="ans(this,false,23)">ج) do-while لا يستخدم شرطاً</button>
+        <button class="opt-btn" onclick="ans(this,false,23)">د) لا فرق بينهما عملياً</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — while ممكن ما يتنفذش خالص لو الشرط false. do-while بينفذ مرة واحدة على الأقل بغض النظر.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(23)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(23,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q24 -->
+    <div class="q-card" id="eq24">
+      <div class="q-meta"><span class="q-num-badge">سؤال 24 / 40</span><span class="q-topic">محاضرة 4 — Power</span></div>
+      <div class="q-text">الكود التالي بيحسب إيه؟ (a=2, b=3)</div>
+      <div class="code-snip">int power = 1;
+for(int x = 1; x &lt;= b; x++)
+    power *= a;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,24)">أ) a + b = 5</button>
+        <button class="opt-btn" onclick="ans(this,false,24)">ب) a × b = 6</button>
+        <button class="opt-btn" onclick="ans(this,true,24)">ج) a^b = 8</button>
+        <button class="opt-btn" onclick="ans(this,false,24)">د) b^a = 9</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ج</strong> — الكود يضرب a في نفسه b مرات. 2×2×2 = 8 = 2³.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(24)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(24,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q25 -->
+    <div class="q-card" id="eq25">
+      <div class="q-meta"><span class="q-num-badge">سؤال 25 / 40</span><span class="q-topic">محاضرة 4 — for syntax</span></div>
+      <div class="q-text">في for(int i=0; i&lt;10; i++) — ما ترتيب تنفيذ المكونات؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,25)">أ) condition → initialization → body → update</button>
+        <button class="opt-btn" onclick="ans(this,true,25)">ب) initialization → condition → body → update → condition → body → ...</button>
+        <button class="opt-btn" onclick="ans(this,false,25)">ج) initialization → body → condition → update</button>
+        <button class="opt-btn" onclick="ans(this,false,25)">د) body → initialization → condition → update</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — initialization بيتنفذ مرة واحدة فقط في الأول. ثم الدورة: condition فحص → body تنفيذ → update تحديث → رجوع للـ condition.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(25)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(25,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q26 -->
+    <div class="q-card" id="eq26">
+      <div class="q-meta"><span class="q-num-badge">سؤال 26 / 40</span><span class="q-topic">محاضرة 4 — Loop without body</span></div>
+      <div class="q-text">ما تأثير الـ ; في نهاية الـ for التالي؟</div>
+      <div class="code-snip">for(int i=0; i&lt;5; i++);
+cout &lt;&lt; "Done";</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,26)">أ) Compile error</button>
+        <button class="opt-btn" onclick="ans(this,false,26)">ب) يطبع "Done" 5 مرات</button>
+        <button class="opt-btn" onclick="ans(this,true,26)">ج) for بجسم فاضي — يطبع "Done" مرة واحدة بعد الـ loop</button>
+        <button class="opt-btn" onclick="ans(this,false,26)">د) حلقة لانهائية</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ج</strong> — الـ ; يعني for بلا جسم. الـ loop يشتغل 5 مرات بدون أي تنفيذ، ثم cout "Done" يتنفذ مرة واحدة.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(26)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(26,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q27 -->
+    <div class="q-card" id="eq27">
+      <div class="q-meta"><span class="q-num-badge">سؤال 27 / 40</span><span class="q-topic">محاضرة 3 — Switch vowels</span></div>
+      <div class="q-text">ما الأمثل لكتابة switch يتعامل مع الـ vowels (a,e,i,o,u) بنفس الطريقة؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,27)">أ) case 'a','e','i','o','u': cout&lt;&lt;"Vowel"; break;</button>
+        <button class="opt-btn" onclick="ans(this,true,27)">ب) case 'a': case 'e': case 'i': case 'o': case 'u': cout&lt;&lt;"Vowel"; break;</button>
+        <button class="opt-btn" onclick="ans(this,false,27)">ج) case 'a' || 'e' || 'i': cout&lt;&lt;"Vowel"; break;</button>
+        <button class="opt-btn" onclick="ans(this,false,27)">د) case ('a','e','i','o','u'): cout&lt;&lt;"Vowel"; break;</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — لتجميع cases بنفس الكود، بنكتبهم على التوالي بدون break وبعدين نحط الكود والـ break في الأخير.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(27)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(27,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q28 -->
+    <div class="q-card" id="eq28">
+      <div class="q-meta"><span class="q-num-badge">سؤال 28 / 40</span><span class="q-topic">محاضرة 4 — Summation</span></div>
+      <div class="q-text">ما قيمة sum بعد تنفيذ الكود التالي؟</div>
+      <div class="code-snip">int sum = 0;
+for(int i = 1; i &lt;= 5; i++)
+    sum += i;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,28)">أ) 10</button>
+        <button class="opt-btn" onclick="ans(this,true,28)">ب) 15</button>
+        <button class="opt-btn" onclick="ans(this,false,28)">ج) 5</button>
+        <button class="opt-btn" onclick="ans(this,false,28)">د) 20</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — 1+2+3+4+5 = 15.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(28)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(28,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q29 -->
+    <div class="q-card" id="eq29">
+      <div class="q-meta"><span class="q-num-badge">سؤال 29 / 40</span><span class="q-topic">محاضرة 4 — Triangle pattern</span></div>
+      <div class="q-text">الكود التالي بيرسم إيه؟</div>
+      <div class="code-snip">for(int l=1; l&lt;=3; l++) {
+    for(int n=1; n&lt;=l; n++)
+        cout &lt;&lt; n;
+    cout &lt;&lt; endl;
+}</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,29)">أ) 1 / 22 / 333</button>
+        <button class="opt-btn" onclick="ans(this,true,29)">ب) 1 / 12 / 123</button>
+        <button class="opt-btn" onclick="ans(this,false,29)">ج) 123 / 12 / 1</button>
+        <button class="opt-btn" onclick="ans(this,false,29)">د) 1 / 2 / 3</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — l=1: يطبع 1. l=2: يطبع 1,2. l=3: يطبع 1,2,3. كل سطر يبدأ من 1.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(29)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(29,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q30 -->
+    <div class="q-card" id="eq30">
+      <div class="q-meta"><span class="q-num-badge">سؤال 30 / 40</span><span class="q-topic">محاضرة 3 — Choosing if vs switch</span></div>
+      <div class="q-text">أي من التالي لا يمكن تحويله لـ switch؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,30)">أ) if(x==1) / else if(x==2)</button>
+        <button class="opt-btn" onclick="ans(this,true,30)">ب) if(x&gt;0 && x&lt;100)</button>
+        <button class="opt-btn" onclick="ans(this,false,30)">ج) if(ch=='a') / else if(ch=='b')</button>
+        <button class="opt-btn" onclick="ans(this,false,30)">د) if(flag==true)</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — الـ switch لا يدعم النطاقات والشروط المعقدة. يدعم المقارنة بقيمة ثابتة فقط.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(30)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(30,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q31 -->
+    <div class="q-card" id="eq31">
+      <div class="q-meta"><span class="q-num-badge">سؤال 31 / 40</span><span class="q-topic">محاضرة 1 — const</span></div>
+      <div class="q-text">ما الخطأ في الكود التالي؟</div>
+      <div class="code-snip">const int MAX = 100;
+MAX = 200;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,31)">أ) يعمل بشكل طبيعي — MAX بيصبح 200</button>
+        <button class="opt-btn" onclick="ans(this,true,31)">ب) Compile error — لا يمكن تغيير قيمة الـ const</button>
+        <button class="opt-btn" onclick="ans(this,false,31)">ج) Runtime error</button>
+        <button class="opt-btn" onclick="ans(this,false,31)">د) Warning فقط</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — الـ const بعد تعريفه مش ممكن تغير قيمته. أي محاولة لتغييره بتسبب Compile error.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(31)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(31,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q32 -->
+    <div class="q-card" id="eq32">
+      <div class="q-meta"><span class="q-num-badge">سؤال 32 / 40</span><span class="q-topic">محاضرة 2 — Logical operators</span></div>
+      <div class="q-text">ما ناتج التعبير التالي؟ (x=5, y=10)</div>
+      <div class="code-snip">cout &lt;&lt; (x &gt; 3 &amp;&amp; y &lt; 8);</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,32)">أ) 1 (true)</button>
+        <button class="opt-btn" onclick="ans(this,true,32)">ب) 0 (false)</button>
+        <button class="opt-btn" onclick="ans(this,false,32)">ج) خطأ في الكمبايل</button>
+        <button class="opt-btn" onclick="ans(this,false,32)">د) غير محدد</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — x>3 هو 5>3 = true. y&lt;8 هو 10&lt;8 = false. true AND false = false = 0.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(32)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(32,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q33 -->
+    <div class="q-card" id="eq33">
+      <div class="q-meta"><span class="q-num-badge">سؤال 33 / 40</span><span class="q-topic">محاضرة 4 — do-while syntax</span></div>
+      <div class="q-text">ما الخطأ في كتابة do-while التالية؟</div>
+      <div class="code-snip">do {
+    cout &lt;&lt; x;
+    x++;
+} while(x &lt; 10)</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,33)">أ) الـ {} غير صحيحة</button>
+        <button class="opt-btn" onclick="ans(this,true,33)">ب) ناقص ; في نهاية while(x &lt; 10)</button>
+        <button class="opt-btn" onclick="ans(this,false,33)">ج) do لا يحتاج {}</button>
+        <button class="opt-btn" onclick="ans(this,false,33)">د) لا يوجد خطأ</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — do-while لازم تنتهي بفاصلة منقوطة بعد الشرط: } while(condition);</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(33)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(33,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q34 -->
+    <div class="q-card" id="eq34">
+      <div class="q-meta"><span class="q-num-badge">سؤال 34 / 40</span><span class="q-topic">محاضرة 4 — Prime number</span></div>
+      <div class="q-text">في كود فحص الأعداد الأولية التالي، لماذا نستخدم break؟</div>
+      <div class="code-snip">for(int a = 2; a &lt; num/2; a++) {
+    if(num % a == 0) {
+        isPrime = 0;
+        break;
+    }
+}</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,34)">أ) لأن break مطلوب في كل for</button>
+        <button class="opt-btn" onclick="ans(this,true,34)">ب) لو وجدنا قاسم واحد، العدد مش أولي — نوقف البحث فوراً لتوفير الوقت</button>
+        <button class="opt-btn" onclick="ans(this,false,34)">ج) break بيعيد قيمة isPrime</button>
+        <button class="opt-btn" onclick="ans(this,false,34)">د) break بيمنع الـ loop من التكرار</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — بمجرد لقاء قاسم، العدد مش أولي. الـ break يوقف البحث فوراً بدل ما نكمل باقي الأرقام عبثاً — كفاءة أعلى.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(34)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(34,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q35 -->
+    <div class="q-card" id="eq35">
+      <div class="q-meta"><span class="q-num-badge">سؤال 35 / 40</span><span class="q-topic">محاضرة 2 — Precedence</span></div>
+      <div class="q-text">ما ناتج التعبير التالي؟ (a=2, b=3, c=4)</div>
+      <div class="code-snip">cout &lt;&lt; a + b * c;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,35)">أ) 20</button>
+        <button class="opt-btn" onclick="ans(this,true,35)">ب) 14</button>
+        <button class="opt-btn" onclick="ans(this,false,35)">ج) 24</button>
+        <button class="opt-btn" onclick="ans(this,false,35)">د) 9</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — الضرب له أولوية على الجمع. b*c = 3*4 = 12، ثم a+12 = 2+12 = 14.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(35)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(35,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q36 -->
+    <div class="q-card" id="eq36">
+      <div class="q-meta"><span class="q-num-badge">سؤال 36 / 40</span><span class="q-topic">محاضرة 3 — Nested switch</span></div>
+      <div class="q-text">في الـ switch للآلة الحاسبة، لماذا نحتاج nested switch داخل case '/'؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,36)">أ) لأن / لا تعمل بدون nested switch</button>
+        <button class="opt-btn" onclick="ans(this,true,36)">ب) للتحقق من أن المقسوم عليه مش صفر قبل القسمة</button>
+        <button class="opt-btn" onclick="ans(this,false,36)">ج) لإضافة عمليات أكتر</button>
+        <button class="opt-btn" onclick="ans(this,false,36)">د) مش ضروري يكون nested</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — القسمة على صفر Division by Zero تسبب crash في البرنامج. الـ nested switch (أو if) بيتحقق من num2==0 أولاً.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(36)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(36,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q37 -->
+    <div class="q-card" id="eq37">
+      <div class="q-meta"><span class="q-num-badge">سؤال 37 / 40</span><span class="q-topic">محاضرة 4 — Even numbers</span></div>
+      <div class="q-text">الكود التالي بيطبع الأعداد الزوجية من 300 إلى 1000 بطريقتين — أيهم أكفأ؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,37)">أ) for(x=300;x&lt;=1000;x++) if(x%2==0) cout&lt;&lt;x — أكفأ</button>
+        <button class="opt-btn" onclick="ans(this,true,37)">ب) for(x=300;x&lt;=1000;x+=2) cout&lt;&lt;x — أكفأ لأن عدد iterations أقل</button>
+        <button class="opt-btn" onclick="ans(this,false,37)">ج) كلاهم بنفس الكفاءة</button>
+        <button class="opt-btn" onclick="ans(this,false,37)">د) الأولى أكفأ لأنها أقرأ</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — x+=2 بيتخطى الأرقام الفردية مباشرة (350 iteration بدل 700). أما x++ مع if بيفحص كل عدد وبيعمل modulus عملية إضافية.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(37)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(37,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q38 -->
+    <div class="q-card" id="eq38">
+      <div class="q-meta"><span class="q-num-badge">سؤال 38 / 40</span><span class="q-topic">محاضرة 4 — Perfect Number</span></div>
+      <div class="q-text">العدد الكامل (Perfect Number) هو العدد الذي يساوي؟</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,38)">أ) مضاعف كل أعداده</button>
+        <button class="opt-btn" onclick="ans(this,true,38)">ب) مجموع قواسمه (ما عدا نفسه)</button>
+        <button class="opt-btn" onclick="ans(this,false,38)">ج) عدداً أولياً</button>
+        <button class="opt-btn" onclick="ans(this,false,38)">د) نصف مجموع قواسمه</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — مثال: 6 = 1+2+3 (قواسم 6 ما عدا 6 نفسه). كذلك 28 = 1+2+4+7+14.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(38)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(38,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q39 -->
+    <div class="q-card" id="eq39">
+      <div class="q-meta"><span class="q-num-badge">سؤال 39 / 40</span><span class="q-topic">محاضرة 3 & 4 — Mixed</span></div>
+      <div class="q-text">ما ناتج الكود التالي؟</div>
+      <div class="code-snip">int sum = 0;
+for(int i = 1; i &lt;= 10; i++) {
+    if(i % 2 == 0) continue;
+    sum += i;
+}
+cout &lt;&lt; sum;</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,39)">أ) 30</button>
+        <button class="opt-btn" onclick="ans(this,false,39)">ب) 55</button>
+        <button class="opt-btn" onclick="ans(this,true,39)">ج) 25</button>
+        <button class="opt-btn" onclick="ans(this,false,39)">د) 20</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ج</strong> — continue بيتخطى الأعداد الزوجية. sum = 1+3+5+7+9 = 25.</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(39)">→ السابق</button><button class="nav-btn primary" onclick="nextQ(39,40)">التالي ←</button></div>
+    </div>
+
+    <!-- Q40 -->
+    <div class="q-card" id="eq40">
+      <div class="q-meta"><span class="q-num-badge">سؤال 40 / 40</span><span class="q-topic">الـ 4 محاضرات — Final</span></div>
+      <div class="q-text">ما ناتج الكود التالي بالكامل؟</div>
+      <div class="code-snip">int x = 3;
+switch(x % 2) {
+    case 0: cout &lt;&lt; "Even "; break;
+    case 1: cout &lt;&lt; "Odd "; break;
+    default: cout &lt;&lt; "Unknown ";
+}
+for(int i = x; i &lt;= x+2; i++)
+    cout &lt;&lt; i &lt;&lt; " ";</div>
+      <div class="options">
+        <button class="opt-btn" onclick="ans(this,false,40)">أ) Even 3 4 5</button>
+        <button class="opt-btn" onclick="ans(this,true,40)">ب) Odd 3 4 5</button>
+        <button class="opt-btn" onclick="ans(this,false,40)">ج) Odd 1 2 3</button>
+        <button class="opt-btn" onclick="ans(this,false,40)">د) Unknown 3 4 5</button>
+      </div>
+      <div class="explanation">✅ <strong>الإجابة: ب</strong> — x=3، x%2=1 → case 1 → "Odd ". ثم for من i=3 إلى i=5: يطبع 3 4 5. النتيجة: "Odd 3 4 5".</div>
+      <div class="q-nav"><button class="nav-btn" onclick="prevQ(40)">→ السابق</button><button class="nav-btn primary" onclick="showResult()">إنهاء الامتحان 🏁</button></div>
+    </div>
+
+  </div>
+
+  <!-- Result Screen -->
+  <div class="result-screen" id="result-screen">
+    <div class="result-emoji" id="result-emoji">🎯</div>
+    <div class="result-score" id="result-num">0/40</div>
+    <div class="result-label" id="result-label">النتيجة</div>
+    <div class="result-sub" id="result-sub">تفاصيل أدائك</div>
+    <button class="restart-btn" onclick="restartExam()">🔄 إعادة الامتحان</button>
+  </div>
+</div>
+
+<script>
+  // ===== PAGE NAVIGATION =====
+  function showPage(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    if(el) el.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  // ===== EXAM LOGIC =====
+  let examScore = 0;
+  let answered = new Array(41).fill(false);
+
+  function ans(btn, correct, qNum) {
+    if(answered[qNum]) return;
+    answered[qNum] = true;
+
+    const opts = btn.parentElement.querySelectorAll('.opt-btn');
+    opts.forEach(o => { o.disabled = true; });
+
+    if(correct) {
+      btn.classList.add('correct');
+      examScore++;
+    } else {
+      btn.classList.add('wrong');
+      // Find and highlight correct
+      opts.forEach(o => {
+        if(o.getAttribute('onclick').includes('true')) o.classList.add('correct');
+      });
+    }
+
+    // Show explanation
+    const card = btn.closest('.q-card');
+    card.querySelector('.explanation').classList.add('show');
+
+    // Update score display
+    document.getElementById('exam-score').textContent = 'الدرجة: ' + examScore + ' / 40';
+  }
+
+  function nextQ(current, total) {
+    const next = current + 1;
+    if(next > total) { showResult(); return; }
+    document.getElementById('eq' + current).classList.remove('active');
+    document.getElementById('eq' + next).classList.add('active');
+    updateProgress(next, total);
+    window.scrollTo({top: document.querySelector('.exam-controls').offsetTop - 80, behavior: 'smooth'});
+  }
+
+  function prevQ(current) {
+    const prev = current - 1;
+    if(prev < 1) return;
+    document.getElementById('eq' + current).classList.remove('active');
+    document.getElementById('eq' + prev).classList.add('active');
+    updateProgress(prev, 40);
+    window.scrollTo({top: document.querySelector('.exam-controls').offsetTop - 80, behavior: 'smooth'});
+  }
+
+  function updateProgress(current, total) {
+    const pct = (current / total) * 100;
+    document.getElementById('exam-progress').style.width = pct + '%';
+    document.getElementById('exam-label').textContent = 'السؤال ' + current + ' من ' + total;
+  }
+
+  function showResult() {
+    document.getElementById('exam-questions').style.display = 'none';
+    const rs = document.getElementById('result-screen');
+    rs.classList.add('show');
+    const pct = Math.round((examScore / 40) * 100);
+    document.getElementById('result-num').textContent = examScore + ' / 40';
+    let emoji, label, sub;
+    if(pct >= 90) { emoji='🏆'; label='ممتاز! إنت جاهز للامتحان!'; }
+    else if(pct >= 75) { emoji='🎉'; label='كويس جداً! مع مراجعة بسيطة هتبهر الكل!'; }
+    else if(pct >= 60) { emoji='💪'; label='كويس! لكن محتاج مراجعة أكتر'; }
+    else if(pct >= 50) { emoji='📚'; label='مقبول — راجع المحاضرات تاني'; }
+    else { emoji='🔄'; label='محتاج مراجعة أعمق — مش هتعدي!'; }
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-label').textContent = label;
+    document.getElementById('result-sub').textContent = 'حصلت على ' + pct + '% — ' + examScore + ' إجابة صح من 40';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function restartExam() {
+    examScore = 0;
+    answered = new Array(41).fill(false);
+    document.getElementById('exam-score').textContent = 'الدرجة: 0 / 40';
+    document.getElementById('exam-progress').style.width = '2.5%';
+    document.getElementById('exam-label').textContent = 'السؤال 1 من 40';
+    document.getElementById('result-screen').classList.remove('show');
+    document.getElementById('exam-questions').style.display = '';
+
+    // Reset all cards
+    document.querySelectorAll('.q-card').forEach((c,i) => {
+      c.classList.remove('active');
+      c.querySelectorAll('.opt-btn').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('correct','wrong');
+      });
+      c.querySelectorAll('.explanation').forEach(e => e.classList.remove('show'));
+    });
+    document.getElementById('eq1').classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+</script>
+
+</body>
+</html>

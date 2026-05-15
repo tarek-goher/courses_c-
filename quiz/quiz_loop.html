@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ Loops Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07090f;
+  --surface: #0e1420;
+  --surface2: #131b2a;
+  --border: #1c2840;
+  --accent: #4f8fff;
+  --accent2: #ff6b35;
+  --green: #34d399;
+  --red: #f87171;
+  --purple: #a78bfa;
+  --text: #dde4f0;
+  --muted: #6b7a99;
+  --code-bg: #080c14;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* TOP BAR */
+.topbar {
+  width: 100%;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-title {
+  font-family: 'Fira Code', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lang-toggle {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  overflow: hidden;
+}
+
+.lang-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.lang-btn.active {
+  background: var(--accent);
+  color: white;
+}
+
+.score-badge {
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  color: var(--green);
+  background: rgba(52,211,153,0.1);
+  border: 1px solid rgba(52,211,153,0.2);
+  padding: 5px 14px;
+  border-radius: 8px;
+}
+
+/* PROGRESS */
+.progress-wrap {
+  width: 100%;
+  max-width: 720px;
+  padding: 20px 24px 0;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.prog-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.prog-label span { color: var(--purple); font-weight: 600; }
+
+.prog-track {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--accent));
+  border-radius: 100px;
+  transition: width 0.5s ease;
+}
+
+/* SLIDE WRAPPER */
+.slide-viewport {
+  width: 100%;
+  max-width: 720px;
+  padding: 24px 24px 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  display: none;
+  animation: fadeSlide 0.35s ease;
+}
+
+.slide.active { display: block; }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* SECTION TAG */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 12px;
+  margin-bottom: 18px;
+}
+
+/* QUESTION CARD */
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+  transition: border-color 0.3s;
+}
+
+.q-card.answered { border-color: rgba(255,255,255,0.06); }
+
+/* TAGS */
+.q-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.tag {
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+}
+
+.tag-for { background: rgba(79,143,255,0.12); color: var(--accent); }
+.tag-nested { background: rgba(255,107,53,0.12); color: var(--accent2); }
+.tag-while { background: rgba(167,139,250,0.12); color: var(--purple); }
+.tag-dowhile { background: rgba(52,211,153,0.12); color: var(--green); }
+.tag-hard { background: rgba(248,113,113,0.1); color: var(--red); }
+
+/* QUESTION TEXT */
+.q-num-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.q-num {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.q-num.ok { color: var(--green); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.1); }
+.q-num.bad { color: var(--red); border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.1); }
+
+.q-text {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.q-text-ar { font-size: 15px; color: var(--muted); line-height: 1.6; margin-top: 4px; }
+
+/* CODE BLOCK */
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin: 18px 0;
+  direction: ltr;
+  overflow-x: auto;
+}
+
+.code-block pre {
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #c9d1e3;
+  white-space: pre;
+}
+
+/* Syntax classes — plain, no colors */
+.kw, .ty, .nm, .fn, .st, .op, .num { color: inherit; }
+.cm { color: #7a8499; font-style: italic; }
+
+/* OPTIONS */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: right;
+  direction: rtl;
+  transition: all 0.2s;
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.opt.code-opt {
+  direction: ltr;
+  text-align: left;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+}
+
+.opt:hover:not(:disabled) {
+  border-color: rgba(79,143,255,0.35);
+  background: rgba(79,143,255,0.05);
+  transform: translateX(-2px);
+}
+
+.opt-letter {
+  min-width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.opt.correct {
+  background: rgba(52,211,153,0.1);
+  border-color: rgba(52,211,153,0.4);
+  color: var(--green);
+}
+.opt.correct .opt-letter { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.4); color: var(--green); }
+
+.opt.wrong {
+  background: rgba(248,113,113,0.08);
+  border-color: rgba(248,113,113,0.35);
+  color: var(--red);
+}
+.opt.wrong .opt-letter { background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.35); color: var(--red); }
+
+.opt:disabled { cursor: not-allowed; }
+
+/* EXPLANATION */
+.explanation {
+  display: none;
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.8;
+  border-right: 3px solid;
+  animation: fadeIn 0.3s ease;
+}
+
+.explanation.show { display: block; }
+.explanation.exp-ok { background: rgba(52,211,153,0.07); border-color: var(--green); }
+.explanation.exp-bad { background: rgba(248,113,113,0.07); border-color: var(--red); }
+
+.exp-main { color: var(--text); margin-bottom: 4px; }
+.exp-ar { color: var(--muted); font-size: 13px; }
+
+/* NAVIGATION */
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 720px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+}
+
+.nav-btn {
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-btn:hover:not(:disabled) { border-color: rgba(79,143,255,0.4); color: var(--accent); }
+.nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.nav-btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  flex: 1;
+}
+
+.nav-btn.primary:hover { opacity: 0.88; }
+
+.dots-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.dot.done { background: var(--green); }
+.dot.wrong { background: var(--red); }
+.dot.active { background: var(--accent); width: 18px; border-radius: 3px; }
+
+/* FINAL SCORE */
+.score-screen {
+  display: none;
+  text-align: center;
+  padding: 40px 28px;
+}
+
+.score-screen.show { display: block; }
+
+.score-ring {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin: 0 auto 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid;
+}
+
+.score-pct {
+  font-family: 'Fira Code', monospace;
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.score-grade {
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.score-msg { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.score-msg-ar { font-size: 16px; color: var(--muted); margin-bottom: 24px; }
+
+.score-stats {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 22px;
+  font-family: 'Fira Code', monospace;
+}
+
+.stat-val { font-size: 24px; font-weight: 600; }
+.stat-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.restart-btn {
+  padding: 14px 40px;
+  background: linear-gradient(135deg, var(--purple), var(--accent));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.restart-btn:hover { opacity: 0.88; transform: scale(1.02); }
+
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+@media (max-width: 600px) {
+  .slide-viewport { padding: 20px 16px 100px; }
+  .q-card { padding: 20px; }
+  .q-text { font-size: 15px; }
+  .code-block pre { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">C++ Loops Quiz</div>
+  <div class="topbar-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ar')">عربي</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+    <div class="score-badge" id="live-score">0 / 40</div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <div class="prog-label">سؤال <span id="prog-cur">1</span> من 40</div>
+    <div class="prog-label" id="prog-done-label">0 تم الإجابة</div>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:2.5%"></div></div>
+</div>
+
+<div class="slide-viewport" id="slide-viewport">
+</div>
+
+<div id="score-screen" class="score-screen"></div>
+
+<div class="nav-bar" id="nav-bar">
+  <button class="nav-btn" id="prev-btn" onclick="go(-1)" disabled>
+    &#8594;
+  </button>
+  <div class="dots-wrap" id="dots-wrap"></div>
+  <button class="nav-btn" id="next-btn" onclick="go(1)">
+    &#8592;
+  </button>
+</div>
+
+<script>
+const TOTAL = 40;
+let current = 0;
+let lang = 'ar';
+let answered = new Array(TOTAL).fill(null); // null | {chosen, correct}
+let score = 0;
+
+const questions = [
+  // ── SECTION A: for loop (Q1-10)
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What is the output?',
+    ar: 'ما هو ناتج الكود التالي؟',
+    code: `for (int i = 0; i < 5; i++) {
+    cout << i << " ";
+}`,
+    options: ['0 1 2 3 4', '1 2 3 4 5', '0 1 2 3 4 5', '1 2 3 4'],
+    answer: 0,
+    expEn: 'i starts at 0, runs while i < 5, so i = 0,1,2,3,4.',
+    expAr: 'i تبدأ من 0 وتستمر طالما i < 5 فتطبع: 0 1 2 3 4'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What is the output?',
+    ar: 'ما هو ناتج الكود التالي؟',
+    code: `for (int i = 0; i < 5; ) {
+    cout << ++i << " ";
+}`,
+    options: ['0 1 2 3 4', '1 2 3 4 5', '0 1 2 3', '1 2 3 4'],
+    answer: 1,
+    expEn: '++i increments BEFORE printing. First print is 1, last is 5 when i becomes 5 (5<5 is false).',
+    expAr: '++i تزيد أولاً ثم تطبع — أول قيمة 1 وآخرها 5'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What is the output?',
+    ar: 'ما هو ناتج الكود التالي؟',
+    code: `for (int i = 0; i < 5; ) {
+    cout << i++ << " ";
+}`,
+    options: ['1 2 3 4 5', '0 1 2 3 4', '0 1 2 3', '1 2 3 4'],
+    answer: 1,
+    expEn: 'i++ prints the CURRENT value then increments. Prints 0,1,2,3,4 then i=5 fails.',
+    expAr: 'i++ تطبع القيمة الحالية ثم تزيد — تطبع 0,1,2,3,4'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'How many times does the loop body execute?',
+    ar: 'كم مرة يتنفذ جسم الحلقة؟',
+    code: `for (int i = 1; i <= 10; i += 3) {
+    cout << i;
+}`,
+    options: ['3 مرات', '4 مرات', '10 مرات', '5 مرات'],
+    options_en: ['3 times', '4 times', '10 times', '5 times'],
+    answer: 1,
+    expEn: 'i takes values: 1, 4, 7, 10 → 4 iterations (next would be 13 > 10).',
+    expAr: 'i تأخذ: 1, 4, 7, 10 — تتوقف عند 13 > 10 → 4 تكرارات'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What is the value of x printed?',
+    ar: 'ما القيمة المطبوعة لـ x؟',
+    code: `int x = 5;
+for (int i = 0; i < 3; i++) {
+    x += i;
+}
+cout << x;`,
+    options: ['8', '11', '5', '6'],
+    answer: 0,
+    expEn: 'i=0: x=5+0=5 | i=1: x=5+1=6 | i=2: x=6+2=8. Final = 8.',
+    expAr: 'x = 5 + 0 + 1 + 2 = 8'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What is the output?',
+    ar: 'ما هو الناتج؟',
+    code: `for (int i = 10; i > 0; i -= 3) {
+    cout << i << " ";
+}`,
+    options: ['10 7 4 1', '10 7 4', '10 7 4 1 -2', '7 4 1'],
+    answer: 0,
+    expEn: 'i: 10 → 7 → 4 → 1 → -2 (stops, -2 > 0 is false). Prints: 10 7 4 1.',
+    expAr: 'i: 10, 7, 4, 1 ثم -2 أقل من 0 فتتوقف → 10 7 4 1'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What does this print?',
+    ar: 'ماذا يطبع هذا الكود؟',
+    code: `int sum = 0;
+for (int i = 1; i <= 5; i++) {
+    sum += i;
+}
+cout << sum;`,
+    options: ['10', '15', '5', '20'],
+    answer: 1,
+    expEn: '1+2+3+4+5 = 15.',
+    expAr: '1+2+3+4+5 = 15'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `for (int i = 2; i <= 16; i *= 2) {
+    cout << i << " ";
+}`,
+    options: ['2 4 8 16', '1 2 4 8 16', '2 4 8', '4 8 16'],
+    answer: 0,
+    expEn: 'i: 2 → 4 → 8 → 16 → 32 (stops). Prints: 2 4 8 16.',
+    expAr: 'i تضاعف: 2, 4, 8, 16 ثم 32 > 16 فتتوقف'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What does the following print?',
+    ar: 'ماذا يطبع الكود التالي؟',
+    code: `for (int i = 5; i >= 1; i--) {
+    if (i % 2 != 0)
+        cout << i << " ";
+}`,
+    options: ['5 3 1', '5 4 3 2 1', '4 2', '1 3 5'],
+    answer: 0,
+    expEn: 'Prints only odd numbers from 5 down to 1: 5, 3, 1.',
+    expAr: 'يطبع الأعداد الفردية فقط من 5 إلى 1: 5 3 1'
+  },
+  {
+    section: 'for loop — حلقة for',
+    tags: ['for'],
+    en: 'What is the output of this code?',
+    ar: 'ما ناتج هذا الكود؟',
+    code: `int p = 1;
+for (int i = 1; i <= 4; i++) {
+    p *= i;
+}
+cout << p;`,
+    options: ['4', '10', '24', '12'],
+    answer: 2,
+    expEn: '1×2×3×4 = 24 (factorial of 4).',
+    expAr: '1×2×3×4 = 24 (مضروب 4)'
+  },
+
+  // ── SECTION B: nested for (Q11-18)
+  {
+    section: 'nested for — for المتداخلة',
+    tags: ['nested'],
+    en: 'How many times does cout execute?',
+    ar: 'كم مرة يتنفذ cout؟',
+    code: `for (int i = 1; i <= 3; i++) {
+    for (int j = 1; j <= 4; j++) {
+        cout << "*";
+    }
+}`,
+    options: ['7', '12', '3', '4'],
+    answer: 1,
+    expEn: 'Total = outer × inner = 3 × 4 = 12.',
+    expAr: 'المجموع = خارجية × داخلية = 3 × 4 = 12 مرة'
+  },
+  {
+    section: 'nested for — for المتداخلة',
+    tags: ['nested'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `for (int i = 1; i <= 3; i++) {
+    for (int j = 1; j <= i; j++)
+        cout << j;
+    cout << "\\n";
+}`,
+    options: ['1\n12\n123', '1\n22\n333', '123\n123\n123', '1\n23\n456'],
+    answer: 0,
+    expEn: 'Row 1: prints 1. Row 2: prints 12. Row 3: prints 123.',
+    expAr: 'الصف 1: يطبع 1 — الصف 2: يطبع 12 — الصف 3: يطبع 123'
+  },
+  {
+    section: 'nested for — for المتداخلة',
+    tags: ['nested'],
+    en: 'What is the value of sum after execution?',
+    ar: 'ما قيمة sum بعد التنفيذ؟',
+    code: `int sum = 0;
+for (int i = 1; i <= 3; i++) {
+    for (int j = 1; j <= 3; j++) {
+        sum += i * j;
+    }
+}
+cout << sum;`,
+    options: ['36', '18', '9', '27'],
+    answer: 0,
+    expEn: '(1+2+3) × (1+2+3) = 6 × 6 = 36.',
+    expAr: '(1+2+3) × (1+2+3) = 6 × 6 = 36'
+  },
+  {
+    section: 'nested for — for المتداخلة',
+    tags: ['nested'],
+    en: 'What pattern does this print? (each row on new line)',
+    ar: 'ما النمط الذي يطبعه هذا الكود؟',
+    code: `for (int i = 3; i >= 1; i--) {
+    for (int j = 1; j <= i; j++)
+        cout << "* ";
+    cout << "\\n";
+}`,
+    options: ['* * *\n* *\n*', '*\n* *\n* * *', '* * *\n* * *\n* * *', '* *\n* * *\n*'],
+    answer: 0,
+    expEn: 'i=3: 3 stars | i=2: 2 stars | i=1: 1 star. Inverted triangle.',
+    expAr: 'i=3: 3 نجوم — i=2: 2 نجوم — i=1: نجمة. مثلث مقلوب'
+  },
+  {
+    section: 'nested for — for المتداخلة',
+    tags: ['nested'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+        if (i == j)
+            cout << i;
+    }
+}`,
+    options: ['012', '000', '111', '123'],
+    answer: 0,
+    expEn: 'Only prints when i==j: (0,0)→0, (1,1)→1, (2,2)→2. Output: 012.',
+    expAr: 'يطبع فقط عندما i==j: (0,0)→0, (1,1)→1, (2,2)→2 → الناتج: 012'
+  },
+  {
+    section: 'nested for — for المتداخلة',
+    tags: ['nested'],
+    en: 'What is the value of count?',
+    ar: 'ما قيمة count؟',
+    code: `int count = 0;
+for (int i = 1; i <= 4; i++) {
+    for (int j = i; j <= 4; j++) {
+        count++;
+    }
+}
+cout << count;`,
+    options: ['16', '10', '6', '4'],
+    answer: 1,
+    expEn: 'i=1: 4 times | i=2: 3 times | i=3: 2 times | i=4: 1 time → 4+3+2+1 = 10.',
+    expAr: 'i=1: 4 — i=2: 3 — i=3: 2 — i=4: 1 → 4+3+2+1 = 10'
+  },
+  {
+    section: 'nested for — for المتداخلة',
+    tags: ['nested'],
+    en: 'What does this code print?',
+    ar: 'ماذا يطبع هذا الكود؟',
+    code: `for (int i = 1; i <= 3; i++) {
+    for (int j = 1; j <= 3; j++) {
+        if (i + j == 4)
+            cout << i << "+" << j << " ";
+    }
+}`,
+    options: ['1+3 2+2 3+1', '1+2 2+1', '1+3 2+2', '3+1 2+2 1+3'],
+    answer: 0,
+    expEn: 'Pairs where i+j=4: (1,3), (2,2), (3,1). Output: 1+3 2+2 3+1.',
+    expAr: 'الأزواج التي مجموعها 4: (1,3), (2,2), (3,1) → 1+3 2+2 3+1'
+  },
+  {
+    section: 'nested for — for المتداخلة',
+    tags: ['nested'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `int n = 0;
+for (int i = 1; i <= 5; i++) {
+    for (int j = 1; j <= 5; j++) {
+        if (i == j) n++;
+    }
+}
+cout << n;`,
+    options: ['5', '25', '10', '1'],
+    answer: 0,
+    expEn: 'i==j happens exactly 5 times (diagonal of a 5×5 matrix). n = 5.',
+    expAr: 'i==j يحدث 5 مرات (القطر الرئيسي لمصفوفة 5×5) → n = 5'
+  },
+
+  // ── SECTION C: while (Q19-27)
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'What is the output?',
+    ar: 'ما هو الناتج؟',
+    code: `int i = 1;
+while (i <= 5) {
+    cout << i * 2 << " ";
+    i++;
+}`,
+    options: ['1 2 3 4 5', '2 4 6 8 10', '2 4 6 8', '1 3 5 7 9'],
+    answer: 1,
+    expEn: 'Prints i×2 for i = 1,2,3,4,5 → 2, 4, 6, 8, 10.',
+    expAr: 'تطبع i×2 من 1 إلى 5 → 2 4 6 8 10'
+  },
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'How many times does the body execute?',
+    ar: 'كم مرة يتنفذ الجسم؟',
+    code: `int n = 10;
+while (n < 5) {
+    n++;
+}`,
+    options: ['5 مرات', '0 مرات', '10 مرات', '1 مرة'],
+    options_en: ['5 times', '0 times', '10 times', '1 time'],
+    answer: 1,
+    expEn: 'Condition 10 < 5 is FALSE immediately. Body never executes → 0 times.',
+    expAr: 'الشرط 10 < 5 خاطئ من البداية — الجسم لا ينفذ أبداً → 0 مرات'
+  },
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `int n = 1;
+while (n++ < 4) {
+    cout << n << " ";
+}`,
+    options: ['1 2 3 4', '2 3 4', '2 3 4 5', '1 2 3'],
+    answer: 1,
+    expEn: 'n++ checks THEN increments. Check n=1<4→true, n=2, prints 2. ... Check n=4<4→false. Output: 2 3 4.',
+    expAr: 'n++ تفحص ثم تزيد — تطبع 2 ثم 3 ثم 4 ثم تتوقف'
+  },
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'What is the final value of x?',
+    ar: 'ما القيمة النهائية لـ x؟',
+    code: `int x = 1;
+while (x < 100) {
+    x *= 2;
+}
+cout << x;`,
+    options: ['64', '100', '128', '256'],
+    answer: 2,
+    expEn: 'x: 1→2→4→8→16→32→64→128. First value ≥ 100 is 128.',
+    expAr: 'x: 1→2→4→8→16→32→64→128. أول قيمة ≥ 100 هي 128'
+  },
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'What is printed?',
+    ar: 'ماذا يُطبع؟',
+    code: `int a = 5, b = 1;
+while (a > b) {
+    a--;
+    b++;
+}
+cout << a << " " << b;`,
+    options: ['3 3', '2 4', '4 2', '1 5'],
+    answer: 0,
+    expEn: 'a=5,b=1 → a=4,b=2 → a=3,b=3. Now 3>3 is false. Print: 3 3.',
+    expAr: 'a=5,b=1 → a=4,b=2 → a=3,b=3. الشرط 3>3 خاطئ → 3 3'
+  },
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `int i = 0, sum = 0;
+while (i < 5) {
+    i++;
+    if (i % 2 == 0)
+        sum += i;
+}
+cout << sum;`,
+    options: ['6', '9', '10', '12'],
+    answer: 0,
+    expEn: 'i goes 1,2,3,4,5. Even values: 2 and 4. sum = 2+4 = 6.',
+    expAr: 'i من 1 إلى 5. القيم الزوجية: 2 و 4. المجموع = 2+4 = 6'
+  },
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'What is printed?',
+    ar: 'ماذا يُطبع؟',
+    code: `int x = 100;
+while (x > 1) {
+    x /= 10;
+}
+cout << x;`,
+    options: ['1', '10', '100', '0'],
+    answer: 0,
+    expEn: 'x: 100 → 10 → 1. At 1, condition 1>1 is false. Output: 1.',
+    expAr: 'x: 100 → 10 → 1. عند 1 الشرط 1>1 خاطئ → الناتج: 1'
+  },
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'What does this print?',
+    ar: 'ماذا يطبع؟',
+    code: `int i = 1;
+while (i < 20) {
+    i *= 3;
+}
+cout << i;`,
+    options: ['9', '18', '27', '20'],
+    answer: 2,
+    expEn: 'i: 1→3→9→27. At 27 the condition 27<20 is false. Output: 27.',
+    expAr: 'i: 1→3→9→27. عند 27 الشرط خاطئ → الناتج: 27'
+  },
+  {
+    section: 'while loop — حلقة while',
+    tags: ['while'],
+    en: 'What is the value of count?',
+    ar: 'ما قيمة count؟',
+    code: `int n = 64, count = 0;
+while (n > 1) {
+    n /= 2;
+    count++;
+}
+cout << count;`,
+    options: ['5', '6', '7', '4'],
+    answer: 1,
+    expEn: '64→32→16→8→4→2→1. 6 divisions. count = 6.',
+    expAr: '64→32→16→8→4→2→1. 6 قسمات → count = 6'
+  },
+
+  // ── SECTION D: do-while (Q28-35)
+  {
+    section: 'do-while loop — حلقة do-while',
+    tags: ['dowhile'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `int i = 5;
+do {
+    cout << i << " ";
+    i++;
+} while (i < 3);`,
+    options: ['5 6 7', '(لا شيء)', '5', '3 4 5'],
+    options_en: ['5 6 7', '(nothing)', '5', '3 4 5'],
+    answer: 2,
+    expEn: 'do-while executes body FIRST. Prints 5, then checks 6<3 → false. Executes only once.',
+    expAr: 'do-while ينفذ الجسم أولاً — يطبع 5 ثم 6<3 خاطئ → ينفذ مرة واحدة فقط'
+  },
+  {
+    section: 'do-while loop — حلقة do-while',
+    tags: ['dowhile'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `int k = 1;
+do {
+    cout << k << " ";
+    k *= 2;
+} while (k <= 10);`,
+    options: ['1 2 4 8', '1 2 4 8 16', '2 4 8', '1 2 4'],
+    answer: 0,
+    expEn: 'k: prints 1(k=2), 2(k=4), 4(k=8), 8(k=16). 16≤10 false. Output: 1 2 4 8.',
+    expAr: 'k يطبع 1, 2, 4, 8 ثم k=16 > 10 فتتوقف → 1 2 4 8'
+  },
+  {
+    section: 'do-while loop — حلقة do-while',
+    tags: ['dowhile'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `int n = 0;
+do {
+    n += 3;
+    cout << n << " ";
+} while (n < 10);`,
+    options: ['3 6 9', '3 6 9 12', '0 3 6 9', '3 6'],
+    answer: 1,
+    expEn: 'n: 3(print,3<10✓), 6(print,6<10✓), 9(print,9<10✓), 12(print, 12<10✗). Prints 12 too because check is AFTER. Output: 3 6 9 12.',
+    expAr: 'الفحص يحدث بعد الطباعة لذا يُطبع 12 أيضاً → 3 6 9 12'
+  },
+  {
+    section: 'do-while loop — حلقة do-while',
+    tags: ['dowhile'],
+    en: 'What is printed?',
+    ar: 'ماذا يُطبع؟',
+    code: `int x = 10;
+do {
+    x /= 2;
+    cout << x << " ";
+} while (x > 2);`,
+    options: ['5 2', '10 5 2', '5 2 1', '5'],
+    answer: 0,
+    expEn: 'x=10/2=5(print,5>2✓), x=5/2=2(print,2>2✗ stop). Output: 5 2.',
+    expAr: 'x: 10/2=5 (يطبع، 5>2 صحيح), 5/2=2 (يطبع، 2>2 خاطئ) → 5 2'
+  },
+  {
+    section: 'do-while loop — حلقة do-while',
+    tags: ['dowhile'],
+    en: 'When condition is false initially, what happens?',
+    ar: 'ماذا يحدث عندما يكون الشرط خاطئاً من البداية في do-while؟',
+    code: `int x = 10;
+do {
+    cout << "ran!";
+} while (x < 5);`,
+    options: ['لا يطبع شيئاً', 'يطبع ran! مرة واحدة', 'يطبع ran! مرتين', 'خطأ تجميعي'],
+    options_en: ['Prints nothing', 'Prints ran! once', 'Prints ran! twice', 'Compile error'],
+    answer: 1,
+    expEn: 'do-while ALWAYS runs body at least once before checking condition. Prints "ran!" once.',
+    expAr: 'do-while تنفذ الجسم دائماً مرة واحدة على الأقل قبل فحص الشرط → تطبع ran! مرة'
+  },
+  {
+    section: 'do-while loop — حلقة do-while',
+    tags: ['dowhile'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `int i = 1;
+do {
+    if (i % 3 == 0)
+        cout << i << " ";
+    i++;
+} while (i <= 10);`,
+    options: ['3 6 9', '3 6 9 12', '3 6', '6 9'],
+    answer: 0,
+    expEn: 'Prints multiples of 3 up to 10: 3, 6, 9.',
+    expAr: 'تطبع مضاعفات 3 حتى 10: 3, 6, 9'
+  },
+  {
+    section: 'do-while loop — حلقة do-while',
+    tags: ['dowhile'],
+    en: 'What is the final value of sum?',
+    ar: 'ما القيمة النهائية لـ sum؟',
+    code: `int i = 1, sum = 0;
+do {
+    sum += i;
+    i += 2;
+} while (i <= 9);
+cout << sum;`,
+    options: ['25', '20', '15', '30'],
+    answer: 0,
+    expEn: 'Adds odd numbers: 1+3+5+7+9 = 25.',
+    expAr: 'تجمع الأعداد الفردية: 1+3+5+7+9 = 25'
+  },
+  {
+    section: 'do-while loop — حلقة do-while',
+    tags: ['dowhile'],
+    en: 'What is the difference between while and do-while when condition is false initially?',
+    ar: 'ما الفرق بين while و do-while عند شرط خاطئ من البداية؟',
+    code: null,
+    options: [
+      'while: 0 مرة — do-while: مرة واحدة',
+      'كلاهما 0 مرة',
+      'while: مرة — do-while: 0 مرة',
+      'كلاهما مرة واحدة على الأقل'
+    ],
+    options_en: [
+      'while: 0 times — do-while: 1 time',
+      'Both execute 0 times',
+      'while: 1 time — do-while: 0 times',
+      'Both execute at least once'
+    ],
+    answer: 0,
+    expEn: 'while checks condition first → 0 executions if false. do-while executes then checks → always at least 1.',
+    expAr: 'while تفحص أولاً → 0 تنفيذات. do-while تنفذ أولاً → مرة على الأقل دائماً'
+  },
+
+  // ── SECTION E: mixed / advanced (Q36-40)
+  {
+    section: 'mixed & advanced — متقدم',
+    tags: ['for', 'hard'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `for (int i = 1; i <= 3; i++) {
+    int j = i;
+    while (j <= 3) {
+        cout << i + j << " ";
+        j++;
+    }
+}`,
+    options: ['2 3 4 4 5 6', '2 3 4 3 4 5 4 5 6', '1 2 3 2 3 4 3 4 5', '3 4 5 4 5 6'],
+    answer: 0,
+    expEn: 'i=1,j=1→2, j=2→3, j=3→4. i=2,j=2→4, j=3→5. i=3,j=3→6. Output: 2 3 4 4 5 6.',
+    expAr: 'i=1: يطبع 2,3,4 — i=2: يطبع 4,5 — i=3: يطبع 6 → 2 3 4 4 5 6'
+  },
+  {
+    section: 'mixed & advanced — متقدم',
+    tags: ['while', 'hard'],
+    en: 'Which loop type guarantees at least one execution even if condition is false?',
+    ar: 'أي نوع حلقة يضمن التنفيذ مرة على الأقل حتى لو الشرط خاطئ؟',
+    code: null,
+    options: ['for', 'while', 'do-while', 'nested for'],
+    answer: 2,
+    expEn: 'do-while checks condition AFTER the body, guaranteeing at least one execution.',
+    expAr: 'do-while تفحص الشرط بعد الجسم — تضمن تنفيذ الجسم مرة واحدة على الأقل'
+  },
+  {
+    section: 'mixed & advanced — متقدم',
+    tags: ['for', 'hard'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `int result = 0;
+for (int i = 1; i <= 4; i++) {
+    for (int j = 1; j <= i; j++) {
+        result += j;
+    }
+}
+cout << result;`,
+    options: ['20', '30', '10', '24'],
+    answer: 0,
+    expEn: 'i=1:1=1, i=2:1+2=3, i=3:1+2+3=6, i=4:1+2+3+4=10. Total=1+3+6+10=20.',
+    expAr: 'i=1:1, i=2:3, i=3:6, i=4:10 → المجموع=1+3+6+10=20'
+  },
+  {
+    section: 'mixed & advanced — متقدم',
+    tags: ['nested', 'hard'],
+    en: 'What is the output?',
+    ar: 'ما الناتج؟',
+    code: `for (int i = 1; i <= 3; i++) {
+    for (int j = 3; j >= i; j--) {
+        cout << j << " ";
+    }
+    cout << "\\n";
+}`,
+    options: ['3 2 1\n3 2\n3', '1 2 3\n2 3\n3', '3 2 1\n2 1\n1', '3\n3 2\n3 2 1'],
+    answer: 0,
+    expEn: 'i=1: j=3,2,1 → "3 2 1". i=2: j=3,2 → "3 2". i=3: j=3 → "3".',
+    expAr: 'i=1: 3 2 1 — i=2: 3 2 — i=3: 3'
+  },
+  {
+    section: 'mixed & advanced — متقدم',
+    tags: ['for', 'hard'],
+    en: 'What is the value of x after this code?',
+    ar: 'ما قيمة x بعد تنفيذ هذا الكود؟',
+    code: `int x = 0;
+for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+        if (i != j)
+            x++;
+    }
+}
+cout << x;`,
+    options: ['16', '12', '4', '8'],
+    answer: 1,
+    expEn: '4×4 = 16 total pairs. 4 pairs where i==j. So x = 16 - 4 = 12.',
+    expAr: '4×4 = 16 زوج. 4 أزواج i==j. إذن x = 16 - 4 = 12'
+  }
+];
+
+// STATE
+let current_q = 0;
+let lang_mode = 'ar';
+let ans_state = new Array(TOTAL).fill(null);
+let score_val = 0;
+
+function hl(code) {
+  if (!code) return '';
+  return code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function tagClass(t) {
+  return t==='for'?'tag-for':t==='nested'?'tag-nested':t==='while'?'tag-while':t==='dowhile'?'tag-dowhile':'tag-hard';
+}
+
+function tagLabel(t) {
+  return t==='for'?'for':t==='nested'?'nested for':t==='while'?'while':t==='dowhile'?'do-while':'🔥 HARD';
+}
+
+function renderSlides() {
+  const vp = document.getElementById('slide-viewport');
+  vp.innerHTML = '';
+  questions.forEach((q, idx) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (idx === 0 ? ' active' : '');
+    div.id = `slide-${idx}`;
+
+    const isCode = opts => opts.some(o => /^[\d\s\*\+\-\n\\\|]+$/.test(o) || o.includes('\\n') || o.length < 15);
+    const codeClass = isCode(q.options) ? 'code-opt' : '';
+
+    const letters = ['A','B','C','D'];
+    const optsHtml = q.options.map((opt, i) =>
+      `<button class="opt ${codeClass}" id="opt-${idx}-${i}" onclick="pick(${idx},${i})">
+        <span class="opt-letter">${letters[i]}</span>
+        <span>${opt.replace(/\\n/g,'<br>')}</span>
+      </button>`
+    ).join('');
+
+    const codeHtml = q.code
+      ? `<div class="code-block"><pre>${hl(q.code)}</pre></div>`
+      : '';
+
+    const tagsHtml = q.tags.map(t =>
+      `<span class="tag ${tagClass(t)}">${tagLabel(t)}</span>`
+    ).join('');
+
+    div.innerHTML = `
+      <div class="section-label">${q.section}</div>
+      <div class="q-card" id="card-${idx}">
+        <div class="q-tags">${tagsHtml}</div>
+        <div class="q-num-row">
+          <div class="q-num" id="qnum-${idx}">${idx+1}</div>
+          <div>
+            <div class="q-text" id="qt-en-${idx}">${q.en}</div>
+            <div class="q-text-ar" id="qt-ar-${idx}">${q.ar}</div>
+          </div>
+        </div>
+        ${codeHtml}
+        <div class="options" id="opts-${idx}">${optsHtml}</div>
+        <div class="explanation" id="exp-${idx}">
+          <div class="exp-main" id="expm-${idx}"></div>
+          <div class="exp-ar" id="expa-${idx}"></div>
+        </div>
+      </div>`;
+    vp.appendChild(div);
+  });
+  renderDots();
+  applyLang();
+  updateProg();
+}
+
+function renderDots() {
+  const wrap = document.getElementById('dots-wrap');
+  wrap.innerHTML = '';
+  const VISIBLE = 11;
+  const half = Math.floor(VISIBLE/2);
+  let start = Math.max(0, current_q - half);
+  let end = Math.min(TOTAL-1, start + VISIBLE - 1);
+  if (end - start < VISIBLE-1) start = Math.max(0, end - VISIBLE + 1);
+
+  for (let i = start; i <= end; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    if (i === current_q) d.classList.add('active');
+    else if (ans_state[i] !== null) {
+      d.classList.add(ans_state[i].correct ? 'done' : 'wrong');
+    }
+    d.onclick = () => goTo(i);
+    wrap.appendChild(d);
+  }
+}
+
+function pick(qIdx, optIdx) {
+  if (ans_state[qIdx] !== null) return;
+  const q = questions[qIdx];
+  const correct = optIdx === q.answer;
+  ans_state[qIdx] = { chosen: optIdx, correct };
+  if (correct) score_val++;
+
+  for (let i = 0; i < q.options.length; i++) {
+    const btn = document.getElementById(`opt-${qIdx}-${i}`);
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('correct');
+    else if (i === optIdx && !correct) btn.classList.add('wrong');
+  }
+
+  const numEl = document.getElementById(`qnum-${qIdx}`);
+  numEl.classList.add(correct ? 'ok' : 'bad');
+  numEl.textContent = correct ? '✓' : '✗';
+
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  expDiv.classList.add('show', correct ? 'exp-ok' : 'exp-bad');
+  document.getElementById(`expm-${qIdx}`).textContent = (correct?'✅ ':'❌ ') + q.expEn;
+  document.getElementById(`expa-${qIdx}`).textContent = q.expAr;
+
+  document.getElementById(`card-${qIdx}`).classList.add('answered');
+
+  updateProg();
+  renderDots();
+
+  const allDone = ans_state.every(a => a !== null);
+  if (allDone) {
+    setTimeout(showFinal, 600);
+  } else {
+    // Auto-advance after short delay
+    setTimeout(() => {
+      const next = qIdx + 1;
+      if (next < TOTAL && ans_state[next] === null) goTo(next);
+    }, 900);
+  }
+}
+
+function go(dir) {
+  goTo(current_q + dir);
+}
+
+function goTo(idx) {
+  if (idx < 0 || idx >= TOTAL) return;
+  document.getElementById(`slide-${current_q}`).classList.remove('active');
+  current_q = idx;
+  document.getElementById(`slide-${current_q}`).classList.add('active');
+  document.getElementById('prev-btn').disabled = current_q === 0;
+  document.getElementById('next-btn').disabled = current_q === TOTAL - 1;
+  document.getElementById('prog-cur').textContent = current_q + 1;
+  renderDots();
+  applyLang();
+}
+
+function updateProg() {
+  const done = ans_state.filter(a => a !== null).length;
+  const pct = (done / TOTAL * 100).toFixed(1);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-done-label').textContent =
+    lang_mode === 'ar' ? `${done} تم الإجابة` : `${done} answered`;
+  document.getElementById('live-score').textContent = `${score_val} / ${TOTAL}`;
+}
+
+function setLang(l) {
+  lang_mode = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  applyLang();
+  updateProg();
+}
+
+function applyLang() {
+  questions.forEach((q, idx) => {
+    const enEl = document.getElementById(`qt-en-${idx}`);
+    const arEl = document.getElementById(`qt-ar-${idx}`);
+    if (!enEl) return;
+    if (lang_mode === 'ar') {
+      enEl.style.display = 'none';
+      arEl.style.display = 'block';
+    } else {
+      enEl.style.display = 'block';
+      arEl.style.display = 'none';
+    }
+    const opts = (lang_mode === 'en' && q.options_en) ? q.options_en : q.options;
+    for (let i = 0; i < opts.length; i++) {
+      const btn = document.getElementById(`opt-${idx}-${i}`);
+      if (!btn) continue;
+      const textSpan = btn.querySelector('span:last-child');
+      if (textSpan) textSpan.innerHTML = opts[i].replace(/\\n/g,'<br>');
+    }
+    const expMain = document.getElementById(`expm-${idx}`);
+    const expAr = document.getElementById(`expa-${idx}`);
+    if (expMain && expMain.textContent.length > 2) {
+      const prefix = expMain.textContent.startsWith('✅') ? '✅ ' : '❌ ';
+      expMain.textContent = prefix + q.expEn;
+      if (expAr) expAr.style.display = lang_mode === 'ar' ? 'block' : 'none';
+    }
+  });
+  document.getElementById('prog-cur').textContent = current_q + 1;
+}
+
+function showFinal() {
+  document.getElementById('slide-viewport').style.display = 'none';
+  document.getElementById('nav-bar').style.display = 'none';
+
+  const pct = Math.round(score_val / TOTAL * 100);
+  let grade, color, msg, msgAr;
+  if (pct >= 90) { grade='A+'; color='#34d399'; msg='Outstanding!'; msgAr='ممتاز! أتقنت الحلقات!'; }
+  else if (pct >= 80) { grade='A'; color='#34d399'; msg='Excellent work!'; msgAr='عمل ممتاز!'; }
+  else if (pct >= 70) { grade='B'; color='#4f8fff'; msg='Good job!'; msgAr='جيد جداً — راجع الأجزاء الصعبة'; }
+  else if (pct >= 60) { grade='C'; color='#a78bfa'; msg='Average. Keep practicing!'; msgAr='متوسط — تحتاج مزيداً من التدريب'; }
+  else { grade='D'; color='#f87171'; msg='Keep studying!'; msgAr='واصل الدراسة وحاول مجدداً!'; }
+
+  const wrong = ans_state.filter(a => a && !a.correct).length;
+  const sc = document.getElementById('score-screen');
+  sc.classList.add('show');
+  sc.innerHTML = `
+    <div class="q-card" style="max-width:500px; margin:0 auto;">
+      <div class="score-ring" style="border-color:${color}; background:rgba(0,0,0,0.3);">
+        <div class="score-pct" style="color:${color}">${pct}%</div>
+        <div class="score-grade" style="color:${color}">${grade}</div>
+      </div>
+      <div class="score-msg">${msg}</div>
+      <div class="score-msg-ar">${msgAr}</div>
+      <div class="score-stats">
+        <div class="stat-box">
+          <div class="stat-val" style="color:var(--green)">${score_val}</div>
+          <div class="stat-lbl">صحيح / Correct</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" style="color:var(--red)">${wrong}</div>
+          <div class="stat-lbl">خطأ / Wrong</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" style="color:${color}">${pct}%</div>
+          <div class="stat-lbl">النسبة / Score</div>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="restart()">🔄 حاول مجدداً — Try Again</button>
+    </div>`;
+}
+
+function restart() {
+  ans_state = new Array(TOTAL).fill(null);
+  score_val = 0;
+  current_q = 0;
+  document.getElementById('score-screen').classList.remove('show');
+  document.getElementById('score-screen').innerHTML = '';
+  document.getElementById('slide-viewport').style.display = 'block';
+  document.getElementById('nav-bar').style.display = 'flex';
+  renderSlides();
+  goTo(0);
+}
+
+// INIT
+renderSlides();
+goTo(0);
+</script>
+</body>
+</html>
