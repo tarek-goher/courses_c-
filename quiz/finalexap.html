@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS503 — امتحان Computer Programming (1)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Fira+Code:wght@400;500&display=swap');
+
+:root {
+  --bg: #0b0c14;
+  --surface: #13141f;
+  --surface2: #1a1b2e;
+  --border: #252640;
+  --accent: #5b5ff5;
+  --accent2: #818cf8;
+  --green: #4ade80;
+  --green-bg: rgba(74,222,128,0.12);
+  --red: #f87171;
+  --red-bg: rgba(248,113,113,0.12);
+  --text: #e2e4f3;
+  --muted: #7b7d9d;
+  --gold: #fbbf24;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  direction: rtl;
+}
+body.en { direction: ltr; font-family: 'Cairo', sans-serif; }
+
+/* ── NAV ── */
+nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.brand { font-size: 1rem; font-weight: 900; color: var(--accent2); letter-spacing: 1px; }
+.brand span { color: #fff; }
+
+.lang-toggle {
+  display: flex; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 30px; padding: 3px; gap: 2px;
+}
+.lang-btn {
+  padding: .28rem .9rem; border-radius: 20px; border: none;
+  background: transparent; color: var(--muted); font-size: .8rem;
+  font-weight: 700; cursor: pointer; transition: .2s;
+  font-family: 'Cairo', sans-serif;
+}
+.lang-btn.active { background: var(--accent); color: #fff; }
+
+/* ── HEADER ── */
+.exam-header {
+  background: linear-gradient(135deg, #11122a 0%, #0f1020 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 2.2rem 1.5rem 1.8rem;
+  text-align: center;
+}
+.exam-header h1 { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: .3rem; }
+.exam-meta { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: .8rem; }
+.meta-badge {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: .3rem .8rem;
+  font-size: .8rem; color: var(--muted);
+}
+.meta-badge span { color: var(--accent2); font-weight: 700; }
+
+/* ── PROGRESS ── */
+#progress-bar-wrap {
+  background: var(--surface); padding: .8rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 1rem;
+}
+#progress-bar { flex:1; height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+#progress-fill { height:100%; background: linear-gradient(90deg,var(--accent),var(--accent2)); width:0%; transition:.4s; }
+#prog-text { font-size:.8rem; color:var(--muted); white-space:nowrap; }
+#score-disp { font-size:.8rem; color:var(--accent2); white-space:nowrap; }
+
+/* ── SECTION TABS ── */
+.section-tabs {
+  display: flex; gap: .5rem;
+  padding: 1rem 1.5rem .5rem;
+  overflow-x: auto; justify-content: center;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  padding: .35rem 1rem; border-radius: 8px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); font-size: .8rem; cursor: pointer;
+  transition: .2s; font-family: 'Cairo', sans-serif; white-space: nowrap;
+}
+.tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tab-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent2); }
+
+/* ── WRAP ── */
+.quiz-wrap { max-width: 780px; margin: 0 auto; padding: 1.5rem 1.2rem 5rem; }
+
+/* ── SECTION HEADER ── */
+.section-label {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem 1.4rem; margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: .8rem;
+}
+.section-icon { font-size: 1.5rem; }
+.section-title { font-size: 1rem; font-weight: 700; color: #fff; }
+.section-pts { font-size: .8rem; color: var(--gold); margin-top: .1rem; }
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.6rem; margin-bottom: 1.2rem;
+  display: none; animation: fadeUp .3s ease;
+}
+.q-card.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.q-num { font-size: .75rem; color: var(--accent); font-weight: 700; letter-spacing: 2px; margin-bottom: .4rem; }
+.q-text { font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 1.2rem; line-height: 1.7; }
+
+.code-block {
+  background: #090a14; border: 1px solid var(--border);
+  border-radius: 8px; padding: .9rem 1.1rem; margin-bottom: 1rem;
+  font-family: 'Fira Code', monospace; font-size: .82rem;
+  color: #c9d1f5; direction: ltr; text-align: left; overflow-x: auto;
+  line-height: 1.6;
+}
+
+/* ── TRUE/FALSE OPTIONS ── */
+.tf-options { display: flex; gap: .8rem; }
+.tf-btn {
+  flex: 1; padding: .9rem 1rem; border-radius: 10px;
+  border: 1.5px solid var(--border); background: rgba(255,255,255,.02);
+  color: var(--text); font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: .2s; font-family: 'Cairo', sans-serif;
+}
+.tf-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(91,95,245,.1); }
+.tf-btn.correct { background: var(--green-bg) !important; border-color: var(--green) !important; color: var(--green) !important; }
+.tf-btn.wrong   { background: var(--red-bg)   !important; border-color: var(--red)   !important; color: var(--red)   !important; }
+.tf-btn:disabled { cursor: not-allowed; }
+
+/* ── MCQ OPTIONS ── */
+.mc-options { display: flex; flex-direction: column; gap: .6rem; }
+.mc-btn {
+  padding: .85rem 1.1rem; border-radius: 10px;
+  border: 1.5px solid var(--border); background: rgba(255,255,255,.02);
+  color: var(--text); font-size: .93rem; cursor: pointer;
+  transition: .2s; text-align: right; font-family: 'Cairo', sans-serif;
+  line-height: 1.5;
+}
+body.en .mc-btn { text-align: left; }
+.mc-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(91,95,245,.1); }
+.mc-btn.correct { background: var(--green-bg) !important; border-color: var(--green) !important; color: var(--green) !important; }
+.mc-btn.wrong   { background: var(--red-bg)   !important; border-color: var(--red)   !important; color: var(--red)   !important; }
+.mc-btn:disabled { cursor: not-allowed; }
+
+/* ── MCQ with code ── */
+.mc-btn .opt-code {
+  display: block; font-family: 'Fira Code', monospace; font-size: .75rem;
+  direction: ltr; text-align: left; margin-top: .4rem;
+  background: rgba(0,0,0,.3); border-radius: 5px; padding: .4rem .6rem;
+  color: #b0b8e8; white-space: pre;
+}
+
+/* ── EXPLANATION ── */
+.explanation {
+  display: none; margin-top: 1rem;
+  background: rgba(91,95,245,.08); border: 1px solid rgba(91,95,245,.25);
+  border-radius: 10px; padding: .9rem 1.1rem;
+  font-size: .87rem; color: #c0c4f0; line-height: 1.8;
+}
+.explanation.show { display: block; }
+.explanation strong { color: var(--accent2); }
+
+/* ── NAV BUTTONS ── */
+.nav-btns { display: flex; gap: .8rem; justify-content: center; margin-top: 1.4rem; flex-wrap: wrap; }
+.nav-btn {
+  padding: .6rem 1.6rem; border-radius: 9px;
+  border: 1px solid var(--accent); background: transparent;
+  color: var(--accent2); font-size: .9rem; cursor: pointer;
+  transition: .2s; font-family: 'Cairo', sans-serif;
+}
+.nav-btn:hover { background: rgba(91,95,245,.15); }
+.nav-btn.primary { background: var(--accent); color: #fff; border-color: transparent; }
+.nav-btn.primary:hover { opacity: .88; }
+
+/* ── RESULT ── */
+#result-screen {
+  display: none; text-align: center;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 2.5rem 1.5rem; margin-bottom: 2rem;
+}
+.res-emoji { font-size: 3.5rem; margin-bottom: .8rem; }
+.res-score { font-size: 2.8rem; font-weight: 900; color: var(--accent2); margin-bottom: .3rem; }
+.res-label { color: var(--muted); margin-bottom: 1.2rem; font-size: .9rem; }
+.res-breakdown {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;
+}
+.res-sec {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: .6rem 1.2rem; font-size: .85rem;
+}
+.res-sec span { color: var(--accent2); font-weight: 700; }
+.res-msg { font-size: 1rem; color: var(--text); margin-bottom: 1.5rem; }
+.res-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.res-btn {
+  padding: .7rem 1.4rem; border-radius: 10px;
+  font-size: .9rem; font-weight: 700; cursor: pointer;
+  transition: .2s; font-family: 'Cairo', sans-serif; border: none;
+}
+.res-btn.primary { background: var(--accent); color: #fff; }
+.res-btn.secondary { background: transparent; border: 1px solid var(--accent); color: var(--accent2); }
+.res-btn:hover { opacity: .88; transform: translateY(-1px); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><span>CS</span>503 — امتحان Computer Programming (1)</div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('ar',this)">عربي</button>
+    <button class="lang-btn" onclick="setLang('en',this)">English</button>
+  </div>
+</nav>
+
+<div class="exam-header">
+  <h1>🎓 <span class="t" data-ar="امتحان نهاية الفصل — CS503" data-en="Final Exam — CS503"></span></h1>
+  <div class="exam-meta">
+    <div class="meta-badge"><span class="t" data-ar="جامعة القاهرة" data-en="Cairo University"></span></div>
+    <div class="meta-badge"><span class="t" data-ar="الوقت: " data-en="Time: "></span><span>2 <span class="t" data-ar="ساعتان" data-en="Hours"></span></span></div>
+    <div class="meta-badge"><span class="t" data-ar="الدرجة الكلية: " data-en="Total Points: "></span><span>100</span></div>
+    <div class="meta-badge"><span>2024-2025 — <span class="t" data-ar="الفصل الثاني" data-en="2nd Term"></span></span></div>
+  </div>
+</div>
+
+<div id="progress-bar-wrap">
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+  <span id="prog-text"></span>
+  <span id="score-disp"></span>
+</div>
+
+<!-- Section Tabs -->
+<div class="section-tabs">
+  <button class="tab-btn active" onclick="goSection('s1')">
+    <span class="t" data-ar="س١: صح أم خطأ" data-en="Q1: True/False"></span>
+  </button>
+  <button class="tab-btn" onclick="goSection('s2')">
+    <span class="t" data-ar="س٢: اختيار من متعدد" data-en="Q2: MCQ"></span>
+  </button>
+  <button class="tab-btn" onclick="goSection('s3')">
+    <span class="t" data-ar="س٣: ناتج الكود" data-en="Q3: Code Output"></span>
+  </button>
+  <button class="tab-btn" onclick="goSection('s4')">
+    <span class="t" data-ar="س٤: تصحيح الأخطاء" data-en="Q4: Fix Errors"></span>
+  </button>
+</div>
+
+<div class="quiz-wrap">
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 — TRUE / FALSE  (10 Qs × 2 pts)
+══════════════════════════════════════════ -->
+<div id="s1">
+<div class="section-label">
+  <div class="section-icon">✅</div>
+  <div>
+    <div class="section-title t" data-ar="السؤال الأول: صح أم خطأ" data-en="Question One: True or False"></div>
+    <div class="section-pts t" data-ar="10 أسئلة × 2 درجة = 20 درجة" data-en="10 questions × 2 pts = 20 pts"></div>
+  </div>
+</div>
+
+<!-- TF1 -->
+<div class="q-card active" id="tf1" data-section="s1">
+  <div class="q-num">Q1</div>
+  <div class="q-text t" data-ar="الجمل التي تلي else في بناء if-else تُنفَّذ عندما يكون الشرط الذي يلي if صحيحاً (True)." data-en="The statements following else in an if-else construction are executed when the conditional expression following if is True."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,false,'tf1')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,true,'tf1')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>❌ False.</strong><br><span class="t" data-ar="الجمل التي تلي else تُنفَّذ عندما يكون الشرط خاطئاً (False)، وليس صحيحاً." data-en="The else block executes when the condition is FALSE, not True."></span></div>
+  <div class="nav-btns"><button class="nav-btn primary" onclick="nextSlide('tf1','tf2','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button></div>
+</div>
+
+<!-- TF2 -->
+<div class="q-card" id="tf2" data-section="s1">
+  <div class="q-num">Q2</div>
+  <div class="q-text t" data-ar="يمكن للمصفوفة (array) أن تخزّن أنواعاً مختلفة من القيم." data-en="An array can store many different types of values."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,false,'tf2')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,true,'tf2')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>❌ False.</strong><br><span class="t" data-ar="المصفوفة في C++ تخزّن نوعاً واحداً فقط من البيانات." data-en="An array in C++ stores elements of a single data type only."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf2','tf1','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('tf2','tf3','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- TF3 -->
+<div class="q-card" id="tf3" data-section="s1">
+  <div class="q-num">Q3</div>
+  <div class="q-text t" data-ar="جملة switch يمكنها تقييم قيم من نوع float." data-en="The switch statement can evaluate float values."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,false,'tf3')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,true,'tf3')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>❌ False.</strong><br><span class="t" data-ar="switch تعمل فقط مع الأنواع الصحيحة (int, char, enum) ولا تدعم float." data-en="switch only works with integral types (int, char, enum) — float is not supported."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf3','tf2','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('tf3','tf4','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- TF4 -->
+<div class="q-card" id="tf4" data-section="s1">
+  <div class="q-num">Q4</div>
+  <div class="q-text t" data-ar="جملة break في C++ تُستخدم للانتقال إلى بداية هيكل التحكم." data-en="The break statement in C++ is used to go to the beginning of the control structure."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,false,'tf4')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,true,'tf4')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>❌ False.</strong><br><span class="t" data-ar="break تُستخدم للخروج من هيكل التحكم بالكامل، وليس للعودة إلى بدايته. continue هي التي تنتقل للتكرار التالي." data-en="break exits the control structure entirely. It does not return to the beginning — that's what continue does (sort of)."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf4','tf3','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('tf4','tf5','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- TF5 -->
+<div class="q-card" id="tf5" data-section="s1">
+  <div class="q-num">Q5</div>
+  <div class="q-text">
+    <span class="t" data-ar="إذا كان x=5, y=6, z=8، فإن قيمة " data-en="Given x=5, y=6, z=8. The value of "></span>
+    <code style="background:#090a14;padding:.1rem .4rem;border-radius:4px;font-family:'Fira Code',monospace;color:#c9d1f5">!(x&gt;=6)&amp;&amp;(z==8)</code>
+    <span class="t" data-ar=" تساوي 1." data-en=" is 1."></span>
+  </div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,true,'tf5')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,false,'tf5')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>✅ True.</strong><br><span class="t" data-ar="!(x>=6) = !(5>=6) = !(false) = true(1)، و (z==8) = (8==8) = true(1). 1 && 1 = 1." data-en="!(x>=6) = !(5>=6) = !(false) = 1, and (z==8) = 1. So 1 && 1 = 1."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf5','tf4','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('tf5','tf6','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- TF6 -->
+<div class="q-card" id="tf6" data-section="s1">
+  <div class="q-num">Q6</div>
+  <div class="q-text t" data-ar="يمكن الوصول مباشرةً إلى أعضاء الفئة (class) الخاصة (private) من خارج الفئة." data-en="Private class members can be accessed directly outside the class."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,false,'tf6')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,true,'tf6')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>❌ False.</strong><br><span class="t" data-ar="الأعضاء الخاصة (private) لا يمكن الوصول إليها إلا من داخل الفئة نفسها أو من دوال الصديق (friend)." data-en="Private members are only accessible within the class itself (or friend functions)."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf6','tf5','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('tf6','tf7','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- TF7 -->
+<div class="q-card" id="tf7" data-section="s1">
+  <div class="q-num">Q7</div>
+  <div class="q-text t" data-ar="يمكنك زيادة مؤشر (pointer) لنقله إلى موقع الذاكرة التالي." data-en="You can increment a pointer to move it to the next memory location."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,true,'tf7')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,false,'tf7')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>✅ True.</strong><br><span class="t" data-ar="العملية p++ تنقل المؤشر إلى العنصر التالي في الذاكرة بحجم النوع المناسب." data-en="p++ advances the pointer by sizeof(type) bytes to point to the next element."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf7','tf6','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('tf7','tf8','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- TF8 -->
+<div class="q-card" id="tf8" data-section="s1">
+  <div class="q-num">Q8</div>
+  <div class="q-text t" data-ar="حلقة while مضمونة التنفيذ مرة واحدة على الأقل." data-en="The while loop is guaranteed to run at least once."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,false,'tf8')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,true,'tf8')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>❌ False.</strong><br><span class="t" data-ar="حلقة while تفحص الشرط أولاً، فقد لا تُنفَّذ أبداً. do-while هي التي تضمن التنفيذ مرة واحدة." data-en="while checks the condition first, so it may never execute. do-while guarantees at least one execution."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf8','tf7','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('tf8','tf9','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- TF9 -->
+<div class="q-card" id="tf9" data-section="s1">
+  <div class="q-num">Q9</div>
+  <div class="q-text t" data-ar="يمكن تغيير قيمة المتغير المُعرَّف بالكلمة const لاحقاً في البرنامج." data-en="The value of a variable declared with the const keyword can be changed later in the program."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,false,'tf9')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,true,'tf9')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>❌ False.</strong><br><span class="t" data-ar="const تعني أن القيمة ثابتة ولا يمكن تغييرها بعد التعريف. محاولة تغييرها تُسبب خطأ في الترجمة." data-en="const means the value is fixed at declaration and cannot be modified — doing so causes a compile error."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf9','tf8','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('tf9','tf10','s1')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- TF10 -->
+<div class="q-card" id="tf10" data-section="s1">
+  <div class="q-num">Q10</div>
+  <div class="q-text t" data-ar="تحميل الدوال الزائد (Function overloading) يعني استخدام نفس اسم الدالة مع مُعاملات مختلفة." data-en="Function overloading means using the same function name with different parameters."></div>
+  <div class="tf-options">
+    <button class="tf-btn" onclick="answerTF(this,true,'tf10')">True ✓</button>
+    <button class="tf-btn" onclick="answerTF(this,false,'tf10')">False ✗</button>
+  </div>
+  <div class="explanation"><strong>✅ True.</strong><br><span class="t" data-ar="Function overloading يسمح بتعريف دوال متعددة بنفس الاسم لكن بأنواع أو عدد مختلف من المُعاملات." data-en="Function overloading allows multiple functions with the same name but different parameter types or counts."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('tf10','tf9','s1')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="goSection('s2')"><span class="t" data-ar="السؤال الثاني ←" data-en="Question Two →"></span></button>
+  </div>
+</div>
+</div><!-- /s1 -->
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 — MCQ  (10 Qs × 2 pts)
+══════════════════════════════════════════ -->
+<div id="s2" style="display:none">
+<div class="section-label">
+  <div class="section-icon">🔘</div>
+  <div>
+    <div class="section-title t" data-ar="السؤال الثاني: اختر الإجابة الصحيحة" data-en="Question Two: Choose the Correct Answer"></div>
+    <div class="section-pts t" data-ar="10 أسئلة × 2 درجة = 20 درجة" data-en="10 questions × 2 pts = 20 pts"></div>
+  </div>
+</div>
+
+<!-- MC1 -->
+<div class="q-card active" id="mc1" data-section="s2">
+  <div class="q-num">Q1</div>
+  <div class="q-text t" data-ar="اسم المصفوفة في C++ هو في الحقيقة:" data-en="An array name in C++ is actually:"></div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'mc1')"><span class="t" data-ar="أ) فئة (class)" data-en="A) A class"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'mc1')"><span class="t" data-ar="ب) مؤشر إلى العنصر الأول" data-en="B) A pointer to the first element"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc1')"><span class="t" data-ar="ج) كائن (object)" data-en="C) An object"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc1')"><span class="t" data-ar="د) ثابت (constant)" data-en="D) A constant"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong> — <span class="t" data-ar="اسم المصفوفة يُمثّل مؤشراً ثابتاً يشير إلى العنصر الأول في الذاكرة." data-en="The array name is a constant pointer to the first element in memory."></span></div>
+  <div class="nav-btns"><button class="nav-btn primary" onclick="nextSlide('mc1','mc2','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button></div>
+</div>
+
+<!-- MC2 -->
+<div class="q-card" id="mc2" data-section="s2">
+  <div class="q-num">Q2</div>
+  <div class="q-text t" data-ar="ما هو مُحدِّد الوصول الافتراضي لأعضاء struct؟" data-en="What is the default access specifier for struct members?"></div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,true,'mc2')"><span class="t" data-ar="أ) public" data-en="A) public"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc2')"><span class="t" data-ar="ب) internal" data-en="B) internal"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc2')"><span class="t" data-ar="ج) protected" data-en="C) protected"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc2')"><span class="t" data-ar="د) private" data-en="D) private"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ A — public</strong><br><span class="t" data-ar="أعضاء struct عامة (public) افتراضياً، على عكس class التي تكون خاصة (private) افتراضياً." data-en="struct members are public by default, unlike class members which are private by default."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc2','mc1','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('mc2','mc3','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- MC3 -->
+<div class="q-card" id="mc3" data-section="s2">
+  <div class="q-num">Q3</div>
+  <div class="q-text t" data-ar="التكرار (Recursion) هو:" data-en="Recursion is:"></div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'mc3')"><span class="t" data-ar="أ) دالة تستدعي دالة أخرى" data-en="A) A function calling another function"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'mc3')"><span class="t" data-ar="ب) دالة تستدعي نفسها" data-en="B) A function calling itself"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc3')"><span class="t" data-ar="ج) حلقة داخل دالة" data-en="C) A loop inside a function"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc3')"><span class="t" data-ar="د) لا شيء مما سبق" data-en="D) None of the above"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong> — <span class="t" data-ar="التكرار يعني أن الدالة تستدعي نفسها مع شرط أساسي لإيقاف الاستدعاء." data-en="Recursion means a function calls itself, always with a base case to stop infinite calls."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc3','mc2','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('mc3','mc4','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- MC4 -->
+<div class="q-card" id="mc4" data-section="s2">
+  <div class="q-num">Q4</div>
+  <div class="q-text t" data-ar="المعامل new في C++:" data-en="The new operator:"></div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'mc4')"><span class="t" data-ar="أ) يُرجع مؤشراً لمتغير" data-en="A) Returns a pointer to a variable"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc4')"><span class="t" data-ar="ب) ينشئ متغيراً اسمه new" data-en="B) Creates a variable called new"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'mc4')"><span class="t" data-ar="ج) يحجز ذاكرة لمتغير جديد" data-en="C) Obtains memory for a new variable"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc4')"><span class="t" data-ar="د) يُخبر بكمية الذاكرة المتاحة" data-en="D) Tells how much memory is available"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ C</strong> — <span class="t" data-ar="new يحجز ذاكرة ديناميكية في الـ heap ويُرجع مؤشراً إلى المكان المحجوز." data-en="new allocates dynamic memory on the heap and returns a pointer to it."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc4','mc3','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('mc4','mc5','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- MC5 -->
+<div class="q-card" id="mc5" data-section="s2">
+  <div class="q-num">Q5</div>
+  <div class="q-text t" data-ar="ما ناتج الكود التالي؟" data-en="What is the result of the following code?"></div>
+  <div class="code-block">int a = 10, b = 20;
+int c = (a > b) ? a : b;
+cout &lt;&lt; c;</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'mc5')">A) 10</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc5')">B) 30</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'mc5')">C) 20</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc5')">D) Error</button>
+  </div>
+  <div class="explanation"><strong>✅ C — 20</strong><br><span class="t" data-ar="(a > b) = (10 > 20) = false، فتُرجع قيمة b وهي 20." data-en="(a > b) = (10 > 20) = false, so the ternary returns b = 20."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc5','mc4','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('mc5','mc6','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- MC6 -->
+<div class="q-card" id="mc6" data-section="s2">
+  <div class="q-num">Q6</div>
+  <div class="q-text t" data-ar="ما قيمة x بعد تنفيذ الكود التالي؟" data-en="What is the value of x after executing the following code?"></div>
+  <div class="code-block">int x = 0;
+x = ++x * 100 / 2;</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'mc6')">A) 0</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc6')">B) 1</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc6')">C) 50</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'mc6')">D) 50</button>
+  </div>
+  <div class="explanation"><strong>✅ D — 50</strong><br><span class="t" data-ar="++x يجعل x = 1 أولاً، ثم 1 * 100 / 2 = 50." data-en="++x pre-increments x to 1 first, then 1 * 100 / 2 = 50."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc6','mc5','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('mc6','mc7','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- MC7 -->
+<div class="q-card" id="mc7" data-section="s2">
+  <div class="q-num">Q7</div>
+  <div class="q-text t" data-ar="ما الفرق بين class و struct في C++؟" data-en="What is the difference between a class and a struct in C++?"></div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'mc7')"><span class="t" data-ar="أ) لا فرق بينهما" data-en="A) No difference"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'mc7')"><span class="t" data-ar="ب) أعضاء class خاصة افتراضياً، أعضاء struct عامة افتراضياً" data-en="B) Class members are private by default, struct members are public"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc7')"><span class="t" data-ar="ج) class تحتوي دوال، struct لا تستطيع" data-en="C) Class can have functions, struct can't"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc7')"><span class="t" data-ar="د) struct لا يمكنها أن تمتلك constructors" data-en="D) Struct can't have constructors"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong> — <span class="t" data-ar="الفرق الرئيسي هو مُحدِّد الوصول الافتراضي فقط. كلاهما يدعم الدوال والمُنشِئات." data-en="The only real difference is default access: class=private, struct=public. Both support functions and constructors."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc7','mc6','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('mc7','mc8','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- MC8 -->
+<div class="q-card" id="mc8" data-section="s2">
+  <div class="q-num">Q8</div>
+  <div class="q-text t" data-ar="كيف تُعرِّف دالة عضو خارج الفئة؟" data-en="How do you define a member function outside the class?"></div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'mc8')"><span class="t" data-ar="أ)" data-en="A)"><span class="opt-code">void class::func() { }</span></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc8')"><span class="t" data-ar="ب)" data-en="B)"><span class="opt-code">void func() { }</span></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'mc8')"><span class="t" data-ar="ج)" data-en="C)"><span class="opt-code">void ClassName::func() { }</span></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc8')"><span class="t" data-ar="د)" data-en="D)"><span class="opt-code">func() { }</span></span></button>
+  </div>
+  <div class="explanation"><strong>✅ C</strong> — <span class="t" data-ar="الصيغة الصحيحة هي استخدام اسم الفئة متبوعاً بـ :: ثم اسم الدالة." data-en="The correct syntax uses the class name followed by the scope resolution operator :: and the function name."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc8','mc7','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('mc8','mc9','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- MC9 — convert if-else to switch -->
+<div class="q-card" id="mc9" data-section="s2">
+  <div class="q-num">Q9</div>
+  <div class="q-text t" data-ar="حوِّل الكود التالي إلى جملة switch مكافئة:" data-en="Convert the following if-else code to an equivalent switch statement:"></div>
+  <div class="code-block">if (choice == 1)
+    cout &lt;&lt; "Option 1 selected" &lt;&lt; endl;
+else if (choice == 2)
+    cout &lt;&lt; "Option 2 selected" &lt;&lt; endl;
+else if (choice == 3)
+    cout &lt;&lt; "Option 3 selected" &lt;&lt; endl;
+else
+    cout &lt;&lt; "Invalid choice" &lt;&lt; endl;</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,true,'mc9')">
+      <span class="t" data-ar="أ)" data-en="A)"></span>
+      <span class="opt-code">switch (choice) {
+  case 1: cout &lt;&lt; "Option 1 selected" &lt;&lt; endl; break;
+  case 2: cout &lt;&lt; "Option 2 selected" &lt;&lt; endl; break;
+  case 3: cout &lt;&lt; "Option 3 selected" &lt;&lt; endl; break;
+  default: cout &lt;&lt; "Invalid choice" &lt;&lt; endl;
+}</span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc9')">
+      <span class="t" data-ar="ب) switch { case choice==1: ... }" data-en="B) switch { case choice==1: ... }"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc9')">
+      <span class="t" data-ar="ج) نفس أ لكن بدون break" data-en="C) Same as A but without break statements"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc9')"><span class="t" data-ar="د) لا شيء مما سبق" data-en="D) None of the above"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ A</strong> — <span class="t" data-ar="الصيغة الصحيحة لـ switch تستخدم switch(variable) ثم case قيمة: ... break; وdefault للحالة الافتراضية." data-en="Correct switch syntax uses switch(variable), then case value: ... break; and default: for the fallback."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc9','mc8','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('mc9','mc10','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- MC10 — convert for to do-while -->
+<div class="q-card" id="mc10" data-section="s2">
+  <div class="q-num">Q10</div>
+  <div class="q-text t" data-ar="حوِّل حلقة for التالية إلى حلقة do-while مكافئة:" data-en="Convert the following for loop to an equivalent do-while loop:"></div>
+  <div class="code-block">int sum = 0;
+for(int odd = 1; odd &lt; n; odd = odd + 2)
+    sum += odd;
+cout &lt;&lt; n &lt;&lt; sum;</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'mc10')">
+      <span class="t" data-ar="أ) بدون إعلان odd" data-en="A) Without declaring odd"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc10')">
+      <span class="t" data-ar="ب) cout داخل الحلقة" data-en="B) cout inside the loop"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'mc10')">
+      <span class="t" data-ar="ج) بدون int odd=1" data-en="C) Without int odd=1"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,true,'mc10')">
+      <span class="t" data-ar="د) الإجابة الصحيحة:" data-en="D) Correct answer:"></span>
+      <span class="opt-code">int sum = 0;
+int odd = 1;
+do {
+    sum += odd;
+    odd = odd + 2;
+} while(odd &lt; n);
+cout &lt;&lt; n &lt;&lt; sum;</span>
+    </button>
+  </div>
+  <div class="explanation"><strong>✅ D</strong> — <span class="t" data-ar="يجب تعريف odd قبل الحلقة، ووضع cout بعدها. do-while تتحقق من الشرط بعد كل تكرار." data-en="odd must be declared before the loop, and cout comes after it. do-while checks the condition after each iteration."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('mc10','mc9','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="goSection('s3')"><span class="t" data-ar="السؤال الثالث ←" data-en="Question Three →"></span></button>
+  </div>
+</div>
+</div><!-- /s2 -->
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — CODE OUTPUT  (10 Qs × 3 pts)
+══════════════════════════════════════════ -->
+<div id="s3" style="display:none">
+<div class="section-label">
+  <div class="section-icon">💻</div>
+  <div>
+    <div class="section-title t" data-ar="السؤال الثالث: اختر الناتج الصحيح" data-en="Question Three: Choose the Correct Output"></div>
+    <div class="section-pts t" data-ar="10 أسئلة × 3 درجات = 30 درجة" data-en="10 questions × 3 pts = 30 pts"></div>
+  </div>
+</div>
+
+<!-- CO1 -->
+<div class="q-card active" id="co1" data-section="s3">
+  <div class="q-num">Q1</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">#include &lt;iostream&gt;
+using namespace std;
+int main() {
+    int i = 6;
+    do {
+        cout &lt;&lt; i &lt;&lt; " ";
+        i = i + 5;
+    } while (i &lt;= 10);
+    cout &lt;&lt; i;
+    return 0;
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'co1')">A) 6 7</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'co1')">B) 6 11</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co1')">C) 6 6</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co1')">D) error</button>
+  </div>
+  <div class="explanation"><strong>✅ B — 6 11</strong><br><span class="t" data-ar="i=6: طباعة 6، ثم i=11. الشرط (11<=10) خطأ فتخرج الحلقة. ثم تطبع i=11." data-en="i=6: print 6, then i=11. Condition (11≤10) is false so loop exits. Then print i=11. Output: '6 11'"></span></div>
+  <div class="nav-btns"><button class="nav-btn primary" onclick="nextSlide('co1','co2','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button></div>
+</div>
+
+<!-- CO2 -->
+<div class="q-card" id="co2" data-section="s3">
+  <div class="q-num">Q2</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">for (int i = 0; i &lt; 5; i += 2) {
+    cout &lt;&lt; i &lt;&lt; " ";
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'co2')">A) 0 1 2 3 4</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'co2')">B) 0 2 4</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co2')">C) 1 3 5</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co2')">D) Infinite loop</button>
+  </div>
+  <div class="explanation"><strong>✅ B — 0 2 4</strong><br><span class="t" data-ar="i يبدأ من 0 ويزيد بمقدار 2 في كل مرة: 0، 2، 4. عند i=6 يكون الشرط i<5 خاطئاً." data-en="i starts at 0, increments by 2: 0, 2, 4. When i=6 the condition i<5 is false."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co2','co1','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('co2','co3','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- CO3 -->
+<div class="q-card" id="co3" data-section="s3">
+  <div class="q-num">Q3</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">int a = 20;
+int *p = &amp;a;
+a = *p + 5;
+cout &lt;&lt; a;</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'co3')">A) 5</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co3')">B) 20</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'co3')">C) 25</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co3')">D) Error</button>
+  </div>
+  <div class="explanation"><strong>✅ C — 25</strong><br><span class="t" data-ar="*p = قيمة a = 20. ثم a = 20 + 5 = 25." data-en="*p dereferences p which points to a, so *p = 20. Then a = 20 + 5 = 25."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co3','co2','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('co3','co4','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- CO4 -->
+<div class="q-card" id="co4" data-section="s3">
+  <div class="q-num">Q4</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">int fun(int m) {
+    if (m == 0) return 1;
+    else if (m == 1) return m;
+    else return (m * fun(m - 1));
+}
+int main() {
+    cout &lt;&lt; fun(4);
+    return 0;
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'co4')">A) 1</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co4')">B) 4</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'co4')">C) 24</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co4')">D) None of the above</button>
+  </div>
+  <div class="explanation"><strong>✅ C — 24</strong><br><span class="t" data-ar="fun(4) = 4 × fun(3) = 4 × 3 × fun(2) = 4 × 3 × 2 × fun(1) = 4 × 3 × 2 × 1 = 24. هذا مضروب العدد 4." data-en="fun(4) = 4×fun(3) = 4×3×fun(2) = 4×3×2×fun(1) = 4×3×2×1 = 24. This is 4! (factorial of 4)."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co4','co3','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('co4','co5','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- CO5 -->
+<div class="q-card" id="co5" data-section="s3">
+  <div class="q-num">Q5</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">int a = 5, b = 10, c = 15;
+if (a &lt; b &amp;&amp; b &lt; c)
+    cout &lt;&lt; "Condition met";
+else
+    cout &lt;&lt; "Condition not met";</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,true,'co5')">A) Condition met</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co5')">B) Condition not met</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co5')">C) Error</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co5')">D) Undefined behavior</button>
+  </div>
+  <div class="explanation"><strong>✅ A — Condition met</strong><br><span class="t" data-ar="(5<10) صحيح AND (10<15) صحيح، إذن الشرط الكلي صحيح وتُطبع Condition met." data-en="(5<10) is true AND (10<15) is true, so the whole condition is true → 'Condition met'."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co5','co4','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('co5','co6','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- CO6 -->
+<div class="q-card" id="co6" data-section="s3">
+  <div class="q-num">Q6</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">void fun1() {
+    int b = 10;
+    static int a = 1;
+    a *= 2;
+    b *= 6;
+    cout &lt;&lt; " a = " &lt;&lt; a &lt;&lt; " and b = " &lt;&lt; b &lt;&lt; endl;
+}
+int main() {
+    fun1();
+    fun1();
+    return 0;
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,true,'co6')">A) a = 2 and b = 60<br>&nbsp;&nbsp;&nbsp;a = 4 and b = 60</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co6')">B) a = 2 and b = 60<br>&nbsp;&nbsp;&nbsp;a = 4 and b = 120</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co6')">C) a = 2 and b = 60<br>&nbsp;&nbsp;&nbsp;a = 2 and b = 60</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co6')">D) None of the above</button>
+  </div>
+  <div class="explanation"><strong>✅ A</strong><br><span class="t" data-ar="a متغير static يحتفظ بقيمته بين الاستدعاءات: أول استدعاء a=1×2=2، ثاني استدعاء a=2×2=4. أما b فتُعاد تهيئتها في كل مرة = 60." data-en="a is static so it retains its value: call 1 → a=1×2=2, call 2 → a=2×2=4. b is re-initialized each call: 10×6=60."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co6','co5','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('co6','co7','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- CO7 -->
+<div class="q-card" id="co7" data-section="s3">
+  <div class="q-num">Q7</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">int main() {
+    for (int i = 1; i &lt;= 5; i++) {
+        if (i == 3) continue;
+        cout &lt;&lt; i &lt;&lt; " ";
+        return 0;
+    }
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'co7')">A) 1 2 3 4 5</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co7')">B) 1 2 4 5</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co7')">C) 3</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'co7')">D) 1</button>
+  </div>
+  <div class="explanation"><strong>✅ D — 1</strong><br><span class="t" data-ar="i=1: الشرط (i==3) خاطئ، يطبع 1، ثم return 0 يُنهي البرنامج فوراً. لذا الناتج هو 1 فقط." data-en="i=1: condition (i==3) is false, prints 1, then return 0 exits main immediately. Output is just '1'."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co7','co6','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('co7','co8','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- CO8 -->
+<div class="q-card" id="co8" data-section="s3">
+  <div class="q-num">Q8</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">int arr[] = {4, 5, 6, 7};
+int *p = (arr + 1);
+cout &lt;&lt; *arr + 9;</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'co8')">A) 12</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co8')">B) 5</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'co8')">C) 13</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co8')">D) error</button>
+  </div>
+  <div class="explanation"><strong>✅ C — 13</strong><br><span class="t" data-ar="*arr = arr[0] = 4. ثم 4 + 9 = 13. المؤشر p لا يؤثر على الناتج هنا." data-en="*arr = arr[0] = 4. Then 4 + 9 = 13. The pointer p is defined but doesn't affect this output."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co8','co7','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('co8','co9','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- CO9 -->
+<div class="q-card" id="co9" data-section="s3">
+  <div class="q-num">Q9</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">class Rectangle {
+private:
+    double Length, Width;
+public:
+    Rectangle() { Length=0; Width=0; }
+    Rectangle(double L, double W) { Length=L; Width=W; }
+    double getArea() { return Length * Width; }
+};
+int main() {
+    Rectangle rect(2.0, 3.0);
+    cout &lt;&lt; "Area =" &lt;&lt; rect.getArea();
+    return 0;
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,true,'co9')">A) Area =6</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co9')">B) Area =0</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co9')">C) Area =3</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co9')">D) Area =9</button>
+  </div>
+  <div class="explanation"><strong>✅ A — Area =6</strong><br><span class="t" data-ar="المُنشئ Rectangle(2.0, 3.0) يُعيِّن Length=2 و Width=3. الدالة getArea تُرجع 2×3=6." data-en="Constructor Rectangle(2.0,3.0) sets Length=2, Width=3. getArea() returns 2×3=6."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co9','co8','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('co9','co10','s3')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- CO10 -->
+<div class="q-card" id="co10" data-section="s3">
+  <div class="q-num">Q10</div>
+  <div class="q-text t" data-ar="ما ناتج الكود؟" data-en="What is the output?"></div>
+  <div class="code-block">int operate(int a, int b) { return (a * b); }
+float operate(float a, float b) { return (a / b); }
+int main() {
+    int x=5, y=2;
+    float n=5.0, m=2.0;
+    cout &lt;&lt; operate(x, y) &lt;&lt; "\t";
+    cout &lt;&lt; operate(n, m);
+    return 0;
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'co10')">A) 10.0  5</button>
+    <button class="mc-btn" onclick="answerMC(this,true,'co10')">B) 10  2.5</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co10')">C) 10.0  5.0</button>
+    <button class="mc-btn" onclick="answerMC(this,false,'co10')">D) 5.0  2.5</button>
+  </div>
+  <div class="explanation"><strong>✅ B — 10&nbsp;&nbsp;2.5</strong><br><span class="t" data-ar="operate(x,y): نسخة int → 5×2=10. operate(n,m): نسخة float → 5.0/2.0=2.5. هذا مثال على Function Overloading." data-en="operate(x,y) calls int version → 5×2=10. operate(n,m) calls float version → 5.0/2.0=2.5. This demonstrates function overloading."></span></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('co10','co9','s3')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="goSection('s4')"><span class="t" data-ar="السؤال الرابع ←" data-en="Question Four →"></span></button>
+  </div>
+</div>
+</div><!-- /s3 -->
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 4 — FIX ERRORS  (10 Qs × 3 pts)
+══════════════════════════════════════════ -->
+<div id="s4" style="display:none">
+<div class="section-label">
+  <div class="section-icon">🔧</div>
+  <div>
+    <div class="section-title t" data-ar="السؤال الرابع: اكتب ما يجب تصحيحه" data-en="Question Four: Write What Must Be Corrected"></div>
+    <div class="section-pts t" data-ar="10 أسئلة × 3 درجات = 30 درجة" data-en="10 questions × 3 pts = 30 pts"></div>
+  </div>
+</div>
+
+<!-- FE1 -->
+<div class="q-card active" id="fe1" data-section="s4">
+  <div class="q-num">Q1</div>
+  <div class="q-text t" data-ar="اذكر كل الأخطاء في الكود التالي:" data-en="List all errors in the following code:"></div>
+  <div class="code-block">#include ;
+int main()
+{ n = 22;
+  cout &lt;&lt; "n = &lt;&lt; n &lt;&lt; endl; }</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe1')"><span class="t" data-ar="أ) خطأ واحد فقط: ناقص اسم المكتبة" data-en="A) One error only: missing library name"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe1')"><span class="t" data-ar="ب) خطأان: #include و cout" data-en="B) Two errors: #include and cout"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe1')">
+      <span class="t" data-ar="ج) ثلاثة أخطاء: ناقص &lt;iostream&gt;، ناقص تعريف n، علامة الاقتباس مفقودة قبل n =" data-en="C) Three errors: missing &lt;iostream&gt;, n not declared, missing closing quote before n ="></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe1')"><span class="t" data-ar="د) الكود صحيح" data-en="D) Code is correct"></span></button>
+  </div>
+  <div class="explanation">
+    <strong>✅ C</strong><br>
+    <span class="t"
+      data-ar="١) #include يجب أن يكون: #include &lt;iostream&gt;
+٢) n غير معلن: يجب int n = 22;
+٣) علامة الاقتباس مفتوحة فقط: يجب &quot;n = &quot; &lt;&lt; n"
+      data-en='1) #include should be: #include &lt;iostream&gt;
+2) n is undeclared: should be int n = 22;
+3) Missing closing quote: should be "n = " &lt;&lt; n'></span>
+  </div>
+  <div class="nav-btns"><button class="nav-btn primary" onclick="nextSlide('fe1','fe2','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button></div>
+</div>
+
+<!-- FE2 -->
+<div class="q-card" id="fe2" data-section="s4">
+  <div class="q-num">Q2</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">void show(int a, b) {
+    cout &lt;&lt; a + b;endl;}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe2')"><span class="t" data-ar="أ) خطأ واحد فقط: ناقص نوع b" data-en="A) One error: missing type for b"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe2')">
+      <span class="t" data-ar="ب) خطأان: ناقص نوع b → int b، وendl يجب أن يكون بعد &lt;&lt; لا بعد فاصلة منقوطة" data-en="B) Two errors: missing type 'int' before b, and endl must follow &lt;&lt; not a semicolon"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe2')"><span class="t" data-ar="ج) الكود صحيح" data-en="C) Code is correct"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe2')"><span class="t" data-ar="د) ناقص فقط endl" data-en="D) Missing endl only"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) يجب: void show(int a, int b)
+٢) يجب: cout &lt;&lt; a + b &lt;&lt; endl;"
+      data-en="1) Should be: void show(int a, int b)
+2) Should be: cout &lt;&lt; a + b &lt;&lt; endl;"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe2','fe1','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('fe2','fe3','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- FE3 -->
+<div class="q-card" id="fe3" data-section="s4">
+  <div class="q-num">Q3</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">int factorial(int n) {
+    int result = 1
+    for (int i = 1; i &lt;= n; i--)
+        result *= i;
+    return result;</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe3')"><span class="t" data-ar="أ) خطأ واحد: ناقص فاصلة منقوطة" data-en="A) One error: missing semicolon"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe3')">
+      <span class="t" data-ar="ب) ثلاثة أخطاء: ناقص ;، i-- يجب i++، ناقص قوس الإغلاق }" data-en="B) Three errors: missing semicolon after result=1, i-- should be i++, missing closing brace }"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe3')"><span class="t" data-ar="ج) خطأان فقط: ; وقوس الإغلاق" data-en="C) Two errors: semicolon and closing brace"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe3')"><span class="t" data-ar="د) لا أخطاء" data-en="D) No errors"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) ناقص ; بعد int result = 1
+٢) i-- يجب أن تكون i++ (وإلا حلقة لا نهائية)
+٣) ناقص } لإغلاق الدالة"
+      data-en="1) Missing semicolon: int result = 1;
+2) i-- should be i++ (otherwise infinite loop)
+3) Missing closing brace } for the function"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe3','fe2','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('fe3','fe4','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- FE4 -->
+<div class="q-card" id="fe4" data-section="s4">
+  <div class="q-num">Q4</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">float x = 3.14159;
+float* p = &amp;x;
+int d = 44;
+char* q = &amp;d;
+p = q;</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe4')"><span class="t" data-ar="أ) خطأ واحد: p = q" data-en="A) One error: p = q"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe4')">
+      <span class="t" data-ar="ب) خطأان: char* q = &amp;d خاطئ (يجب int*)، و p = q خاطئ (أنواع مختلفة)" data-en="B) Two errors: char* q = &amp;d is wrong (should be int*), and p = q is wrong (incompatible types)"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe4')"><span class="t" data-ar="ج) لا أخطاء" data-en="C) No errors"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe4')"><span class="t" data-ar="د) خطأ واحد فقط: char* q" data-en="D) One error only: char* q"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) char* q = &amp;d خاطئ: d من نوع int، فيجب int* q = &amp;d
+٢) p = q خاطئ: لا يمكن تعيين char* لـ float* (أنواع غير متوافقة)"
+      data-en="1) char* q = &amp;d is wrong: d is int, should be int* q = &amp;d
+2) p = q is wrong: cannot assign char* to float* (incompatible pointer types)"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe4','fe3','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('fe4','fe5','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- FE5 -->
+<div class="q-card" id="fe5" data-section="s4">
+  <div class="q-num">Q5</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">double g = 1.9;
+if (g &gt;= 2.0);
+{ if (g &gt;= 3.7 or g &lt; 3.0)
+    cout &lt;&lt;"The list"; }
+else;
+cout &lt;&lt;" No "; return 0;}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe5')"><span class="t" data-ar="أ) خطأ واحد: ; بعد if" data-en="A) One error: semicolon after if"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe5')">
+      <span class="t" data-ar="ب) أخطاء متعددة: ; بعد if الأول تفصله عن البلوك، ; بعد else خاطئة، ناقص { لـ main، or يجب ||" data-en="B) Multiple errors: ; after if separates it from block, ; after else is wrong, missing opening { for main, 'or' should be ||"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe5')"><span class="t" data-ar="ج) خطأ واحد: or يجب ||" data-en="C) One error: or should be ||"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe5')"><span class="t" data-ar="د) لا أخطاء" data-en="D) No errors"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) ; بعد if (g>=2.0) تجعل الـ if فارغاً
+٢) ; بعد else خاطئة
+٣) ناقص { لبداية main()
+٤) or مقبول في C++ لكن || أوضح"
+      data-en="1) Semicolon after if(g>=2.0) makes the if empty (empty statement)
+2) Semicolon after else is wrong
+3) Missing opening brace { for main
+4) 'or' is valid C++ but || is cleaner"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe5','fe4','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('fe5','fe6','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- FE6 -->
+<div class="q-card" id="fe6" data-section="s4">
+  <div class="q-num">Q6</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">class Student {
+private:
+    int rollNo;
+public:
+    void Student() { rollNo = 0; }
+    void setRollNo(int r) { rollNo = r; }
+    int getRollNo() { return rollNo; }
+}
+int main() {
+    Student s;
+    cout &lt;&lt; s.rollNo;
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe6')"><span class="t" data-ar="أ) خطأ واحد: ناقص ; بعد }" data-en="A) One error: missing ; after }"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe6')">
+      <span class="t" data-ar="ب) ثلاثة أخطاء: void Student() يجب أن يكون constructor بدون void، ناقص ; بعد }، s.rollNo خاصة لا يمكن الوصول إليها" data-en="B) Three errors: void Student() should be constructor without void, missing ; after }, s.rollNo is private"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe6')"><span class="t" data-ar="ج) خطأان فقط: void و;" data-en="C) Two errors: void and ;"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe6')"><span class="t" data-ar="د) لا أخطاء" data-en="D) No errors"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) المُنشئ لا يجوز أن يكون له نوع إرجاع: يجب Student() بدون void
+٢) ناقص ; بعد } إغلاق الفئة: };
+٣) rollNo خاص (private) لا يمكن الوصول إليه من main مباشرةً"
+      data-en="1) Constructor cannot have a return type: should be Student() not void Student()
+2) Missing semicolon after class closing brace: };
+3) rollNo is private, cannot be accessed directly from main"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe6','fe5','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('fe6','fe7','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- FE7 -->
+<div class="q-card" id="fe7" data-section="s4">
+  <div class="q-num">Q7</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">int x=a, int sum=0;
+do
+{sum=+x;
+ x++;
+}while(x&lt;=b)</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe7')"><span class="t" data-ar="أ) خطأ واحد: ناقص ;" data-en="A) One error: missing ;"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe7')">
+      <span class="t" data-ar="ب) أخطاء متعددة: x=a غير معلن، int مكررة في نفس السطر، sum=+x يجب sum+=x، ناقص ; بعد while" data-en="B) Multiple errors: a and b undeclared, double 'int' in same line, sum=+x should be sum+=x, missing ; after while"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe7')"><span class="t" data-ar="ج) خطأ واحد: sum=+x" data-en="C) One error: sum=+x"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe7')"><span class="t" data-ar="د) لا أخطاء" data-en="D) No errors"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) int x=a, int sum=0: لا يمكن كتابة int مرتين في نفس السطر. يجب: int x=a, sum=0; (وa وb يجب تعريفهما)
+٢) sum=+x خطأ: يجب sum+=x
+٣) ناقص ; بعد while(x<=b)"
+      data-en="1) Can't write int twice: should be int x=a, sum=0; (a and b must be declared)
+2) sum=+x is wrong: should be sum+=x
+3) Missing semicolon after while(x&lt;=b)"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe7','fe6','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('fe7','fe8','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- FE8 -->
+<div class="q-card" id="fe8" data-section="s4">
+  <div class="q-num">Q8</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">struct empType {
+    string name;
+    int sal;
+} empType emp;
+void print(empType e)
+{cout&lt;&lt;name;
+ cout&lt;&lt;sal;}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe8')"><span class="t" data-ar="أ) خطأ واحد: name بدون e." data-en="A) One error: name without e."></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe8')">
+      <span class="t" data-ar="ب) أخطاء: empType مكررة عند التعريف، يجب e.name و e.sal داخل الدالة" data-en="B) Errors: empType repeated at declaration, should use e.name and e.sal inside function"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe8')"><span class="t" data-ar="ج) لا أخطاء" data-en="C) No errors"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe8')"><span class="t" data-ar="د) ناقص فقط e. قبل المتغيرات" data-en="D) Missing e. before variables only"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) } empType emp; خاطئ: اسم النوع empType مكرر. الصحيح: } emp;
+٢) داخل الدالة يجب: cout &lt;&lt; e.name; و cout &lt;&lt; e.sal;"
+      data-en="1) } empType emp; is wrong — type name is repeated. Should be: } emp;
+2) Inside function should use: cout &lt;&lt; e.name; and cout &lt;&lt; e.sal;"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe8','fe7','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('fe8','fe9','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- FE9 -->
+<div class="q-card" id="fe9" data-section="s4">
+  <div class="q-num">Q9</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">int array_size = 10;
+int *a;
+a = new [array_size];
+for (i = 0; i &lt; array_size; i++)
+    cout &lt;&lt; a(i) &lt;&lt; " ";</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe9')"><span class="t" data-ar="أ) خطأ واحد: a(i)" data-en="A) One error: a(i)"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe9')">
+      <span class="t" data-ar="ب) ثلاثة أخطاء: new int[array_size]، ناقص تعريف i، a(i) يجب a[i]" data-en="B) Three errors: should be new int[array_size], i not declared, a(i) should be a[i]"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe9')"><span class="t" data-ar="ج) خطأان: new و a(i)" data-en="C) Two errors: new and a(i)"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe9')"><span class="t" data-ar="د) لا أخطاء" data-en="D) No errors"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) new [array_size] يجب: new int[array_size]
+٢) i غير معلنة: يجب int i = 0
+٣) a(i) يجب: a[i] (المصفوفات تستخدم [] وليس ())"
+      data-en="1) new [array_size] should be: new int[array_size]
+2) i is undeclared: should be int i = 0
+3) a(i) should be a[i] (arrays use [] not ())"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe9','fe8','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="nextSlide('fe9','fe10','s4')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
+  </div>
+</div>
+
+<!-- FE10 -->
+<div class="q-card" id="fe10" data-section="s4">
+  <div class="q-num">Q10</div>
+  <div class="q-text t" data-ar="اذكر الأخطاء:" data-en="List the errors:"></div>
+  <div class="code-block">int x = 2;
+switch x {
+    case 1
+        cout &lt;&lt; "One"; break;
+    case 2
+        cout &lt;&lt; "Two";
+    break;
+}</div>
+  <div class="mc-options">
+    <button class="mc-btn" onclick="answerMC(this,false,'fe10')"><span class="t" data-ar="أ) خطأ واحد: ناقص أقواس" data-en="A) One error: missing parentheses"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,true,'fe10')">
+      <span class="t" data-ar="ب) ثلاثة أخطاء: ناقص () حول x، ناقص : بعد case 1، ناقص : بعد case 2" data-en="B) Three errors: missing () around x, missing : after case 1, missing : after case 2"></span>
+    </button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe10')"><span class="t" data-ar="ج) خطأان فقط: () و :" data-en="C) Two errors: () and :"></span></button>
+    <button class="mc-btn" onclick="answerMC(this,false,'fe10')"><span class="t" data-ar="د) لا أخطاء" data-en="D) No errors"></span></button>
+  </div>
+  <div class="explanation"><strong>✅ B</strong><br>
+    <span class="t"
+      data-ar="١) switch x يجب: switch(x) — لا بد من الأقواس
+٢) case 1 يجب: case 1: — لا بد من النقطتين
+٣) case 2 يجب: case 2: — لا بد من النقطتين"
+      data-en="1) switch x must be switch(x) — parentheses required
+2) case 1 must be case 1: — colon required
+3) case 2 must be case 2: — colon required"></span>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prevSlide('fe10','fe9','s4')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
+    <button class="nav-btn primary" onclick="showResult()"><span class="t" data-ar="🎯 إنهاء الامتحان" data-en="🎯 Finish Exam"></span></button>
+  </div>
+</div>
+</div><!-- /s4 -->
+
+
+<!-- ══════ RESULT ══════ -->
+<div id="result-screen">
+  <div class="res-emoji" id="res-emoji">🎉</div>
+  <div class="res-score" id="res-score">0/40</div>
+  <div class="res-label t" data-ar="درجتك في امتحان CS503" data-en="Your score in CS503 Exam"></div>
+  <div class="res-breakdown">
+    <div class="res-sec"><span class="t" data-ar="س١ صح/خطأ: " data-en="Q1 T/F: "></span><span id="sc-s1">0/10</span></div>
+    <div class="res-sec"><span class="t" data-ar="س٢ اختيار: " data-en="Q2 MCQ: "></span><span id="sc-s2">0/10</span></div>
+    <div class="res-sec"><span class="t" data-ar="س٣ ناتج: " data-en="Q3 Output: "></span><span id="sc-s3">0/10</span></div>
+    <div class="res-sec"><span class="t" data-ar="س٤ تصحيح: " data-en="Q4 Fix: "></span><span id="sc-s4">0/10</span></div>
+  </div>
+  <div class="res-msg" id="res-msg"></div>
+  <div class="res-actions">
+    <button onclick="resetExam()" class="res-btn primary"><span class="t" data-ar="🔄 إعادة الامتحان" data-en="🔄 Retry Exam"></span></button>
+  </div>
+</div>
+
+</div><!-- /quiz-wrap -->
+
+<script>
+// ── State
+let lang = 'ar';
+const scores = {s1:0,s2:0,s3:0,s4:0};
+const answered = {};
+const sectionTotal = 10;
+
+// ── Lang
+function setLang(l, btn) {
+  lang = l;
+  document.body.className = l === 'en' ? 'en' : '';
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.t[data-ar][data-en]').forEach(el => {
+    el.textContent = el.dataset[l];
+  });
+  updateProgress();
+}
+
+// ── Progress
+let currentSection = 's1';
+let currentCard = 'tf1';
+const totalCards = 40;
+let answeredCount = 0;
+
+function updateProgress() {
+  const total = Object.keys(answered).length;
+  const pct = total / totalCards * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent =
+    lang === 'ar' ? `تم الإجابة على ${total} من ${totalCards}` : `${total} of ${totalCards} answered`;
+  const totalScore = scores.s1 + scores.s2 + scores.s3 + scores.s4;
+  document.getElementById('score-disp').textContent =
+    lang === 'ar' ? `الدرجة: ${totalScore}` : `Score: ${totalScore}`;
+}
+
+// ── Section tabs
+function goSection(sid) {
+  ['s1','s2','s3','s4'].forEach(s => {
+    document.getElementById(s).style.display = s === sid ? 'block' : 'none';
+    document.querySelectorAll('.tab-btn').forEach((b,i) => {
+      b.classList.toggle('active', ['s1','s2','s3','s4'][i] === sid);
+    });
+  });
+  currentSection = sid;
+  // Show first active card
+  const cards = document.querySelectorAll(`#${sid} .q-card`);
+  let shown = false;
+  cards.forEach(c => {
+    if (!shown && !c.classList.contains('active')) {
+      c.classList.add('active'); shown = true;
+    }
+  });
+  // Actually just show the section — the slider handles cards
+}
+
+// ── Slide navigation
+function nextSlide(cur, nxt, sec) {
+  document.getElementById(cur).classList.remove('active');
+  document.getElementById(nxt).classList.add('active');
+  currentCard = nxt;
+  updateProgress();
+}
+function prevSlide(cur, prv, sec) {
+  document.getElementById(cur).classList.remove('active');
+  document.getElementById(prv).classList.add('active');
+  currentCard = prv;
+  updateProgress();
+}
+
+// ── Answer TF
+function answerTF(btn, isCorrect, qid) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  answeredCount++;
+  const card = btn.closest('.q-card');
+  const sec = card.dataset.section;
+  card.querySelectorAll('.tf-btn').forEach(b => b.disabled = true);
+  if (isCorrect) {
+    btn.classList.add('correct');
+    scores[sec]++;
+  } else {
+    btn.classList.add('wrong');
+    // Mark the correct one
+    card.querySelectorAll('.tf-btn').forEach(b => {
+      const fn = b.getAttribute('onclick');
+      if (fn && fn.includes('true')) b.classList.add('correct');
+    });
+  }
+  card.querySelector('.explanation').classList.add('show');
+  updateProgress();
+}
+
+// ── Answer MC
+function answerMC(btn, isCorrect, qid) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  answeredCount++;
+  const card = btn.closest('.q-card');
+  const sec = card.dataset.section;
+  card.querySelectorAll('.mc-btn').forEach(b => b.disabled = true);
+  if (isCorrect) {
+    btn.classList.add('correct');
+    scores[sec]++;
+  } else {
+    btn.classList.add('wrong');
+    card.querySelectorAll('.mc-btn').forEach(b => {
+      const fn = b.getAttribute('onclick');
+      if (fn && fn.includes('true')) b.classList.add('correct');
+    });
+  }
+  card.querySelector('.explanation').classList.add('show');
+  updateProgress();
+}
+
+// ── Show Result
+function showResult() {
+  document.getElementById('fe10').classList.remove('active');
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const total = scores.s1 + scores.s2 + scores.s3 + scores.s4;
+  const pct = total / totalCards;
+
+  document.getElementById('res-score').textContent = total + ' / ' + totalCards;
+  document.getElementById('sc-s1').textContent = scores.s1 + '/10';
+  document.getElementById('sc-s2').textContent = scores.s2 + '/10';
+  document.getElementById('sc-s3').textContent = scores.s3 + '/10';
+  document.getElementById('sc-s4').textContent = scores.s4 + '/10';
+
+  let emoji, msg;
+  if (pct === 1)       { emoji = '🏆'; msg = lang==='ar' ? 'ممتاز! إجابات مثالية!' : 'Perfect! All correct!'; }
+  else if (pct >= 0.8) { emoji = '🎉'; msg = lang==='ar' ? 'أحسنت! نتيجة رائعة!' : 'Great job! Excellent result!'; }
+  else if (pct >= 0.6) { emoji = '👍'; msg = lang==='ar' ? 'جيد! راجع النقاط التي أخطأت فيها.' : 'Good! Review topics you got wrong.'; }
+  else                 { emoji = '📚'; msg = lang==='ar' ? 'تحتاج مزيداً من المراجعة.' : 'You need more review. Keep studying!'; }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-msg').textContent = msg;
+  document.getElementById('result-screen').style.display = 'block';
+  document.getElementById('result-screen').scrollIntoView({behavior:'smooth'});
+}
+
+// ── Reset
+function resetExam() {
+  Object.keys(scores).forEach(k => scores[k] = 0);
+  Object.keys(answered).forEach(k => delete answered[k]);
+  answeredCount = 0;
+
+  document.getElementById('result-screen').style.display = 'none';
+  document.querySelectorAll('.q-card').forEach(c => {
+    c.classList.remove('active');
+    c.querySelectorAll('.mc-btn,.tf-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('correct','wrong');
+    });
+    const exp = c.querySelector('.explanation');
+    if (exp) exp.classList.remove('show');
+  });
+
+  // Show s1 first card
+  goSection('s1');
+  document.getElementById('tf1').classList.add('active');
+  updateProgress();
+}
+
+// ── Init
+document.querySelectorAll('.t[data-ar]').forEach(el => el.textContent = el.dataset.ar);
+updateProgress();
+</script>
+</body>
+</html>
