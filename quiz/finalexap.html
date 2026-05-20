@@ -569,13 +569,34 @@ x = ++x * 100 / 2;</div>
 <div class="q-card" id="mc8" data-section="s2">
   <div class="q-num">Q8</div>
   <div class="q-text t" data-ar="كيف تُعرِّف دالة عضو خارج الفئة؟" data-en="How do you define a member function outside the class?"></div>
+  
   <div class="mc-options">
-    <button class="mc-btn" onclick="answerMC(this,false,'mc8')"><span class="t" data-ar="أ)" data-en="A)"><span class="opt-code">void class::func() { }</span></span></button>
-    <button class="mc-btn" onclick="answerMC(this,false,'mc8')"><span class="t" data-ar="ب)" data-en="B)"><span class="opt-code">void func() { }</span></span></button>
-    <button class="mc-btn" onclick="answerMC(this,true,'mc8')"><span class="t" data-ar="ج)" data-en="C)"><span class="opt-code">void ClassName::func() { }</span></span></button>
-    <button class="mc-btn" onclick="answerMC(this,false,'mc8')"><span class="t" data-ar="د)" data-en="D)"><span class="opt-code">func() { }</span></span></button>
+    <!-- فصلنا الـ span بتاع الترجمة عن الـ span بتاع كود الـ C++ -->
+    <button class="mc-btn" onclick="answerMC(this,false,'mc8')">
+      <span class="t" data-ar="أ) " data-en="A) "></span>
+      <span class="opt-code">void class::func() { }</span>
+    </button>
+    
+    <button class="mc-btn" onclick="answerMC(this,false,'mc8')">
+      <span class="t" data-ar="ب) " data-en="B) "></span>
+      <span class="opt-code">void func() { }</span>
+    </button>
+    
+    <button class="mc-btn" onclick="answerMC(this,true,'mc8')">
+      <span class="t" data-ar="ج) " data-en="C) "></span>
+      <span class="opt-code">void ClassName::func() { }</span>
+    </button>
+    
+    <button class="mc-btn" onclick="answerMC(this,false,'mc8')">
+      <span class="t" data-ar="د) " data-en="D) "></span>
+      <span class="opt-code">func() { }</span>
+    </button>
   </div>
-  <div class="explanation"><strong>✅ C</strong> — <span class="t" data-ar="الصيغة الصحيحة هي استخدام اسم الفئة متبوعاً بـ :: ثم اسم الدالة." data-en="The correct syntax uses the class name followed by the scope resolution operator :: and the function name."></span></div>
+
+  <div class="explanation">
+    <strong>✅ C</strong> — <span class="t" data-ar="الصيغة الصحيحة هي استخدام اسم الفئة متبوعاً بـ :: ثم اسم الدالة." data-en="The correct syntax uses the class name followed by the scope resolution operator :: and the function name."></span>
+  </div>
+
   <div class="nav-btns">
     <button class="nav-btn" onclick="prevSlide('mc8','mc7','s2')"><span class="t" data-ar="← السابق" data-en="← Prev"></span></button>
     <button class="nav-btn primary" onclick="nextSlide('mc8','mc9','s2')"><span class="t" data-ar="التالي →" data-en="Next →"></span></button>
